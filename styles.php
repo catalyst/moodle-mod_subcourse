@@ -1,0 +1,3 @@
+#fetchinfobox {
+    text-align: center;
+}
