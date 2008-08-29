@@ -4,10 +4,13 @@
  * Library of functions and constants for module subcourse
  */
 
+require_once(dirname(__FILE__).'/exceptions.php');
+
 /**
  * the list of fields to copy from remote grade_item
  */
 $SUBCOURSE_FETCHED_ITEM_FIELDS = array('gradetype', 'grademax', 'grademin', 'scaleid');
+
 
 /**
  * Given an object containing all the necessary data, (defined by the form) 
@@ -24,7 +27,12 @@ function subcourse_add_instance($subcourse) {
 
     // create grade_item but do not fetch grades - the context does not exist yet and we can't 
     // get users by capability
-    subcourse_grades_update($subcourse->course, $newid, $subcourse->refcourse, $subcourse->name, true);
+    try {
+        subcourse_grades_update($subcourse->course, $newid, $subcourse->refcourse, $subcourse->name, true);
+    }
+    catch ( subcourse_localremotescale_exception $e ) {
+        mtrace($e->message);
+    }
     return $newid;
 }
 
@@ -40,7 +48,12 @@ function subcourse_update_instance($subcourse) {
     $subcourse->timemodified = time();
     $subcourse->id = $subcourse->instance;
 
-    subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse, $subcourse->name);
+    try {
+        subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse, $subcourse->name);
+    }
+    catch ( subcourse_localremotescale_exception $e ) {
+        mtrace($e->message);
+    }
     $subcourse->timefetched = time();
 
     return update_record("subcourse", $subcourse);
@@ -128,10 +141,17 @@ function subcourse_cron () {
         return true;
     }
     $updatedids = array();
+    echo "Fetching grades from remote gradebooks...\n";
     foreach ($subcourse_instances as $subcourse) {
-        echo "Subcourse $subcourse->id: Fetching grades from $subcourse->refcourse to $subcourse->course\n";
-        subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
-        $updatedids[] = $subcourse->id;
+        echo "    subcourse $subcourse->id: fetching grades from course $subcourse->refcourse to course $subcourse->course ... ";
+        try {
+            subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
+            $updatedids[] = $subcourse->id;
+            echo "ok\n";
+        }
+        catch ( subcourse_localremotescale_exception $e ) {
+            echo get_string($e->errorcode, 'subcourse')."\n";
+        }
     }
     subcourse_update_timefetched($updatedids);
 
@@ -307,6 +327,12 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly=fa
         }
     }
 
+    // if the remote grade_item is non-global scale, do not fetch grades - they can't be use
+    if (($refgradeitem->gradetype == GRADE_TYPE_SCALE) && (!subcourse_is_global_scale($refgradeitem->scaleid))) {
+        $gradeitemonly = true;
+        $return->localremotescale = true;
+    }
+
     if (! $gradeitemonly) {
         // get grades
         $cm = get_coursemodule_from_instance("subcourse", $subcourseid);
@@ -346,6 +372,10 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
     }
 
     $refgrades = subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly);
+    if (! empty($refgrades->localremotescale)) {
+        // unable to fetch remote grades - local scale is used in the remote course
+        throw new subcourse_localremotescale_exception($subcourseid);
+    }
     $params = array();
 
     foreach ($SUBCOURSE_FETCHED_ITEM_FIELDS as $property) {
@@ -377,7 +407,7 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
 function subcourse_is_global_scale($scaleid) {
 
     if (! is_numeric($scaleid)) {
-        throw new Exception('Non-numeric argument');
+        throw new Exception('Non-numeric argument'); // TODO use moodle_exception in Moodle 2.0
     }
 
     if (! get_record('scale', 'id', $scaleid, 'courseid', 0, '', '', 'id')) {
@@ -405,7 +435,10 @@ function subcourse_update_timefetched($subcourseids, $time=NULL) {
         $subcourseids = array($subcourseids);
     }
     if (! is_array($subcourseids)) {
-        throw new Exception('Argument not array not numeric value');
+        return false;
+    }
+    if (count($subcourseids) == 0) {
+        return false;
     }
     if (empty($time)) {
         $time = time();

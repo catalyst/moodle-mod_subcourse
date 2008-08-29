@@ -1,6 +1,7 @@
 <?php
 
-$string['errinvalidrefcourse'] = 'Invalid ID of referenced course. The referenced course has been probably deleted.';
+$string['errinvalidrefcourse'] = 'Error: Invalid ID of referenced course. The referenced course has been probably deleted.';
+$string['errlocalremotescale'] = 'Unable to fetch grades: the remote final grade item uses local scale.';
 $string['hiddencourse'] = '*hidden*';
 $string['modulenameplural'] = 'Subcourses';
 $string['modulename'] = 'Subcourse';

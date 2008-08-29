@@ -55,9 +55,14 @@ if ($fetchnow) {
     }
     require_capability('mod/subcourse:fetchgrades', $context);
     add_to_log($course->id, "subcourse", "fetch", "view.php?id=$cm->id", "$refcourse->id");
-    subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
-    subcourse_update_timefetched($subcourse->id);
-    redirect($CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id);
+    try {
+        subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
+        subcourse_update_timefetched($subcourse->id);
+        redirect($CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id);
+    }
+    catch ( subcourse_localremotescale_exception $e ) {
+        print_error($e->errorcode, 'subcourse', $CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id);
+    }
 }
 
 
