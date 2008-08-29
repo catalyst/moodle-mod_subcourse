@@ -123,6 +123,18 @@ function subcourse_print_recent_activity($course, $isteacher, $timestart) {
 function subcourse_cron () {
     global $CFG;
 
+    $subcourse_instances = get_records('subcourse', '', '', '', 'id,course,refcourse');
+    if (empty($subcourse_instances)) {
+        return true;
+    }
+    $updatedids = array();
+    foreach ($subcourse_instances as $subcourse) {
+        echo "Subcourse $subcourse->id: Fetching grades from $subcourse->refcourse to $subcourse->course\n";
+        subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
+        $updatedids[] = $subcourse->id;
+    }
+    subcourse_update_timefetched($updatedids);
+
     return true;
 }
 
@@ -364,8 +376,8 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
  */
 function subcourse_is_global_scale($scaleid) {
 
-    if (! is_int($scaleid)) {
-        throw new Exception('Non-integer argument');
+    if (! is_numeric($scaleid)) {
+        throw new Exception('Non-numeric argument');
     }
 
     if (! get_record('scale', 'id', $scaleid, 'courseid', 0, '', '', 'id')) {
@@ -377,5 +389,33 @@ function subcourse_is_global_scale($scaleid) {
     }
 }
 
+/**
+ * Updates the timefetched timestamp for given subcourses
+ * 
+ * @param array|int $subcourseids ID of subcourse instance or array of IDs
+ * @param mixed $time The timestamp, defaults to the current time
+ * @access public
+ * @uses $CFG
+ * @return void
+ */
+function subcourse_update_timefetched($subcourseids, $time=NULL) {
+    global $CFG;
+
+    if (is_numeric($subcourseids)) {
+        $subcourseids = array($subcourseids);
+    }
+    if (! is_array($subcourseids)) {
+        throw new Exception('Argument not array not numeric value');
+    }
+    if (empty($time)) {
+        $time = time();
+    }
+    if (! is_numeric($time)) {
+        return false;
+    }
+    $subcourseids = implode(',', $subcourseids);
+    set_field_select('subcourse', 'timefetched', $time, "id IN ($subcourseids)");
+    return true;
+}
 
 ?>

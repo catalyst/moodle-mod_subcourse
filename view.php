@@ -56,9 +56,8 @@ if ($fetchnow) {
     require_capability('mod/subcourse:fetchgrades', $context);
     add_to_log($course->id, "subcourse", "fetch", "view.php?id=$cm->id", "$refcourse->id");
     subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
-    $subcourse->timefetched = time();
-    update_record("subcourse", $subcourse);
-    redirect($CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id, '<pre>Hello</pre>', 10);
+    subcourse_update_timefetched($subcourse->id);
+    redirect($CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id);
 }
 
 
