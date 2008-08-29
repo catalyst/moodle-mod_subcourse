@@ -5,6 +5,11 @@
  */
 
 /**
+ * the list of fields to copy from remote grade_item
+ */
+$SUBCOURSE_FETCHED_ITEM_FIELDS = array('gradetype', 'grademax', 'grademin', 'scaleid');
+
+/**
  * Given an object containing all the necessary data, (defined by the form) 
  * this function will create a new instance and return the id number of the new 
  * instance.
@@ -267,6 +272,7 @@ function subcourse_available_courses($userid=NULL) {
  */
 function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly=false) {
     global $CFG;
+    global $SUBCOURSE_FETCHED_ITEM_FIELDS;
 
     if (!function_exists('grade_update')) { //workaround for buggy PHP versions
         require_once($CFG->libdir.'/gradelib.php');
@@ -281,7 +287,7 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly=fa
     $refgradeitem = grade_item::fetch_course_item($refcourseid);
 
     // get grade_item info
-    foreach (array('itemname', 'idnumber', 'gradetype', 'grademax', 'grademin', 'scaleid', 'multfactor', 'plusfactor', 'deleted') as $property) {
+    foreach ($SUBCOURSE_FETCHED_ITEM_FIELDS as $property) {
         if (! empty($refgradeitem->$property)) {
             $return->$property = $refgradeitem->$property;
         } else {
@@ -321,6 +327,7 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly=fa
  */
 function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemname=NULL, $gradeitemonly=false, $reset=false) {
     global $CFG;
+    global $SUBCOURSE_FETCHED_ITEM_FIELDS;
 
     if (!function_exists('grade_update')) { //workaround for buggy PHP versions
         require_once($CFG->libdir.'/gradelib.php');
@@ -329,7 +336,7 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
     $refgrades = subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly);
     $params = array();
 
-    foreach (array('idnumber', 'gradetype', 'grademax', 'grademin', 'scaleid', 'multfactor', 'plusfactor', 'deleted') as $property) {
+    foreach ($SUBCOURSE_FETCHED_ITEM_FIELDS as $property) {
         if (! empty ($refgrades->$property)) {
             $params[$property] = $refgrades->$property;
         }
@@ -346,6 +353,28 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
     }
 
     return grade_update('mod/subcourse', $courseid, 'mod', 'subcourse', $subcourseid, 0, $grades, $params);
+}
+
+/**
+ * Checks if a remote scale can be re-used, i.e. if it is global (standard, server wide) scale
+ * 
+ * @param mixed $scaleid ID of the scale
+ * @access public
+ * @return boolean True if scale is global, false if not.
+ */
+function subcourse_is_global_scale($scaleid) {
+
+    if (! is_int($scaleid)) {
+        throw new Exception('Non-integer argument');
+    }
+
+    if (! get_record('scale', 'id', $scaleid, 'courseid', 0, '', '', 'id')) {
+        // no such scale with courseid ==0
+        return false;
+    } else {
+        // found the global scale
+        return true;
+    }
 }
 
 
