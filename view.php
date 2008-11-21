@@ -92,7 +92,7 @@ print_box(format_text($subcourse->intro));
 
 $refcourselink = new stdClass();
 $refcourselink->name = $refcourse->fullname;
-$refcourselink->href = $CFG->wwwroot.'/course/view?id='.$refcourse->id;
+$refcourselink->href = $CFG->wwwroot.'/course/view.php?id='.$refcourse->id;
 
 
 print_heading(get_string('gotocoursename', 'subcourse', $refcourselink), '', 3);
