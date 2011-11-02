@@ -14,17 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Code fragment to define the version of subcourse
- * This fragment is called by moodle_needs_upgrading() and /admin/index.php
- *
- * @author
- * @version $Id$
- * @package subcourse
- **/
+
+
 defined('MOODLE_INTERNAL') || die();
 
-$module->version  = 2011110200;           // If version == 0 then module will not be installed
-//$module->version  = 2010032200;  // The current module version (Date: YYYYMMDDXX)
-$module->requires = 2010031900;  // Requires this Moodle version
-$module->cron     = 600;           // Period for cron to check this module (secs)
+$logs = array(
+    array('module'=>'submodule', 'action'=>'view',   'mtable'=>'submodule', 'field'=>'name'),
+    array('module'=>'submodule', 'action'=>'add',    'mtable'=>'submodule', 'field'=>'name'),
+    array('module'=>'submodule', 'action'=>'update', 'mtable'=>'submodule', 'field'=>'name'),
+    array('module'=>'submodule', 'action'=>'fetch',  'mtable'=>'course',    'field'=>'shortname'),
+);
