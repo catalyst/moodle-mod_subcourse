@@ -24,7 +24,6 @@ class mod_subcourse_mod_form extends moodleform_mod {
 
     public function definition() {
 
-        global $COURSE;
         $mform    =& $this->_form;
 
         // General settings -------------------------------------------------------------
@@ -36,12 +35,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
         /// Adding the optional "intro" and "introformat" pair of fields
-        $mform->addElement('htmleditor', 'intro', get_string('subcourseintro', 'subcourse'));
-        $mform->setType('intro', PARAM_RAW);
-        $mform->addRule('intro', get_string('required'), 'required', null, 'client');
-        $mform->setHelpButton('intro', array('writing', 'richtext'), false, 'editorhelpbutton');
-
-        $mform->addElement('format', 'introformat', get_string('format'));
+        $this->add_intro_editor(true, get_string('subcourseintro', 'subcourse'));
 
         // Subcourse information --------------------------------------------------------
         $mform->addElement('header', 'subcoursefieldset', get_string('refcourse', 'subcourse'));

@@ -149,8 +149,6 @@ function subcourse_user_complete($course, $user, $mod, $subcourse) {
  * @todo Finish documenting this function
  */
 function subcourse_print_recent_activity($course, $isteacher, $timestart) {
-    global $CFG;
-
     return false; //  True if anything was printed, otherwise false
 }
 
@@ -164,7 +162,7 @@ function subcourse_print_recent_activity($course, $isteacher, $timestart) {
  * @todo Finish documenting this function
  */
 function subcourse_cron() {
-    global $CFG, $DB;
+    global $DB;
 
     $subcourse_instances = $DB->get_records('subcourse', null, '', 'id, course, refcourse');
     if (empty($subcourse_instances)) {

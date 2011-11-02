@@ -22,6 +22,7 @@ $string['hiddencourse'] = '*skrytý*';
 $string['lastfetchnever'] = 'Známky zatím nebyly načteny';
 $string['lastfetchtime'] = 'Naposledy načteny: $a';
 $string['modulename'] = 'Dílčí kurz';
+$string['pluginname'] = 'Dílčí kurz';
 $string['modulenameplural'] = 'Dílčí kurzy';
 $string['refcourse'] = 'Odkazovaný kurz';
 $string['refcourselabel'] = 'Načíst známky z';

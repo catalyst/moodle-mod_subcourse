@@ -19,12 +19,14 @@ $string['errlocalremotescale'] = 'Unable to fetch grades: the remote final grade
 $string['hiddencourse'] = '*hidden*';
 $string['modulenameplural'] = 'Subcourses';
 $string['modulename'] = 'Subcourse';
+$string['pluginname'] = 'Subcourse';
+$string['pluginadministration'] = 'Subcourse administration';
 $string['refcourselabel'] = 'Take grades from';
 $string['refcourse'] = 'Referenced course';
 $string['subcourseintro'] = 'Description';
 $string['subcoursename'] = 'Title';
-$string['gotocoursename'] = 'Go to the course <a href=\"$a->href\">$a->name</a>';
-$string['lastfetchtime'] = 'Last fetch: $a';
+$string['gotocoursename'] = 'Go to the course <a href="{$a->href}">{$a->name}</a>';
+$string['lastfetchtime'] = 'Last fetch: {$a}';
 $string['lastfetchnever'] = 'The grades have not been fetched yet';
 $string['fetchnow'] = 'Fetch now';
 $string['refcourse_help'] = 'The referenced course is the one the grade of the activity is taken from. Students should be enroled into the referenced course.';

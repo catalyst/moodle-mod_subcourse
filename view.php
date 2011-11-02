@@ -31,23 +31,23 @@ $a = optional_param('a', 0, PARAM_INT); // subcourse ID
 $fetchnow = optional_param('fetchnow', 0, PARAM_INT); // manual fetch
 
 if ($id) {
-    if (!$cm = get_record("course_modules", "id", $id)) {
+    if (!$cm = $DB->get_record("course_modules", array("id" => $id))) {
         error("Course Module ID was incorrect");
     }
 
-    if (!$course = get_record("course", "id", $cm->course)) {
+    if (!$course = $DB->get_record("course", array("id" => $cm->course))) {
         error("Course is misconfigured");
     }
 
-    if (!$subcourse = get_record("subcourse", "id", $cm->instance)) {
+    if (!$subcourse = $DB->get_record("subcourse", array("id" => $cm->instance))) {
         error("Course module is incorrect");
     }
 
 } else {
-    if (!$subcourse = get_record("subcourse", "id", $a)) {
+    if (!$subcourse = $DB->get_record("subcourse", array("id" => $a))) {
         error("Course module is incorrect");
     }
-    if (!$course = get_record("course", "id", $subcourse->course)) {
+    if (!$course = $DB->get_record("course", array("id" => $subcourse->course))) {
         error("Course is misconfigured");
     }
     if (!$cm = get_coursemodule_from_instance("subcourse", $subcourse->id, $course->id)) {
@@ -59,7 +59,7 @@ require_login($course->id);
 $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 $course_context = get_context_instance(CONTEXT_COURSE, $course->id);
 
-if (!$refcourse = get_record("course", "id", $subcourse->refcourse)) {
+if (!$refcourse = $DB->get_record("course", array("id" => $subcourse->refcourse))) {
     print_error("errinvalidrefcourse", "subcourse");
 }
 
@@ -79,26 +79,17 @@ if ($fetchnow) {
     }
 }
 
-
 add_to_log($course->id, "subcourse", "view", "view.php?id=$cm->id", "$subcourse->id");
 
 /// Print the page header
 $strsubcourses = get_string("modulenameplural", "subcourse");
 $strsubcourse = get_string("modulename", "subcourse");
 
-$navlinks = array();
-$navlinks[] = array('name' => $strsubcourses,
-                    'link' => "index.php?id=$course->id",
-                    'type' => 'activity');
-$navlinks[] = array('name' => format_string($subcourse->name),
-                    'link' => '',
-                    'type' => 'activityinstance');
+$page_url = new moodle_url('/mod/subcourse/index.php', array('id' => $course->id));
+$PAGE->set_url($page_url);
+$PAGE->set_title(format_string($subcourse->name));
 
-$navigation = build_navigation($navlinks);
-
-print_header_simple(format_string($subcourse->name), "", $navigation, "", "", true,
-                    update_module_button($cm->id, $course->id, $strsubcourse),
-                    navmenu($course, $cm));
+echo $OUTPUT->header();
 
 if (has_capability('gradereport/grader:view', $course_context)
     && has_capability('moodle/grade:viewall', $course_context)) {
@@ -108,16 +99,15 @@ if (has_capability('gradereport/grader:view', $course_context)
          get_string('seeallcoursegrades', 'grades').'</a></div>';
 }
 
-print_heading($subcourse->name);
-print_box(format_text($subcourse->intro));
+echo $OUTPUT->heading($subcourse->name);
+echo $OUTPUT->box(format_text($subcourse->intro));
 
 $refcourselink = new stdClass();
 $refcourselink->name = $refcourse->fullname;
 $refcourselink->href = $CFG->wwwroot.'/course/view.php?id='.$refcourse->id;
 
-
-print_heading(get_string('gotocoursename', 'subcourse', $refcourselink), '', 3);
-print_box_start('generalbox', 'fetchinfobox');
+echo $OUTPUT->heading(get_string('gotocoursename', 'subcourse', $refcourselink), 3);
+echo $OUTPUT->box_start('generalbox', 'fetchinfobox');
 if (empty($subcourse->timefetched)) {
     print_string('lastfetchnever', 'subcourse');
 } else {
@@ -128,7 +118,7 @@ echo '<input type="hidden" name="sesskey" value="'.sesskey().'" />';
 echo '<input type="hidden" name="fetchnow" value="1" />';
 echo '<input type="submit" value="'.get_string('fetchnow', 'subcourse').'" />';
 echo "</form>";
-print_box_end();
+echo $OUTPUT->box_end();
 
 /// Finish the page
-print_footer($course);
+echo $OUTPUT->footer();
