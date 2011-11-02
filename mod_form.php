@@ -18,23 +18,24 @@
  * Defines the main subcourse configuration form
  */
 
-require_once ('moodleform_mod.php');
+require_once('moodleform_mod.php');
 
 class mod_subcourse_mod_form extends moodleform_mod {
 
-    function definition() {
+    public function definition() {
 
         global $COURSE;
         $mform    =& $this->_form;
 
-// General settings -------------------------------------------------------------
-    /// Adding the "general" fieldset, where all the common settings are showed
+        // General settings -------------------------------------------------------------
+        /// Adding the "general" fieldset, where all the common settings are showed
         $mform->addElement('header', 'general', get_string('general', 'form'));
-    /// Adding the standard "name" field
-        $mform->addElement('text', 'name', get_string('subcoursename', 'subcourse'), array('size'=>'64'));
+        /// Adding the standard "name" field
+        $mform->addElement('text', 'name', get_string('subcoursename', 'subcourse'),
+                           array('size'=>'64'));
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
-    /// Adding the optional "intro" and "introformat" pair of fields
+        /// Adding the optional "intro" and "introformat" pair of fields
         $mform->addElement('htmleditor', 'intro', get_string('subcourseintro', 'subcourse'));
         $mform->setType('intro', PARAM_RAW);
         $mform->addRule('intro', get_string('required'), 'required', null, 'client');
@@ -42,10 +43,10 @@ class mod_subcourse_mod_form extends moodleform_mod {
 
         $mform->addElement('format', 'introformat', get_string('format'));
 
-// Subcourse information --------------------------------------------------------
+        // Subcourse information --------------------------------------------------------
         $mform->addElement('header', 'subcoursefieldset', get_string('refcourse', 'subcourse'));
 
-    /// Referenced course selector
+        /// Referenced course selector
         $mycourses = subcourse_available_courses();
         $catlist = array();
         $catparents = array();
@@ -55,24 +56,23 @@ class mod_subcourse_mod_form extends moodleform_mod {
             if (empty($options[$catlist[$mycourse->category]])) {
                 $options[$catlist[$mycourse->category]] = array();
             }
-            $options[$catlist[$mycourse->category]][$mycourse->id] = $mycourse->fullname.' ('.$mycourse->shortname.')';
+            $courselabel = $mycourse->fullname.' ('.$mycourse->shortname.')';
+            $options[$catlist[$mycourse->category]][$mycourse->id] = $courselabel;
             if (empty($mycourse->visible)) {
-                $options[$catlist[$mycourse->category]][$mycourse->id] .= ' '.get_string('hiddencourse', 'subcourse');
+                $hiddenlabel = ' '.get_string('hiddencourse', 'subcourse');
+                $options[$catlist[$mycourse->category]][$mycourse->id] .= $hiddenlabel;
             }
         }
         unset($mycourse);
-        $mform->addElement('selectgroups', 'refcourse', get_string('refcourselabel', 'subcourse'), $options);
-        $mform->setHelpButton('refcourse', array('refcourse', get_string('refcourse', 'subcourse'), 'subcourse'));
+        $mform->addElement('selectgroups', 'refcourse',
+                           get_string('refcourselabel', 'subcourse'), $options);
+        $mform->addHelpButton('refcourse', 'refcourse', 'subcourse');
 
-
-//-------------------------------------------------------------------------------
         // add standard elements, common to all modules
         $this->standard_coursemodule_elements();
-//-------------------------------------------------------------------------------
         // add standard buttons, common to all modules
         $this->add_action_buttons();
 
     }
 }
 
-?>
