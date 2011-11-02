@@ -335,7 +335,7 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
         }
     }
 
-    // if the remote grade_item is non-global scale, do not fetch grades - they can't be use
+    // if the remote grade_item is non-global scale, do not fetch grades - they can't be used
     if (($refgradeitem->gradetype == GRADE_TYPE_SCALE)
         && (!subcourse_is_global_scale($refgradeitem->scaleid))
     ) {

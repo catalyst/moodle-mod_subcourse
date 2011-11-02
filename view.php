@@ -88,6 +88,8 @@ $strsubcourse = get_string("modulename", "subcourse");
 $page_url = new moodle_url('/mod/subcourse/index.php', array('id' => $course->id));
 $PAGE->set_url($page_url);
 $PAGE->set_title(format_string($subcourse->name));
+$PAGE->set_heading($course->shortname);
+$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'subcourse'));
 
 echo $OUTPUT->header();
 
