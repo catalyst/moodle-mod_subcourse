@@ -13,19 +13,20 @@ $SUBCOURSE_FETCHED_ITEM_FIELDS = array('gradetype', 'grademax', 'grademin', 'sca
 
 
 /**
- * Given an object containing all the necessary data, (defined by the form) 
- * this function will create a new instance and return the id number of the new 
+ * Given an object containing all the necessary data, (defined by the form)
+ * this function will create a new instance and return the id number of the new
  * instance.
  *
  * @param object $instance An object from the form
  * @return int The id of the newly inserted subcourse record
  */
 function subcourse_add_instance($subcourse) {
-    
-    $subcourse->timecreated = time();
-    $newid = insert_record("subcourse", $subcourse);
+    global $DB;
 
-    // create grade_item but do not fetch grades - the context does not exist yet and we can't 
+    $subcourse->timecreated = time();
+    $newid = $DB->insert_record("subcourse", $subcourse);
+
+    // create grade_item but do not fetch grades - the context does not exist yet and we can't
     // get users by capability
     try {
         subcourse_grades_update($subcourse->course, $newid, $subcourse->refcourse, $subcourse->name, true);
@@ -37,13 +38,14 @@ function subcourse_add_instance($subcourse) {
 }
 
 /**
- * Given an object containing all the necessary data, (defined by the form) 
+ * Given an object containing all the necessary data, (defined by the form)
  * this function will update an existing instance with new data.
  *
  * @param object $instance An object from the form
  * @return boolean Success/Fail
  */
 function subcourse_update_instance($subcourse) {
+    global $DB;
 
     $subcourse->timemodified = time();
     $subcourse->id = $subcourse->instance;
@@ -56,20 +58,21 @@ function subcourse_update_instance($subcourse) {
     }
     $subcourse->timefetched = time();
 
-    return update_record("subcourse", $subcourse);
+    return $DB->update_record("subcourse", $subcourse);
 }
 
 /**
- * Given an ID of an instance of this module, 
- * this function will permanently delete the instance 
- * and any data that depends on it. 
+ * Given an ID of an instance of this module,
+ * this function will permanently delete the instance
+ * and any data that depends on it.
  *
  * @param int $id Id of the module instance
  * @return boolean Success/Failure
  */
 function subcourse_delete_instance($id) {
+    global $DB;
 
-    if (! $subcourse = get_record("subcourse", "id", "$id")) {
+    if (! $subcourse = $DB->get_record("subcourse", array("id" => $id))) {
         return false;
     }
 
@@ -77,7 +80,7 @@ function subcourse_delete_instance($id) {
 
     # Delete any dependent records here #
 
-    if (! delete_records("subcourse", "id", "$subcourse->id")) {
+    if (! $DB->delete_records("subcourse", array("id" => $subcourse->id))) {
         $result = false;
     }
 
@@ -85,7 +88,7 @@ function subcourse_delete_instance($id) {
 }
 
 /**
- * Return a small object with summary information about what a 
+ * Return a small object with summary information about what a
  * user has done with a given particular instance of this module
  * Used for user activity reports.
  * $return->time = the time they did it
@@ -99,7 +102,7 @@ function subcourse_user_outline($course, $user, $mod, $subcourse) {
 }
 
 /**
- * Print a detailed representation of what a user has done with 
+ * Print a detailed representation of what a user has done with
  * a given particular instance of this module, for user activity reports.
  *
  * @return boolean
@@ -110,9 +113,9 @@ function subcourse_user_complete($course, $user, $mod, $subcourse) {
 }
 
 /**
- * Given a course and a time, this module should find recent activity 
- * that has occurred in subcourse activities and print it out. 
- * Return true if there was output, or false is there was none. 
+ * Given a course and a time, this module should find recent activity
+ * that has occurred in subcourse activities and print it out.
+ * Return true if there was output, or false is there was none.
  *
  * @uses $CFG
  * @return boolean
@@ -121,22 +124,22 @@ function subcourse_user_complete($course, $user, $mod, $subcourse) {
 function subcourse_print_recent_activity($course, $isteacher, $timestart) {
     global $CFG;
 
-    return false;  //  True if anything was printed, otherwise false 
+    return false;  //  True if anything was printed, otherwise false
 }
 
 /**
  * Function to be run periodically according to the moodle cron
- * This function searches for things that need to be done, such 
- * as sending out mail, toggling flags etc ... 
+ * This function searches for things that need to be done, such
+ * as sending out mail, toggling flags etc ...
  *
  * @uses $CFG
  * @return boolean
  * @todo Finish documenting this function
  */
 function subcourse_cron () {
-    global $CFG;
+    global $CFG, $DB;
 
-    $subcourse_instances = get_records('subcourse', '', '', '', 'id,course,refcourse');
+    $subcourse_instances = $DB->get_records('subcourse', null, '', 'id, course, refcourse');
     if (empty($subcourse_instances)) {
         return true;
     }
@@ -159,9 +162,9 @@ function subcourse_cron () {
 }
 
 /**
- * Must return an array of grades for a given instance of this module, 
+ * Must return an array of grades for a given instance of this module,
  * indexed by user.  It also returns a maximum allowed grade.
- * 
+ *
  * Example:
  *    $return->grades = array of grades;
  *    $return->maxgrade = maximum allowed grade;
@@ -172,7 +175,8 @@ function subcourse_cron () {
  * @return mixed Null or object with an array of grades and with the maximum grade
  */
 function subcourse_grades($subcourseid) {
-    $subcourse = get_record("subcourse", "id", $subcourseid, '','', '','', 'id,refcourse');
+    global $DB;
+    $subcourse = $DB->get_record("subcourse", array("id" => $subcourseid), '', 'id, refcourse');
     $refgrades = subcourse_fetch_refgrades($subcourse->id, $subcourse->refcourse);
     $return = new stdClass();
     $return->grades = $refgrades->grades;
@@ -212,7 +216,7 @@ function subcourse_scale_used ($subcourseid,$scaleid) {
     //if (!empty($rec)  && !empty($scaleid)) {
     //    $return = true;
     //}
-   
+
     return $return;
 }
 
@@ -225,7 +229,8 @@ function subcourse_scale_used ($subcourseid,$scaleid) {
  * @return boolean True if the scale is used by any subcourse
  */
 function subcourse_scale_used_anywhere($scaleid) {
-    if ($scaleid and record_exists('subcourse', 'grade', -$scaleid)) {
+    global $DB;
+    if ($scaleid and $DB->get_record('subcourse', array('grade' => -$scaleid))) {
         return true;
     } else {
         return false;
@@ -258,7 +263,7 @@ function subcourse_uninstall() {
  * Returns the list of courses in which the user has permission to view the grade book
  *
  * Does not return the id of the current $COURSE and the site course (front page).
- * 
+ *
  * @param int $userid The ID of user for which we want to get the list of courses. Defaults to current $USER id.
  * @access public
  * @return array The list of course records
@@ -271,14 +276,14 @@ function subcourse_available_courses($userid=NULL) {
         $userid = $USER->id;
     }
 
-    if ($mycourses = get_user_capability_course('moodle/grade:viewall', $userid, true, 
+    if ($mycourses = get_user_capability_course('moodle/grade:viewall', $userid, true,
                                                     'fullname,shortname,idnumber,category,visible,sortorder','sortorder')) {
         foreach ($mycourses as $mycourse) {
             if ($mycourse->id != $COURSE->id && $mycourse->id != SITEID){
                 $courses[] = $mycourse;
             }
         }
-    }       
+    }
 
     return $courses;
 }
@@ -295,7 +300,7 @@ function subcourse_available_courses($userid=NULL) {
  *      ->itemname
  *      ...
  *  )
- * 
+ *
  * @access public
  * @param int $subcourseid ID of subcourse instance
  * @param int $refcourseid ID of referenced course
@@ -356,7 +361,7 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly=fa
  *
  * @access public
  * @param int $courseid     ID of referencing course (the course containing the instance of subcourse)
- * @param int $subcourseid  ID of subcourse instance 
+ * @param int $subcourseid  ID of subcourse instance
  * @param int $refcourseid  ID of referenced course (the course to take grades from)
  * @param str $itemname     Set the itemname
  * @param boolan $gradeitemonly If true, fetch only grade item info without grades
@@ -399,18 +404,19 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
 
 /**
  * Checks if a remote scale can be re-used, i.e. if it is global (standard, server wide) scale
- * 
+ *
  * @param mixed $scaleid ID of the scale
  * @access public
  * @return boolean True if scale is global, false if not.
  */
 function subcourse_is_global_scale($scaleid) {
+    global $DB;
 
     if (! is_numeric($scaleid)) {
         throw new Exception('Non-numeric argument'); // TODO use moodle_exception in Moodle 2.0
     }
 
-    if (! get_record('scale', 'id', $scaleid, 'courseid', 0, '', '', 'id')) {
+    if (! $DB->get_record('scale', array('id' => $scaleid, 'courseid' => 0), 'id')) {
         // no such scale with courseid ==0
         return false;
     } else {
@@ -421,7 +427,7 @@ function subcourse_is_global_scale($scaleid) {
 
 /**
  * Updates the timefetched timestamp for given subcourses
- * 
+ *
  * @param array|int $subcourseids ID of subcourse instance or array of IDs
  * @param mixed $time The timestamp, defaults to the current time
  * @access public
@@ -429,7 +435,7 @@ function subcourse_is_global_scale($scaleid) {
  * @return void
  */
 function subcourse_update_timefetched($subcourseids, $time=NULL) {
-    global $CFG;
+    global $CFG, $DB;
 
     if (is_numeric($subcourseids)) {
         $subcourseids = array($subcourseids);
@@ -447,7 +453,8 @@ function subcourse_update_timefetched($subcourseids, $time=NULL) {
         return false;
     }
     $subcourseids = implode(',', $subcourseids);
-    set_field_select('subcourse', 'timefetched', $time, "id IN ($subcourseids)");
+    list($sql, $params) = $DB->get_in_or_equal($subcourseids);
+    $DB->set_field_select('subcourse', 'timefetched', $time, "id $sql", $params);
     return true;
 }
 
