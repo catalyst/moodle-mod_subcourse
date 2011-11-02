@@ -19,6 +19,7 @@ $string['errlocalremotescale'] = 'Impossible de r&eacute;cup&eacute;rer les r&ea
 $string['hiddencourse'] = '*vide*';
 $string['modulenameplural'] = 'Subcourse';
 $string['modulename'] = 'Subcourse';
+$string['pluginname'] = 'Subcourse';
 $string['refcourselabel'] = 'Prendre des notes &agrave; partir de';
 $string['refcourse'] = 'Cours de r&eacute;f&eacute;rence';
 $string['subcourseintro'] = 'Description';
