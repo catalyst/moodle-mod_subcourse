@@ -1,4 +1,18 @@
-<?php  // $Id$
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * Library of functions and constants for module subcourse
@@ -17,7 +31,7 @@ $SUBCOURSE_FETCHED_ITEM_FIELDS = array('gradetype', 'grademax', 'grademin', 'sca
  * this function will create a new instance and return the id number of the new
  * instance.
  *
- * @param object $instance An object from the form
+ * @param object $subcourse
  * @return int The id of the newly inserted subcourse record
  */
 function subcourse_add_instance($subcourse) {
@@ -41,7 +55,7 @@ function subcourse_add_instance($subcourse) {
  * Given an object containing all the necessary data, (defined by the form)
  * this function will update an existing instance with new data.
  *
- * @param object $instance An object from the form
+ * @param object $subcourse
  * @return boolean Success/Fail
  */
 function subcourse_update_instance($subcourse) {
@@ -94,17 +108,25 @@ function subcourse_delete_instance($id) {
  * $return->time = the time they did it
  * $return->info = a short text description
  *
+ * @param $course
+ * @param $user
+ * @param $mod
+ * @param $subcourse
  * @return null
  * @todo Finish documenting this function
  */
 function subcourse_user_outline($course, $user, $mod, $subcourse) {
-    return $return;
+    return true;
 }
 
 /**
  * Print a detailed representation of what a user has done with
  * a given particular instance of this module, for user activity reports.
  *
+ * @param $course
+ * @param $user
+ * @param $mod
+ * @param $subcourse
  * @return boolean
  * @todo Finish documenting this function
  */
@@ -118,6 +140,9 @@ function subcourse_user_complete($course, $user, $mod, $subcourse) {
  * Return true if there was output, or false is there was none.
  *
  * @uses $CFG
+ * @param $course
+ * @param $isteacher
+ * @param $timestart
  * @return boolean
  * @todo Finish documenting this function
  */
@@ -205,10 +230,11 @@ function subcourse_get_participants($subcourseid) {
  * as reference.
  *
  * @param int $subcourseid ID of an instance of this module
+ * @param int $scaleid
  * @return mixed
  * @todo Finish documenting this function
  */
-function subcourse_scale_used ($subcourseid,$scaleid) {
+function subcourse_scale_used ($subcourseid, $scaleid) {
     $return = false;
 
     //$rec = get_record("subcourse","id","$subcourseid","scale","-$scaleid");
@@ -225,7 +251,7 @@ function subcourse_scale_used ($subcourseid,$scaleid) {
  * This function was added in 1.9
  *
  * This is used to find out if scale used anywhere
- * @param $scaleid int
+ * @param int $scaleid
  * @return boolean True if the scale is used by any subcourse
  */
 function subcourse_scale_used_anywhere($scaleid) {
@@ -237,34 +263,14 @@ function subcourse_scale_used_anywhere($scaleid) {
     }
 }
 
-/**
- * Execute post-install custom actions for the module
- * This function was added in 1.9
- *
- * @return boolean true if success, false on error
- */
-function subcourse_install() {
-     return true;
-}
-
-/**
- * Execute post-uninstall custom actions for the module
- * This function was added in 1.9
- *
- * @return boolean true if success, false on error
- */
-function subcourse_uninstall() {
-    return true;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Returns the list of courses in which the user has permission to view the grade book
  *
  * Does not return the id of the current $COURSE and the site course (front page).
  *
- * @param int $userid The ID of user for which we want to get the list of courses. Defaults to current $USER id.
+ * @param int $userid The ID of user for which we want to get the list of courses. Defaults to
+ * current $USER id.
  * @access public
  * @return array The list of course records
  */
@@ -275,9 +281,10 @@ function subcourse_available_courses($userid=NULL) {
     if (empty($userid)) {
         $userid = $USER->id;
     }
-
-    if ($mycourses = get_user_capability_course('moodle/grade:viewall', $userid, true,
-                                                    'fullname,shortname,idnumber,category,visible,sortorder','sortorder')) {
+    $fields = 'fullname,shortname,idnumber,category,visible,sortorder';
+    $mycourses = get_user_capability_course('moodle/grade:viewall', $userid,
+                                            true, $fields,'sortorder');
+    if ($mycourses) {
         foreach ($mycourses as $mycourse) {
             if ($mycourse->id != $COURSE->id && $mycourse->id != SITEID){
                 $courses[] = $mycourse;
@@ -304,7 +311,7 @@ function subcourse_available_courses($userid=NULL) {
  * @access public
  * @param int $subcourseid ID of subcourse instance
  * @param int $refcourseid ID of referenced course
- * @param boolan $gradeitemonly If true, fetch only grade item info without grades
+ * @param bool|\boolan $gradeitemonly If true, fetch only grade item info without grades
  * @return object Object containing grades array and gradeitem info
  */
 function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly=false) {
@@ -333,7 +340,9 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly=fa
     }
 
     // if the remote grade_item is non-global scale, do not fetch grades - they can't be use
-    if (($refgradeitem->gradetype == GRADE_TYPE_SCALE) && (!subcourse_is_global_scale($refgradeitem->scaleid))) {
+    if (($refgradeitem->gradetype == GRADE_TYPE_SCALE)
+        && (!subcourse_is_global_scale($refgradeitem->scaleid))) {
+
         $gradeitemonly = true;
         $return->localremotescale = true;
     }
@@ -342,7 +351,8 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly=fa
         // get grades
         $cm = get_coursemodule_from_instance("subcourse", $subcourseid);
         $context = get_context_instance(CONTEXT_MODULE, $cm->id);
-        $users = get_users_by_capability($context, 'mod/subcourse:begraded', 'u.id,u.lastname', 'u.lastname', '', '', '', '', false, true);
+        $users = get_users_by_capability($context, 'mod/subcourse:begraded', 'u.id,u.lastname',
+                                         'u.lastname', '', '', '', '', false, true);
         foreach ($users as $user) {
             $grade = new grade_grade(array('itemid'=>$refgradeitem->id, 'userid'=>$user->id));
             $grade->grade_item =& $refgradeitem;
@@ -360,15 +370,17 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly=fa
  * Create or update grade item and grades for given subcourse
  *
  * @access public
- * @param int $courseid     ID of referencing course (the course containing the instance of subcourse)
+ * @param int $courseid     ID of referencing course (the course containing the instance of
+ * subcourse)
  * @param int $subcourseid  ID of subcourse instance
  * @param int $refcourseid  ID of referenced course (the course to take grades from)
  * @param str $itemname     Set the itemname
- * @param boolan $gradeitemonly If true, fetch only grade item info without grades
- * @param boolean $reset Reset grades in gradebook
+ * @param bool $gradeitemonly If true, fetch only grade item info without grades
+ * @param bool $reset Reset grades in gradebook
  * @return int 0 if ok, error code otherwise
  */
-function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemname=NULL, $gradeitemonly=false, $reset=false) {
+function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemname=NULL,
+                                 $gradeitemonly=false, $reset=false) {
     global $CFG;
     global $SUBCOURSE_FETCHED_ITEM_FIELDS;
 
@@ -399,7 +411,8 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
         $grades = NULL;
     }
 
-    return grade_update('mod/subcourse', $courseid, 'mod', 'subcourse', $subcourseid, 0, $grades, $params);
+    return grade_update('mod/subcourse', $courseid, 'mod', 'subcourse', $subcourseid,
+                        0, $grades, $params);
 }
 
 /**
@@ -457,5 +470,3 @@ function subcourse_update_timefetched($subcourseids, $time=NULL) {
     $DB->set_field_select('subcourse', 'timefetched', $time, "id $sql", $params);
     return true;
 }
-
-?>
