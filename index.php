@@ -41,18 +41,9 @@ add_to_log($course->id, "subcourse", "view all", "index.php?id=$course->id", "")
 $strsubcourses = get_string("modulenameplural", "subcourse");
 $strsubcourse  = get_string("modulename", "subcourse");
 
-
-/// Print the header
-
-//$navlinks = array();
-//$navlinks[] = array('name' => $strsubcourses, 'link' => '', 'type' => 'activity');
-//$navigation = build_navigation($navlinks);
-
-//print_header_simple("$strsubcourses", "", $navigation, "", "", true, "", navmenu($course));
 $page_url = new moodle_url('/mod/subcourse/index.php', array('id' => $id));
 $PAGE->set_url($page_url);
 $PAGE->set_title($strsubcourses);
-//$PAGE->set_heading($course->shortname);
 
 /// Get all the appropriate data
 
@@ -84,7 +75,8 @@ if ($course->format == "weeks") {
 foreach ($subcourses as $subcourse) {
     if (!$subcourse->visible) {
         //Show dimmed if the mod is hidden
-        $link = "<a class=\"dimmed\" href=\"view.php?id=$subcourse->coursemodule\">$subcourse->name</a>";
+        $link = "<a class=\"dimmed\" href=\"view.php?id=$subcourse->coursemodule\">".
+                "$subcourse->name</a>";
     } else {
         //Show normal if the mod is visible
         $link = "<a href=\"view.php?id=$subcourse->coursemodule\">$subcourse->name</a>";

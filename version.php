@@ -28,6 +28,3 @@ $module->version  = 2011110200;           // If version == 0 then module will no
 //$module->version  = 2010032200;  // The current module version (Date: YYYYMMDDXX)
 $module->requires = 2010031900;  // Requires this Moodle version
 $module->cron     = 600;           // Period for cron to check this module (secs)
-
-
-?>
