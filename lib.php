@@ -270,7 +270,7 @@ function subcourse_scale_used_anywhere($scaleid) {
  * @return array The list of course records
  */
 function subcourse_available_courses($userid = null) {
-    global $COURSE, $USER;
+    global $COURSE, $USER, $DB;
 
     $courses = array(); // to be returned
     if (empty($userid)) {
@@ -279,9 +279,19 @@ function subcourse_available_courses($userid = null) {
     $fields = 'fullname,shortname,idnumber,category,visible,sortorder';
     $mycourses = get_user_capability_course('moodle/grade:viewall', $userid,
                                             true, $fields, 'sortorder');
+    $existingsubcourses = $DB->get_records('subcourse', array('course' => $COURSE->id));
+
     if ($mycourses) {
         foreach ($mycourses as $mycourse) {
-            if ($mycourse->id != $COURSE->id && $mycourse->id != SITEID) {
+            if ($mycourse->id != $COURSE->id &&
+                $mycourse->id != SITEID &&
+                !array_key_exists($mycourse->id, $existingsubcourses)) {
+                    foreach ($existingsubcourses as $existingsubcourse) {
+                        if ($mycourse->id == $existingsubcourse->refcourse) {
+                            continue 2;
+                        }
+                    }
+
                 $courses[] = $mycourse;
             }
         }
