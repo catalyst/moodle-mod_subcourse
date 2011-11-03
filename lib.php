@@ -284,13 +284,13 @@ function subcourse_available_courses($userid = null) {
     if ($mycourses) {
         foreach ($mycourses as $mycourse) {
             if ($mycourse->id != $COURSE->id &&
-                $mycourse->id != SITEID &&
-                !array_key_exists($mycourse->id, $existingsubcourses)) {
-                    foreach ($existingsubcourses as $existingsubcourse) {
-                        if ($mycourse->id == $existingsubcourse->refcourse) {
-                            continue 2;
-                        }
+                $mycourse->id != SITEID) {
+
+                foreach ($existingsubcourses as $existingsubcourse) {
+                    if ($mycourse->id == $existingsubcourse->refcourse) {
+                        continue 2;
                     }
+                }
 
                 $courses[] = $mycourse;
             }
