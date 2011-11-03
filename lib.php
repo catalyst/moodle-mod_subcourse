@@ -37,7 +37,7 @@ function subcourse_get_fetched_item_fields() {
  * @return int The id of the newly inserted subcourse record
  */
 function subcourse_add_instance($subcourse) {
-    global $DB;
+    global $DB, $CFG;
 
     $subcourse->timecreated = time();
     $newid = $DB->insert_record("subcourse", $subcourse);
@@ -50,6 +50,25 @@ function subcourse_add_instance($subcourse) {
     } catch (subcourse_localremotescale_exception $e) {
         mtrace($e->getMessage());
     }
+
+    // We want to make sure it's a qualification course (meta course with optional extras)
+
+    // Is there already a qualification/subcourse? If so, don't add another.
+
+    // Include library for qualification, but only if it's there
+    require_once($CFG->dirroot.'/enrol/qualification/locallib.php');
+
+    // Make a new enrolment instance
+    $enrol = enrol_get_plugin('qualification');
+    $course = $DB->get_record('course', array('id' => $subcourse->refcourse), '*', MUST_EXIST);
+    $enrol->add_instance($course, array('customint1' => $subcourse->course));
+    enrol_qualification_sync($course->id);
+
+
+
+
+
+
     return $newid;
 }
 
@@ -98,6 +117,16 @@ function subcourse_delete_instance($id) {
 
     if (!$DB->delete_records("subcourse", array("id" => $subcourse->id))) {
         $result = false;
+    }
+
+    // Delete any qualifiaction link
+    // Make a new enrolment instance
+
+    if ($instance = $DB->get_record('enrol', array('courseid'=>$subcourse->refcourse,
+                                                     'enrol'=>'qualification',
+                                                     'customint1' => $subcourse->course))) {
+        $plugin = enrol_get_plugin('qualification');
+        $result = $plugin->delete_instance($instance);
     }
 
     return $result;
@@ -279,6 +308,7 @@ function subcourse_available_courses($userid = null) {
     $fields = 'fullname,shortname,idnumber,category,visible,sortorder';
     $mycourses = get_user_capability_course('moodle/grade:viewall', $userid,
                                             true, $fields, 'sortorder');
+
     $existingsubcourses = $DB->get_records('subcourse', array('course' => $COURSE->id));
 
     if ($mycourses) {
