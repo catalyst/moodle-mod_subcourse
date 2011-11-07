@@ -477,3 +477,23 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
     $DB->set_field_select('subcourse', 'timefetched', $time, "id $sql", $params);
     return true;
 }
+
+/**
+ * This ought to put an image below the instance on the course page
+ * @param cm_info $cm
+ * @return void
+ */
+function mod_subcourse_cm_info_view(cm_info $cm) {
+    global $USER, $CFG;
+
+    $html = '';
+
+    require_once($CFG->dirroot.'/grade/querylib.php');
+    $currentgrade = grade_get_course_grade($USER->id, $cm->course);
+    $html .= html_writer::empty_tag('br');
+    $html .= html_writer::start_tag('span');
+    $html .= get_string('currentgrade', 'subcourse').' '.$currentgrade->str_grade;
+    $html .= html_writer::end_tag('span');
+
+    $cm->set_after_link($html);
+}
