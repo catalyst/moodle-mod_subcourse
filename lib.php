@@ -433,7 +433,7 @@ function subcourse_is_global_scale($scaleid) {
     global $DB;
 
     if (!is_numeric($scaleid)) {
-        throw new Exception('Non-numeric argument'); // TODO use moodle_exception in Moodle 2.0
+        throw new moodle_exception('errnonnumeric', 'subcourse');
     }
 
     if (!$DB->get_record('scale', array('id' => $scaleid, 'courseid' => 0), 'id')) {
