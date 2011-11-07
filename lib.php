@@ -486,9 +486,16 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
  * @return void
  */
 function mod_subcourse_cm_info_view(cm_info $cm) {
-    global $USER, $CFG;
+    global $DB, $USER, $CFG;
 
     $html = '';
+
+    $assessmentmanagerid = $DB->get_record('block', array('name' => 'assmgr'));
+    if ($assessmentmanagerid) {
+        // Make a nice HTML image for showing progress in the subcourse
+        $html .= html_writer::empty_tag('br');
+        $html .= 'Progressbar image goes here';
+    }
 
     require_once($CFG->dirroot.'/grade/querylib.php');
     $currentgrade = grade_get_course_grade($USER->id, $cm->course);
