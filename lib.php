@@ -479,7 +479,9 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
 }
 
 /**
- * This ought to put an image below the instance on the course page
+ * This will provide summary info about the user's grade in the subcourse below the link on
+ * the course/view.php page
+ *
  * @param cm_info $cm
  * @return void
  */
