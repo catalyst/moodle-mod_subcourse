@@ -50,6 +50,14 @@ function subcourse_add_instance($subcourse) {
     } catch (subcourse_localremotescale_exception $e) {
         mtrace($e->getMessage());
     }
+
+    if (isset($subcourse->addmeta) && $subcourse->addmeta) {
+        // Add a metacourse enrolment instance to the sub course so that it inherits enrolments
+        // from this one.
+        subcourse_add_meta($subcourse);
+
+    }
+
     return $newid;
 }
 
@@ -74,7 +82,69 @@ function subcourse_update_instance($subcourse) {
     }
     $subcourse->timefetched = time();
 
-    return $DB->update_record("subcourse", $subcourse);
+    $success = $DB->update_record("subcourse", $subcourse);
+
+    if (isset($subcourse->addmeta) && $subcourse->addmeta) {
+        // Add metacourse enrolment instance to the sub course so that it inherits
+        // enrolments from this one. Cannot be removed during update operation.
+        $success = $success && subcourse_add_meta($subcourse);
+    }
+
+    return $success;
+}
+
+/**
+ * Removes an instance of meta course enrolment between the current course and the ref course. This
+ * assumes that there will only be one meta course enrolment between the two and that it will be
+ * created by this module.
+ *
+ * @param stdClass $subcourse
+ * @return bool
+ */
+function subcourse_remove_meta($subcourse) {
+    global $DB;
+
+    $result = true;
+    if ($instance = $DB->get_record('enrol', array('courseid' => $subcourse->refcourse,
+                                                   'enrol' => 'meta',
+                                                   'customint1' => $subcourse->course))) {
+        $plugin = enrol_get_plugin('meta');
+        $result = $plugin->delete_instance($instance);
+    }
+    return $result;
+}
+
+/**
+ * Checks to see if a meta course enrolment already exists for this combination of courses
+ *
+ * @param int $course
+ * @param int $refcourse
+ * @return bool
+ */
+function subcourse_meta_exists($course, $refcourse) {
+    global $DB;
+
+    $instance = $DB->get_record('enrol', array('courseid' => $refcourse,
+                                               'enrol' => 'meta',
+                                               'customint1' => $course));
+    return $instance ? true :false;
+}
+
+/**
+ * @param $subcourse
+ * @return bool
+ */
+function subcourse_add_meta($subcourse) {
+    global $CFG, $DB;
+
+    require_once($CFG->dirroot.'/enrol/meta/locallib.php');
+
+    // Make a new enrolment instance
+    $enrol = enrol_get_plugin('meta');
+    $course = $DB->get_record('course', array('id' => $subcourse->refcourse), '*', MUST_EXIST);
+    $enrolid = $enrol->add_instance($course, array('customint1' => $subcourse->course));
+    enrol_meta_sync($course->id);
+    return (bool)$enrolid;
 }
 
 /**
@@ -99,6 +169,8 @@ function subcourse_delete_instance($id) {
     if (!$DB->delete_records("subcourse", array("id" => $subcourse->id))) {
         $result = false;
     }
+
+    $result = $result && subcourse_remove_meta($subcourse);
 
     return $result;
 }
@@ -433,7 +505,7 @@ function subcourse_is_global_scale($scaleid) {
     global $DB;
 
     if (!is_numeric($scaleid)) {
-        throw new Exception('Non-numeric argument'); // TODO use moodle_exception in Moodle 2.0
+        throw new moodle_exception('errnonnumeric', 'subcourse');
     }
 
     if (!$DB->get_record('scale', array('id' => $scaleid, 'courseid' => 0), 'id')) {

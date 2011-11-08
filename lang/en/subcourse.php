@@ -36,5 +36,7 @@ $string['mods_help'] = 'The module provides very simple yet useful functionality
   course designers to organize courses into separate units.';
 $string['index_help'] = '';
 $string['currentgrade'] = 'Currrent grade:';
+$string['addmeta'] = 'Add a meta course enrolment instance to this subcourse';
+
 
 
