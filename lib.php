@@ -37,7 +37,7 @@ function subcourse_get_fetched_item_fields() {
  * @return int The id of the newly inserted subcourse record
  */
 function subcourse_add_instance($subcourse) {
-    global $DB, $CFG;
+    global $DB;
 
     $subcourse->timecreated = time();
     $newid = $DB->insert_record("subcourse", $subcourse);
@@ -51,23 +51,12 @@ function subcourse_add_instance($subcourse) {
         mtrace($e->getMessage());
     }
 
-    // We want to make sure it's a qualification course (meta course with optional extras)
+    if (isset($subcourse->addmeta) && $subcourse->addmeta) {
+        // Add a metacourse enrolment instance to the sub course so that it inherits enrolments
+        // from this one.
+        subcourse_add_meta($subcourse);
 
-    // Is there already a qualification/subcourse? If so, don't add another.
-
-    // Include library for qualification, but only if it's there
-    require_once($CFG->dirroot.'/enrol/qualification/locallib.php');
-
-    // Make a new enrolment instance
-    $enrol = enrol_get_plugin('qualification');
-    $course = $DB->get_record('course', array('id' => $subcourse->refcourse), '*', MUST_EXIST);
-    $enrol->add_instance($course, array('customint1' => $subcourse->course));
-    enrol_qualification_sync($course->id);
-
-
-
-
-
+    }
 
     return $newid;
 }
@@ -117,16 +106,6 @@ function subcourse_delete_instance($id) {
 
     if (!$DB->delete_records("subcourse", array("id" => $subcourse->id))) {
         $result = false;
-    }
-
-    // Delete any qualifiaction link
-    // Make a new enrolment instance
-
-    if ($instance = $DB->get_record('enrol', array('courseid'=>$subcourse->refcourse,
-                                                     'enrol'=>'qualification',
-                                                     'customint1' => $subcourse->course))) {
-        $plugin = enrol_get_plugin('qualification');
-        $result = $plugin->delete_instance($instance);
     }
 
     return $result;
@@ -308,7 +287,6 @@ function subcourse_available_courses($userid = null) {
     $fields = 'fullname,shortname,idnumber,category,visible,sortorder';
     $mycourses = get_user_capability_course('moodle/grade:viewall', $userid,
                                             true, $fields, 'sortorder');
-
     $existingsubcourses = $DB->get_records('subcourse', array('course' => $COURSE->id));
 
     if ($mycourses) {
@@ -463,7 +441,7 @@ function subcourse_is_global_scale($scaleid) {
     global $DB;
 
     if (!is_numeric($scaleid)) {
-        throw new Exception('Non-numeric argument'); // TODO use moodle_exception in Moodle 2.0
+        throw new moodle_exception('errnonnumeric', 'subcourse');
     }
 
     if (!$DB->get_record('scale', array('id' => $scaleid, 'courseid' => 0), 'id')) {
@@ -516,16 +494,9 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
  * @return void
  */
 function mod_subcourse_cm_info_view(cm_info $cm) {
-    global $DB, $USER, $CFG;
+    global $USER, $CFG;
 
     $html = '';
-
-    $assessmentmanagerid = $DB->get_record('block', array('name' => 'assmgr'));
-    if ($assessmentmanagerid) {
-        // Make a nice HTML image for showing progress in the subcourse
-        $html .= html_writer::empty_tag('br');
-        $html .= 'Progressbar image goes here';
-    }
 
     require_once($CFG->dirroot.'/grade/querylib.php');
     $currentgrade = grade_get_course_grade($USER->id, $cm->course);
