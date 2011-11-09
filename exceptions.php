@@ -14,28 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-
-/**
- * Basic subcourse module exception class
- *
- * @uses moodle_exception
- */
-class subcourse_exception extends moodle_exception {
-    public function __construct($errorcode, $a=null, $debuginfo=null) {
-        parent::__construct($errorcode, 'subcourse', '', $a, $debuginfo);
-    }
-}
-
-
 /**
  * Remote grade_item uses scale which is not global
  *
  * @uses subcourse_exception
  */
-class subcourse_localremotescale_exception extends subcourse_exception {
+class subcourse_localremotescale_exception extends moodle_exception {
     public function __construct($subcourseid, $debuginfo=null) {
         $a = new object();
         $a->subcourseid = $subcourseid;
-        parent::__construct('errlocalremotescale', $a, $debuginfo);
+        parent::__construct('errlocalremotescale', 'subcourse', '', $a, $debuginfo);
     }
 }

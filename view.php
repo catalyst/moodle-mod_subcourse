@@ -96,9 +96,10 @@ echo $OUTPUT->header();
 if (has_capability('gradereport/grader:view', $course_context)
     && has_capability('moodle/grade:viewall', $course_context)) {
 
-    echo '<div class="allcoursegrades"><a href="'.$CFG->wwwroot.
-         '/grade/report/grader/index.php?id='.$course->id.'">'.
-         get_string('seeallcoursegrades', 'grades').'</a></div>';
+    echo html_writer::start_tag('div', array('class' => 'allcoursegrades'));
+    echo html_writer::link('/grade/report/grader/index.php?id='.$course->id,
+                           get_string('seeallcoursegrades', 'grades'));
+    echo html_writer::end_tag('div');
 }
 
 echo $OUTPUT->heading($subcourse->name);
@@ -115,11 +116,19 @@ if (empty($subcourse->timefetched)) {
 } else {
     print_string('lastfetchtime', 'subcourse', userdate($subcourse->timefetched));
 }
-echo "<form action=\"$CFG->wwwroot/mod/subcourse/view.php?id=$cm->id\" method=\"post\">";
-echo '<input type="hidden" name="sesskey" value="'.sesskey().'" />';
-echo '<input type="hidden" name="fetchnow" value="1" />';
-echo '<input type="submit" value="'.get_string('fetchnow', 'subcourse').'" />';
-echo "</form>";
+
+echo html_writer::start_tag('form', array('action' => '/mod/subcourse/view.php?id='.$cm->id,
+                                          'method' => 'post',));
+echo html_writer::empty_tag('input', array('type' => 'hidden',
+                                           'name' => 'sesskey',
+                                           'value' => sesskey()));
+echo html_writer::empty_tag('input', array('type' => 'hidden',
+                                           'name' => 'fetchnow',
+                                           'value' => 1));
+echo html_writer::empty_tag('input', array('type' => 'submit',
+                                           'value' => get_string('fetchnow', 'subcourse')));
+echo html_writer::end_tag('form');
+
 echo $OUTPUT->box_end();
 
 /// Finish the page
