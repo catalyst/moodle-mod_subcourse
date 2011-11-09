@@ -73,14 +73,13 @@ if ($course->format == "weeks") {
 }
 
 foreach ($subcourses as $subcourse) {
+    $attributes = array();
     if (!$subcourse->visible) {
         //Show dimmed if the mod is hidden
-        $link = "<a class=\"dimmed\" href=\"view.php?id=$subcourse->coursemodule\">".
-                "$subcourse->name</a>";
-    } else {
-        //Show normal if the mod is visible
-        $link = "<a href=\"view.php?id=$subcourse->coursemodule\">$subcourse->name</a>";
+        $attributes['class'] = 'dimmed';
     }
+    $link = html_writer::link('view.php?id='.$subcourse->coursemodule, $subcourse->name,
+                              $attributes);
 
     if ($course->format == "weeks" or $course->format == "topics") {
         $table->data[] = array ($subcourse->section, $link);
