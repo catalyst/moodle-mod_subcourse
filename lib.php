@@ -371,6 +371,7 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
         foreach ($users as $user) {
             $grade = new grade_grade(array('itemid' => $refgradeitem->id, 'userid' => $user->id));
             $grade->grade_item =& $refgradeitem;
+            $return->grades[$user->id] = new stdClass();
             $return->grades[$user->id]->userid = $user->id;
             $return->grades[$user->id]->rawgrade = $grade->finalgrade;
             $return->grades[$user->id]->feedback = $grade->feedback;
