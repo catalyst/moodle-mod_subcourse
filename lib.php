@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,10 +16,14 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Library of functions and constants for module subcourse
+ * Library of functions, classes and constants for module subcourse
+ *
+ * @package     mod_subcourse
+ * @copyright   2008 David Mudrak <david@moodle.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(__FILE__).'/exceptions.php');
+defined('MOODLE_INTERNAL') || die();
 
 /**
  * The list of fields to copy from remote grade_item
@@ -570,4 +575,16 @@ function mod_subcourse_cm_info_view(cm_info $cm) {
     $html .= html_writer::end_tag('span');
 
     $cm->set_after_link($html);
+}
+
+/**
+ * Exception to be thrown if the remote grade_item uses scale which is not global
+ */
+class subcourse_localremotescale_exception extends moodle_exception {
+
+    public function __construct($subcourseid, $debuginfo=null) {
+        $a = new object();
+        $a->subcourseid = $subcourseid;
+        parent::__construct('errlocalremotescale', 'subcourse', '', $a, $debuginfo);
+    }
 }
