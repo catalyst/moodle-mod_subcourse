@@ -98,7 +98,7 @@ if (has_capability('gradereport/grader:view', $course_context)
     && has_capability('moodle/grade:viewall', $course_context)) {
 
     echo html_writer::start_tag('div', array('class' => 'allcoursegrades'));
-    echo html_writer::link('/grade/report/grader/index.php?id='.$course->id,
+    echo html_writer::link($CFG->wwwroot.'/grade/report/grader/index.php?id='.$course->id,
                            get_string('seeallcoursegrades', 'grades'));
     echo html_writer::end_tag('div');
 }
@@ -118,7 +118,7 @@ if (empty($subcourse->timefetched)) {
     print_string('lastfetchtime', 'subcourse', userdate($subcourse->timefetched));
 }
 
-echo html_writer::start_tag('form', array('action' => '/mod/subcourse/view.php?id='.$cm->id,
+echo html_writer::start_tag('form', array('action' => $CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id,
                                           'method' => 'post',));
 echo html_writer::empty_tag('input', array('type' => 'hidden',
                                            'name' => 'sesskey',
