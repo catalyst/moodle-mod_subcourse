@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,16 +16,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Code fragment to define the version of subcourse
- * This fragment is called by moodle_needs_upgrading() and /admin/index.php
+ * Plugin meta-data
  *
- * @author
- * @version $Id$
- * @package subcourse
- **/
+ * @package     mod_subcourse
+ * @copyright   2008 David Mudrak <david@moodle.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
-$module->version  = 2011110200;           // If version == 0 then module will not be installed
-//$module->version  = 2010032200;  // The current module version (Date: YYYYMMDDXX)
-$module->requires = 2010031900;  // Requires this Moodle version
-$module->cron     = 600;           // Period for cron to check this module (secs)
+$module->component = 'mod_subcourse';
+$module->release = '2.4.0-rc1';
+$module->maturity = MATURITY_RC;
+$module->version = 2013072600;
+$module->requires = 2012120300;  // Moodle 2.4.0
+$module->cron = 600;
