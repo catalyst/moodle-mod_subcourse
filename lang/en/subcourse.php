@@ -26,7 +26,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['addmeta'] = 'Add a meta course enrolment instance to this subcourse';
 $string['currentgrade'] = 'Currrent grade:';
 $string['errinvalidrefcourse'] = 'Error: Invalid ID of referenced course. The referenced course has been probably deleted.';
 $string['errlocalremotescale'] = 'Unable to fetch grades: the remote final grade item uses local scale.';
