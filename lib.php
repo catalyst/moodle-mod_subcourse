@@ -25,12 +25,26 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+////////////////////////////////////////////////////////////////////////////////
+// Moodle core API                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
 /**
- * The list of fields to copy from remote grade_item
- * @return array
+ * Returns the information if the module supports a feature
+ *
+ * @see plugin_supports() in lib/moodlelib.php
+ * @param string $feature FEATURE_xx constant for requested feature
+ * @return mixed true if the feature is supported, null if unknown
  */
-function subcourse_get_fetched_item_fields() {
-    return array('gradetype', 'grademax', 'grademin', 'scaleid');
+function subcourse_supports($feature) {
+    switch($feature) {
+        case FEATURE_GRADE_HAS_GRADE:   return true;
+        case FEATURE_MOD_INTRO:         return true;
+        case FEATURE_GROUPS:            return true;
+        case FEATURE_GROUPINGS:         return true;
+        case FEATURE_GROUPMEMBERSONLY:  return true;
+        default:                        return null;
+    }
 }
 
 /**
@@ -38,10 +52,10 @@ function subcourse_get_fetched_item_fields() {
  * this function will create a new instance and return the id number of the new
  * instance.
  *
- * @param object $subcourse
+ * @param stdClass $subcourse
  * @return int The id of the newly inserted subcourse record
  */
-function subcourse_add_instance($subcourse) {
+function subcourse_add_instance(stdClass $subcourse) {
     global $DB;
 
     $subcourse->timecreated = time();
@@ -49,6 +63,7 @@ function subcourse_add_instance($subcourse) {
 
     // create grade_item but do not fetch grades - the context does not exist yet and we can't
     // get users by capability
+    // TODO improve this, it smells to use exceptions for normal code flow
     try {
         subcourse_grades_update($subcourse->course, $newid, $subcourse->refcourse,
                                 $subcourse->name, true);
@@ -63,10 +78,10 @@ function subcourse_add_instance($subcourse) {
  * Given an object containing all the necessary data, (defined by the form)
  * this function will update an existing instance with new data.
  *
- * @param object $subcourse
- * @return boolean Success/Fail
+ * @param stdClass $subcourse
+ * @return boolean success/failure
  */
-function subcourse_update_instance($subcourse) {
+function subcourse_update_instance(stdClass $subcourse) {
     global $DB;
 
     $subcourse->timemodified = time();
@@ -91,25 +106,77 @@ function subcourse_update_instance($subcourse) {
  * and any data that depends on it.
  *
  * @param int $id Id of the module instance
- * @return boolean Success/Failure
+ * @return boolean success/failure
  */
 function subcourse_delete_instance($id) {
-    global $DB;
+    global $CFG, $DB;
+    require_once($CFG->libdir.'/gradelib.php');
 
+    // Check the instance exists
     if (!$subcourse = $DB->get_record("subcourse", array("id" => $id))) {
         return false;
     }
 
-    $result = true;
+    // Remove the instance record.
+    $DB->delete_records("subcourse", array("id" => $subcourse->id));
 
-    # Delete any dependent records here #
+    // Clean up the gradebook items.
+    grade_update('mod/subcourse', $subcourse->course, 'mod', 'subcourse', $subcourse->id, 0, null, array('deleted' => true));
 
-    if (!$DB->delete_records("subcourse", array("id" => $subcourse->id))) {
-        $result = false;
-    }
-
-    return $result;
+    return true;
 }
+
+/**
+ * Function to be run periodically according to the moodle cron
+ * This function searches for things that need to be done, such
+ * as sending out mail, toggling flags etc ...
+ *
+ * @uses $CFG
+ * @return boolean
+ * @todo Finish documenting this function
+ */
+function subcourse_cron() {
+    global $DB;
+
+    $subcourse_instances = $DB->get_records('subcourse', null, '', 'id, course, refcourse');
+    if (empty($subcourse_instances)) {
+        return true;
+    }
+    $updatedids = array();
+    echo "Fetching grades from remote gradebooks...\n";
+    foreach ($subcourse_instances as $subcourse) {
+        $message = "Subcourse $subcourse->id: fetching grades from course $subcourse->refcourse ".
+                   "to course $subcourse->course ... ";
+        echo $message;
+        try {
+            subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
+            $updatedids[] = $subcourse->id;
+            echo "ok\n";
+        } catch (subcourse_localremotescale_exception $e) {
+            echo get_string($e->errorcode, 'subcourse')."\n";
+        }
+    }
+    subcourse_update_timefetched($updatedids);
+
+    return true;
+}
+
+/**
+ * Must return an array of user records (all data) who are participants
+ * for a given instance of subcourse. Must include every user involved
+ * in the instance, independient of his role (student, teacher, admin...)
+ * See other modules as example.
+ *
+ * @param int $subcourseid ID of an instance of this module
+ * @return mixed boolean/array of students
+ */
+function subcourse_get_participants($subcourseid) {
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Reporting API                                                              //
+////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Return a small object with summary information about what a
@@ -160,40 +227,9 @@ function subcourse_print_recent_activity($course, $isteacher, $timestart) {
     return false; //  True if anything was printed, otherwise false
 }
 
-/**
- * Function to be run periodically according to the moodle cron
- * This function searches for things that need to be done, such
- * as sending out mail, toggling flags etc ...
- *
- * @uses $CFG
- * @return boolean
- * @todo Finish documenting this function
- */
-function subcourse_cron() {
-    global $DB;
-
-    $subcourse_instances = $DB->get_records('subcourse', null, '', 'id, course, refcourse');
-    if (empty($subcourse_instances)) {
-        return true;
-    }
-    $updatedids = array();
-    echo "Fetching grades from remote gradebooks...\n";
-    foreach ($subcourse_instances as $subcourse) {
-        $message = "Subcourse $subcourse->id: fetching grades from course $subcourse->refcourse ".
-                   "to course $subcourse->course ... ";
-        echo $message;
-        try {
-            subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
-            $updatedids[] = $subcourse->id;
-            echo "ok\n";
-        } catch (subcourse_localremotescale_exception $e) {
-            echo get_string($e->errorcode, 'subcourse')."\n";
-        }
-    }
-    subcourse_update_timefetched($updatedids);
-
-    return true;
-}
+////////////////////////////////////////////////////////////////////////////////
+// Gradebook API                                                              //
+////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Must return an array of grades for a given instance of this module,
@@ -217,19 +253,6 @@ function subcourse_grades($subcourseid) {
     $return->maxgrade = $refgrades->grademax;
 
     return $return;
-}
-
-/**
- * Must return an array of user records (all data) who are participants
- * for a given instance of subcourse. Must include every user involved
- * in the instance, independient of his role (student, teacher, admin...)
- * See other modules as example.
- *
- * @param int $subcourseid ID of an instance of this module
- * @return mixed boolean/array of students
- */
-function subcourse_get_participants($subcourseid) {
-    return false;
 }
 
 /**
@@ -266,16 +289,20 @@ function subcourse_scale_used_anywhere($scaleid) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Internal                                                                   //
+////////////////////////////////////////////////////////////////////////////////
 
 /**
- * Returns the list of courses in which the user has permission to view the grade book
+ * Returns the list of courses the grades can be taken from
  *
- * Does not return the id of the current $COURSE and the site course (front page).
+ * Returned are courses in which the user has permission to view the grade
+ * book. Never returns the current course (as a course cannot be a subcourse of
+ * itself) and the site course (the front page course). If the userid is not
+ * passed, the current user is expected.
  *
- * @param int $userid The ID of user for which we want to get the list of courses. Defaults to
- * current $USER id.
- * @access public
- * @return array The list of course records
+ * @param int $userid Id of user for which we want to get the list of courses
+ * @return array list of course records
  */
 function subcourse_available_courses($userid = null) {
     global $COURSE, $USER, $DB;
@@ -287,27 +314,19 @@ function subcourse_available_courses($userid = null) {
     $fields = 'fullname,shortname,idnumber,category,visible,sortorder';
     $mycourses = get_user_capability_course('moodle/grade:viewall', $userid,
                                             true, $fields, 'sortorder');
-    $existingsubcourses = $DB->get_records('subcourse', array('course' => $COURSE->id));
 
     if ($mycourses) {
+        $ignorecourses = array($COURSE->id, SITEID);
         foreach ($mycourses as $mycourse) {
-            if ($mycourse->id != $COURSE->id &&
-                $mycourse->id != SITEID) {
-
-                foreach ($existingsubcourses as $existingsubcourse) {
-                    if ($mycourse->id == $existingsubcourse->refcourse) {
-                        continue 2;
-                    }
-                }
-
-                $courses[] = $mycourse;
+            if (in_array($mycourse->id, $ignorecourses)) {
+                continue;
             }
+            $courses[] = $mycourse;
         }
     }
 
     return $courses;
 }
-
 
 /**
  * Fetches grade_item info and grades from the referenced course
@@ -507,6 +526,14 @@ function mod_subcourse_cm_info_view(cm_info $cm) {
     $html .= html_writer::end_tag('span');
 
     $cm->set_after_link($html);
+}
+
+/**
+ * The list of fields to copy from remote grade_item
+ * @return array
+ */
+function subcourse_get_fetched_item_fields() {
+    return array('gradetype', 'grademax', 'grademin', 'scaleid');
 }
 
 /**

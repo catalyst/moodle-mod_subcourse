@@ -28,52 +28,92 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/course/moodleform_mod.php');
 
+/**
+ * Subcourse settings form
+ */
 class mod_subcourse_mod_form extends moodleform_mod {
 
+    /**
+     * Form fields definition
+     */
     public function definition() {
+        global $CFG, $DB;
 
-        $mform    =& $this->_form;
+        $mform = $this->_form;
 
-        // General settings -------------------------------------------------------------
-        /// Adding the "general" fieldset, where all the common settings are showed
+        // General -------------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
-        /// Adding the standard "name" field
+
         $mform->addElement('text', 'name', get_string('subcoursename', 'subcourse'),
                            array('size'=>'64'));
-        $mform->setType('name', PARAM_TEXT);
+        if (!empty($CFG->formatstringstriptags)) {
+            $mform->setType('name', PARAM_TEXT);
+        } else {
+            $mform->setType('name', PARAM_CLEANHTML);
+        }
         $mform->addRule('name', null, 'required', null, 'client');
-        /// Adding the optional "intro" and "introformat" pair of fields
-        $this->add_intro_editor(true, get_string('subcourseintro', 'subcourse'));
+        $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
-        // Subcourse information --------------------------------------------------------
+        $this->add_intro_editor();
+
+        // Referenced course ---------------------------------------------------
         $mform->addElement('header', 'subcoursefieldset', get_string('refcourse', 'subcourse'));
 
-        /// Referenced course selector
         $mycourses = subcourse_available_courses();
-        $catlist = array();
-        $catparents = array();
-        make_categories_list($catlist, $catparents);
-        $options = array();
-        foreach ($mycourses as $mycourse) {
-            if (empty($options[$catlist[$mycourse->category]])) {
-                $options[$catlist[$mycourse->category]] = array();
+
+        if (empty($mycourses)) {
+            if (empty($this->current->refcourse)) {
+                $mform->addElement('html', get_string('nocoursesavailable', 'subcourse'));
+            } else {
+                $current = $DB->get_field('course', 'fullname', array('id' => $this->current->refcourse));
+                $mform->addElement('static', 'refcoursestatic', get_string('refcourselabel', 'subcourse'),
+                    format_string($current));
+                $mform->addHelpButton('refcoursestatic', 'refcourse', 'subcourse');
+                $mform->addElement('hidden', 'refcourse', $this->current->refcourse);
+                $mform->setType('refcourse', PARAM_INT);
             }
-            $courselabel = $mycourse->fullname.' ('.$mycourse->shortname.')';
-            $options[$catlist[$mycourse->category]][$mycourse->id] = $courselabel;
-            if (empty($mycourse->visible)) {
-                $hiddenlabel = ' '.get_string('hiddencourse', 'subcourse');
-                $options[$catlist[$mycourse->category]][$mycourse->id] .= $hiddenlabel;
+        } else {
+            $catlist = array();
+            $catparents = array();
+            make_categories_list($catlist, $catparents);
+            $options = array();
+            foreach ($mycourses as $mycourse) {
+                if (empty($options[$catlist[$mycourse->category]])) {
+                    $options[$catlist[$mycourse->category]] = array();
+                }
+                $courselabel = $mycourse->fullname.' ('.$mycourse->shortname.')';
+                $options[$catlist[$mycourse->category]][$mycourse->id] = $courselabel;
+                if (empty($mycourse->visible)) {
+                    $hiddenlabel = ' '.get_string('hiddencourse', 'subcourse');
+                    $options[$catlist[$mycourse->category]][$mycourse->id] .= $hiddenlabel;
+                }
             }
+            $mform->addElement('selectgroups', 'refcourse', get_string('refcourselabel', 'subcourse'), $options);
+            $mform->addHelpButton('refcourse', 'refcourse', 'subcourse');
         }
-        unset($mycourse);
-        $mform->addElement('selectgroups', 'refcourse', get_string('refcourselabel', 'subcourse'), $options);
-        $mform->addHelpButton('refcourse', 'refcourse', 'subcourse');
 
-        // add standard elements, common to all modules
+        // Common module settings ----------------------------------------------
         $this->standard_coursemodule_elements();
-        // add standard buttons, common to all modules
-        $this->add_action_buttons();
 
+        // Common action buttons
+        $this->add_action_buttons();
+    }
+
+    /**
+     * Validates the form input
+     *
+     * @param array $data submitted data
+     * @param array $files submitted files
+     * @return array eventual errors indexed by the field name
+     */
+    public function validation($data, $files) {
+        $errors = array();
+
+        if (empty($data['refcourse'])) {
+            $errors['subcoursefieldset'] = ''; // The field not present, no need to set a message.
+        }
+
+        return $errors;
     }
 }
 
