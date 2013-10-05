@@ -514,10 +514,11 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
  */
 function mod_subcourse_cm_info_view(cm_info $cm) {
     global $USER, $CFG;
+    require_once($CFG->libdir.'/gradelib.php');
+    require_once($CFG->dirroot.'/grade/querylib.php');
 
     $html = '';
 
-    require_once($CFG->dirroot.'/grade/querylib.php');
     $currentgrade = grade_get_course_grade($USER->id, $cm->course);
     $html .= html_writer::empty_tag('br');
     $html .= html_writer::start_tag('span');
