@@ -500,7 +500,6 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
     if (!is_numeric($time)) {
         return false;
     }
-    $subcourseids = implode(',', $subcourseids);
     list($sql, $params) = $DB->get_in_or_equal($subcourseids);
     $DB->set_field_select('subcourse', 'timefetched', $time, "id $sql", $params);
     return true;
