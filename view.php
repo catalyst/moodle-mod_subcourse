@@ -78,6 +78,27 @@ if ($refcourse) {
 
     echo $OUTPUT->heading(get_string('gotocoursename', 'subcourse', $refcourselink), 3);
 
+    echo $OUTPUT->box_start('generalbox', 'gradeinfobox');
+
+    $currentgrade = grade_get_grades($subcourse->course, 'mod', 'subcourse', $subcourse->id, $USER->id);
+    if (!empty($currentgrade->items[0]->grades)) {
+        $currentgrade = reset($currentgrade->items[0]->grades);
+        if (isset($currentgrade->grade) and !($currentgrade->hidden)) {
+            $strgrade = $currentgrade->str_grade;
+            echo $OUTPUT->container(get_string('currentgrade', 'subcourse', $strgrade), 'currentgrade');
+        }
+    }
+
+    if (has_capability('gradereport/grader:view', $coursecontext)
+            and has_capability('moodle/grade:viewall', $coursecontext)) {
+        echo $OUTPUT->single_button(
+            new moodle_url('/grade/report/grader/index.php', array('id' => $course->id)),
+            get_string('seeallcoursegrades', 'grades'), 'get'
+        );
+    }
+
+    echo $OUTPUT->box_end();
+
     echo $OUTPUT->box_start('generalbox', 'fetchinfobox');
 
     if (empty($subcourse->timefetched)) {
@@ -90,14 +111,6 @@ if ($refcourse) {
         echo $OUTPUT->single_button(
             new moodle_url($PAGE->url, array('sesskey' => sesskey(), 'fetchnow' => 1)),
             get_string('fetchnow', 'subcourse')
-        );
-    }
-
-    if (has_capability('gradereport/grader:view', $coursecontext)
-            and has_capability('moodle/grade:viewall', $coursecontext)) {
-        echo $OUTPUT->single_button(
-            new moodle_url('/grade/report/grader/index.php', array('id' => $course->id)),
-            get_string('seeallcoursegrades', 'grades'), 'get'
         );
     }
 

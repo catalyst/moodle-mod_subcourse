@@ -1,5 +1,10 @@
+#page-mod-subcourse-view #gradeinfobox,
 #page-mod-subcourse-view #fetchinfobox {
     text-align: center;
+}
+
+#page-mod-subcourse-view #gradeinfobox .currentgrade {
+    font-weight: bold;
 }
 
 #page-mod-subcourse-index #subcourseslist {
