@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->libdir.'/gradelib.php');
+
 ////////////////////////////////////////////////////////////////////////////////
 // Moodle core API                                                            //
 ////////////////////////////////////////////////////////////////////////////////
@@ -514,19 +516,18 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
  * @return void
  */
 function mod_subcourse_cm_info_view(cm_info $cm) {
-    global $USER, $CFG;
-    require_once($CFG->libdir.'/gradelib.php');
-    require_once($CFG->dirroot.'/grade/querylib.php');
+    global $USER;
 
-    $html = '';
+    $currentgrade = grade_get_grades($cm->course, 'mod', 'subcourse', $cm->instance, $USER->id);
 
-    $currentgrade = grade_get_course_grade($USER->id, $cm->course);
-    $html .= html_writer::empty_tag('br');
-    $html .= html_writer::start_tag('span');
-    $html .= get_string('currentgrade', 'subcourse').' '.$currentgrade->str_grade;
-    $html .= html_writer::end_tag('span');
-
-    $cm->set_after_link($html);
+    if (!empty($currentgrade->items[0]->grades)) {
+        $currentgrade = reset($currentgrade->items[0]->grades);
+        if (isset($currentgrade->grade) and !($currentgrade->hidden)) {
+            $strgrade = $currentgrade->str_grade;
+            $html = html_writer::tag('div', get_string('currentgrade', 'subcourse', $strgrade), array('class' => 'contentafterlink'));
+            $cm->set_after_link($html);
+        }
+    }
 }
 
 /**
