@@ -19,8 +19,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $logs = array(
-    array('module'=>'submodule', 'action'=>'view',   'mtable'=>'submodule', 'field'=>'name'),
-    array('module'=>'submodule', 'action'=>'add',    'mtable'=>'submodule', 'field'=>'name'),
-    array('module'=>'submodule', 'action'=>'update', 'mtable'=>'submodule', 'field'=>'name'),
-    array('module'=>'submodule', 'action'=>'fetch',  'mtable'=>'course',    'field'=>'shortname'),
+
+    array('module'=>'subcourse', 'action'=>'view',   'mtable'=>'subcourse', 'field'=>'name'),
+    array('module'=>'subcourse', 'action'=>'add',    'mtable'=>'subcourse', 'field'=>'name'),
+    array('module'=>'subcourse', 'action'=>'update', 'mtable'=>'subcourse', 'field'=>'name'),
+    array('module'=>'subcourse', 'action'=>'fetch',  'mtable'=>'course',    'field'=>'shortname'),
 );

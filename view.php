@@ -52,7 +52,7 @@ if (empty($subcourse->refcourse)) {
 if ($fetchnow and $refcourse) {
     require_sesskey();
     require_capability('mod/subcourse:fetchgrades', $context);
-    add_to_log($course->id, 'subcourse', 'fetch', "view.php?id=$cm->id", $refcourse->id);
+    add_to_log($course->id, 'subcourse', 'fetch', "view.php?id=$cm->id", $refcourse->id, $cm->id);
     $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
     if ($result == GRADE_UPDATE_OK) {
         subcourse_update_timefetched($subcourse->id);
@@ -62,7 +62,7 @@ if ($fetchnow and $refcourse) {
     }
 }
 
-add_to_log($course->id, 'subcourse', 'view', "view.php?id=$cm->id", $subcourse->id);
+add_to_log($course->id, 'subcourse', 'view', "view.php?id=$cm->id", $subcourse->id, $cm->id);
 
 echo $OUTPUT->header();
 

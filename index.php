@@ -38,7 +38,7 @@ $PAGE->set_heading($course->shortname);
 $PAGE->set_pagelayout('incourse');
 $PAGE->navbar->add(get_string('modulenameplural', 'subcourse'));
 
-add_to_log($course->id, 'subcourse', 'view all', "index.php?id=$course->id", '');
+add_to_log($course->id, 'subcourse', 'view all', "index.php?id=$course->id");
 
 echo $OUTPUT->header();
 
