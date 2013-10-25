@@ -29,5 +29,5 @@ $module->component = 'mod_subcourse';
 $module->release = 'DEV';
 $module->maturity = MATURITY_ALPHA;
 $module->version = 2013102600;
-$module->requires = 2012120300;  // Moodle 2.4.0
+$module->requires = 2013040500;  // Moodle 2.5.0
 $module->cron = 600;
