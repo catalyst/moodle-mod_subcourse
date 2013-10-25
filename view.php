@@ -42,21 +42,23 @@ $PAGE->set_url(new moodle_url('/mod/subcourse/view.php', array('id' => $cm->id))
 $PAGE->set_title($subcourse->name);
 $PAGE->set_heading($course->fullname);
 
-if (!$refcourse = $DB->get_record('course', array('id' => $subcourse->refcourse))) {
-    print_error('errinvalidrefcourse', 'subcourse');
+if (empty($subcourse->refcourse)) {
+    $refcourse = false;
+
+} else {
+    $refcourse = $DB->get_record('course', array('id' => $subcourse->refcourse), '*', IGNORE_MISSING);
 }
 
-if ($fetchnow) {
+if ($fetchnow and $refcourse) {
     require_sesskey();
     require_capability('mod/subcourse:fetchgrades', $context);
     add_to_log($course->id, 'subcourse', 'fetch', "view.php?id=$cm->id", $refcourse->id);
-    try {
-        subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
+    $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
+    if ($result == GRADE_UPDATE_OK) {
         subcourse_update_timefetched($subcourse->id);
-        redirect($CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id);
-    } catch (subcourse_localremotescale_exception $e) {
-        print_error($e->errorcode, 'subcourse',
-                    $CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id);
+        redirect(new moodle_url('/mod/subcourse/view.php', array('id' => $cm->id)));
+    } else {
+        print_error('errfetch', 'subcourse', $CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id, $result);
     }
 }
 
@@ -67,37 +69,44 @@ echo $OUTPUT->header();
 echo $OUTPUT->heading($subcourse->name);
 echo $OUTPUT->box(format_module_intro('subcourse', $subcourse, $cm->id));
 
-$refcourseurl = new moodle_url('/course/view.php', array('id' => $refcourse->id));
-$refcourselink = array(
-    'name' => $refcourse->fullname,
-    'href' => $refcourseurl->out(),
-);
+if ($refcourse) {
+    $refcourseurl = new moodle_url('/course/view.php', array('id' => $refcourse->id));
+    $refcourselink = array(
+        'name' => $refcourse->fullname,
+        'href' => $refcourseurl->out(),
+    );
 
-echo $OUTPUT->heading(get_string('gotocoursename', 'subcourse', $refcourselink), 3);
+    echo $OUTPUT->heading(get_string('gotocoursename', 'subcourse', $refcourselink), 3);
 
-echo $OUTPUT->box_start('generalbox', 'fetchinfobox');
+    echo $OUTPUT->box_start('generalbox', 'fetchinfobox');
 
-if (empty($subcourse->timefetched)) {
-    echo get_string('lastfetchnever', 'subcourse');
+    if (empty($subcourse->timefetched)) {
+        echo get_string('lastfetchnever', 'subcourse');
+    } else {
+        echo get_string('lastfetchtime', 'subcourse', userdate($subcourse->timefetched));
+    }
+
+    if (has_capability('mod/subcourse:fetchgrades', $context)) {
+        echo $OUTPUT->single_button(
+            new moodle_url($PAGE->url, array('sesskey' => sesskey(), 'fetchnow' => 1)),
+            get_string('fetchnow', 'subcourse')
+        );
+    }
+
+    if (has_capability('gradereport/grader:view', $coursecontext)
+            and has_capability('moodle/grade:viewall', $coursecontext)) {
+        echo $OUTPUT->single_button(
+            new moodle_url('/grade/report/grader/index.php', array('id' => $course->id)),
+            get_string('seeallcoursegrades', 'grades'), 'get'
+        );
+    }
+
+    echo $OUTPUT->box_end();
+
 } else {
-    echo get_string('lastfetchtime', 'subcourse', userdate($subcourse->timefetched));
+    if (has_capability('mod/subcourse:fetchgrades', $context)) {
+        echo $OUTPUT->notification(get_string('refcoursenull', 'subcourse'));
+    }
 }
-
-if (has_capability('mod/subcourse:fetchgrades', $context)) {
-    echo $OUTPUT->single_button(
-        new moodle_url($PAGE->url, array('sesskey' => sesskey(), 'fetchnow' => 1)),
-        get_string('fetchnow', 'subcourse')
-    );
-}
-
-if (has_capability('gradereport/grader:view', $coursecontext)
-        and has_capability('moodle/grade:viewall', $coursecontext)) {
-    echo $OUTPUT->single_button(
-        new moodle_url('/grade/report/grader/index.php', array('id' => $course->id)),
-        get_string('seeallcoursegrades', 'grades'), 'get'
-    );
-}
-
-echo $OUTPUT->box_end();
 
 echo $OUTPUT->footer();

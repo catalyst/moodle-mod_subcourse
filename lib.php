@@ -62,16 +62,13 @@ function subcourse_add_instance(stdClass $subcourse) {
     global $DB;
 
     $subcourse->timecreated = time();
+
     $newid = $DB->insert_record("subcourse", $subcourse);
 
-    // create grade_item but do not fetch grades - the context does not exist yet and we can't
-    // get users by capability
-    // TODO improve this, it smells to use exceptions for normal code flow
-    try {
-        subcourse_grades_update($subcourse->course, $newid, $subcourse->refcourse,
-                                $subcourse->name, true);
-    } catch (subcourse_localremotescale_exception $e) {
-        mtrace($e->getMessage());
+    if (!empty($subcourse->refcourse)) {
+        // create grade_item but do not fetch grades - the context does not exist yet and we can't
+        // get users by capability
+        subcourse_grades_update($subcourse->course, $newid, $subcourse->refcourse, $subcourse->name, true);
     }
 
     return $newid;
@@ -90,15 +87,18 @@ function subcourse_update_instance(stdClass $subcourse) {
     $subcourse->timemodified = time();
     $subcourse->id = $subcourse->instance;
 
-    try {
-        subcourse_grades_update($subcourse->course, $subcourse->id,
-                                $subcourse->refcourse, $subcourse->name);
-    } catch (subcourse_localremotescale_exception $e) {
-        mtrace($e->getMessage());
+    if (!empty($subcourse->refcoursecurrent)) {
+        unset($subcourse->refcourse);
     }
-    $subcourse->timefetched = time();
 
-    $DB->update_record("subcourse", $subcourse);
+    $DB->update_record('subcourse', $subcourse);
+
+    $subcourse = $DB->get_record('subcourse', array('id' => $subcourse->id));
+
+    if (!empty($subcourse->refcourse)) {
+        subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse, $subcourse->name);
+        $DB->set_field('subcourse', 'timefetched', time());
+    }
 
     return true;
 }
@@ -112,8 +112,7 @@ function subcourse_update_instance(stdClass $subcourse) {
  * @return boolean success/failure
  */
 function subcourse_delete_instance($id) {
-    global $CFG, $DB;
-    require_once($CFG->libdir.'/gradelib.php');
+    global $DB;
 
     // Check the instance exists
     if (!$subcourse = $DB->get_record("subcourse", array("id" => $id))) {
@@ -134,34 +133,42 @@ function subcourse_delete_instance($id) {
  * This function searches for things that need to be done, such
  * as sending out mail, toggling flags etc ...
  *
- * @uses $CFG
  * @return boolean
- * @todo Finish documenting this function
  */
 function subcourse_cron() {
     global $DB;
 
     $subcourse_instances = $DB->get_records('subcourse', null, '', 'id, course, refcourse');
     if (empty($subcourse_instances)) {
+        // nothing to do here
         return true;
     }
+
+    $status = true;
     $updatedids = array();
     echo "Fetching grades from remote gradebooks...\n";
     foreach ($subcourse_instances as $subcourse) {
-        $message = "Subcourse $subcourse->id: fetching grades from course $subcourse->refcourse ".
-                   "to course $subcourse->course ... ";
+        if (empty($subcourse->refcourse)) {
+            echo "Subcourse $subcourse->id: no referenced course configured ... skipped".PHP_EOL;
+            continue;
+        }
+        $message = "Subcourse $subcourse->id: fetching grades from course $subcourse->refcourse to course $subcourse->course ... ";
         echo $message;
-        try {
-            subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
+        $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
+        if ($result == GRADE_UPDATE_OK) {
             $updatedids[] = $subcourse->id;
-            echo "ok\n";
-        } catch (subcourse_localremotescale_exception $e) {
-            echo get_string($e->errorcode, 'subcourse')."\n";
+            echo 'ok'.PHP_EOL;
+        } else {
+            echo 'failed with error code '.$result.PHP_EOL;
+            $status = false;
         }
     }
-    subcourse_update_timefetched($updatedids);
 
-    return true;
+    if (!empty($updatedids)) {
+        subcourse_update_timefetched($updatedids);
+    }
+
+    return $status;
 }
 
 /**
@@ -219,7 +226,6 @@ function subcourse_user_complete($course, $user, $mod, $subcourse) {
  * that has occurred in subcourse activities and print it out.
  * Return true if there was output, or false is there was none.
  *
- * @uses $CFG
  * @param $course
  * @param $isteacher
  * @param $timestart
@@ -245,11 +251,14 @@ function subcourse_print_recent_activity($course, $isteacher, $timestart) {
  *    return $return;
  *
  * @param int $subcourseid ID of an instance of this module
- * @return mixed Null or object with an array of grades and with the maximum grade
+ * @return stdClass|null object with an array of grades and with the maximum grade
  */
 function subcourse_grades($subcourseid) {
     global $DB;
     $subcourse = $DB->get_record("subcourse", array("id" => $subcourseid), '', 'id, refcourse');
+    if (empty($subcourse->refcourse)) {
+        return null;
+    }
     $refgrades = subcourse_fetch_refgrades($subcourse->id, $subcourse->refcourse);
     $return = new stdClass();
     $return->grades = $refgrades->grades;
@@ -259,37 +268,30 @@ function subcourse_grades($subcourseid) {
 }
 
 /**
- * This function returns if a scale is being used by one subcourse
- * it it has support for grading and scales. Commented code should be
- * modified if necessary. See forum, glossary or journal modules
- * as reference.
+ * Is a scale used by the given subcourse instance?
  *
- * @param int $subcourseid ID of an instance of this module
+ * The subcourse itself does not generate grades so we always return
+ * false here in order not to block the scale removal.
+ *
+ * @param int $subcourseid id of an instance of this module
  * @param int $scaleid
- * @return mixed
- * @todo Finish documenting this function
+ * @return bool
  */
 function subcourse_scale_used($subcourseid, $scaleid) {
-    $return = false;
-
-    return $return;
+    return false;
 }
 
 /**
- * Checks if scale is being used by any instance of subcourse.
- * This function was added in 1.9
+ * Is a scale used by some subcourse instance?
  *
- * This is used to find out if scale used anywhere
+ * The subcourse itself does not generate grades so we always return
+ * false here in order not to block the scale removal.
+ *
  * @param int $scaleid
  * @return boolean True if the scale is used by any subcourse
  */
 function subcourse_scale_used_anywhere($scaleid) {
-    global $DB;
-    if ($scaleid and $DB->get_record('subcourse', array('grade' => -$scaleid))) {
-        return true;
-    } else {
-        return false;
-    }
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -346,24 +348,20 @@ function subcourse_available_courses($userid = null) {
  * @access public
  * @param int $subcourseid ID of subcourse instance
  * @param int $refcourseid ID of referenced course
- * @param bool|\boolan $gradeitemonly If true, fetch only grade item info without grades
- * @return object Object containing grades array and gradeitem info
+ * @param bool $gradeitemonly If true, fetch only grade item info without grades
+ * @return stdClass containing grades array and gradeitem info
  */
 function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = false) {
-    global $CFG;
+
+    if (empty($refcourseid)) {
+        throw new coding_exception('Empty referenced course id');
+    }
 
     $fetchedfields = subcourse_get_fetched_item_fields();
-
-    if (!function_exists('grade_update')) { //workaround for buggy PHP versions
-        require_once($CFG->libdir.'/gradelib.php');
-    }
 
     $return = new stdClass();
     $return->grades = array();
 
-    if (empty($refcourseid)) {
-        return false;
-    }
     $refgradeitem = grade_item::fetch_course_item($refcourseid);
 
     // get grade_item info
@@ -376,11 +374,9 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
     }
 
     // if the remote grade_item is non-global scale, do not fetch grades - they can't be used
-    if (($refgradeitem->gradetype == GRADE_TYPE_SCALE)
-        && (!subcourse_is_global_scale($refgradeitem->scaleid))
-    ) {
-
+    if (($refgradeitem->gradetype == GRADE_TYPE_SCALE) && (!subcourse_is_global_scale($refgradeitem->scaleid))) {
         $gradeitemonly = true;
+        debugging(get_string('errlocalremotescale', 'subcourse'));
         $return->localremotescale = true;
     }
 
@@ -415,22 +411,28 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
  * @param str $itemname     Set the itemname
  * @param bool $gradeitemonly If true, fetch only grade item info without grades
  * @param bool $reset Reset grades in gradebook
- * @return int 0 if ok, error code otherwise
+ * @return int GRADE_UPDATE_OK etc
  */
-function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemname = null,
-                                 $gradeitemonly = false, $reset = false) {
-    global $CFG;
+function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemname = null, $gradeitemonly = false, $reset = false) {
+    global $DB;
+
+    if (empty($refcourseid)) {
+        return GRADE_UPDATE_FAILED;
+    }
+
+    if (!$DB->record_exists('course', array('id' => $refcourseid))) {
+        return GRADE_UPDATE_FAILED;
+    }
+
     $fetchedfields = subcourse_get_fetched_item_fields();
 
-    if (!function_exists('grade_update')) { //workaround for buggy PHP versions
-        require_once($CFG->libdir.'/gradelib.php');
-    }
-
     $refgrades = subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly);
+
     if (!empty($refgrades->localremotescale)) {
         // unable to fetch remote grades - local scale is used in the remote course
-        throw new subcourse_localremotescale_exception($subcourseid);
+        return GRADE_UPDATE_FAILED;
     }
+
     $params = array();
 
     foreach ($fetchedfields as $property) {
@@ -482,22 +484,21 @@ function subcourse_is_global_scale($scaleid) {
  * @param array|int $subcourseids ID of subcourse instance or array of IDs
  * @param mixed $time The timestamp, defaults to the current time
  * @access public
- * @uses $CFG
  * @return bool
  */
 function subcourse_update_timefetched($subcourseids, $time = null) {
     global $DB;
 
+    if (empty($subcourseids)) {
+        return false;
+    }
     if (is_numeric($subcourseids)) {
         $subcourseids = array($subcourseids);
     }
     if (!is_array($subcourseids)) {
         return false;
     }
-    if (count($subcourseids) == 0) {
-        return false;
-    }
-    if (empty($time)) {
+    if (is_null($time)) {
         $time = time();
     }
     if (!is_numeric($time)) {
@@ -536,16 +537,4 @@ function mod_subcourse_cm_info_view(cm_info $cm) {
  */
 function subcourse_get_fetched_item_fields() {
     return array('gradetype', 'grademax', 'grademin', 'scaleid');
-}
-
-/**
- * Exception to be thrown if the remote grade_item uses scale which is not global
- */
-class subcourse_localremotescale_exception extends moodle_exception {
-
-    public function __construct($subcourseid, $debuginfo=null) {
-        $a = new object();
-        $a->subcourseid = $subcourseid;
-        parent::__construct('errlocalremotescale', 'subcourse', '', $a, $debuginfo);
-    }
 }

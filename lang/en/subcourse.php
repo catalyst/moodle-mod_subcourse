@@ -26,10 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['currentgrade'] = 'Currrent grade:';
-$string['errinvalidrefcourse'] = 'Error: Invalid ID of referenced course. The referenced course has been probably deleted.';
+$string['currentgrade'] = 'Your currrent grade: {$a}';
+$string['errfetch'] = 'Unable to fetch grades: error code {$a}';
 $string['errlocalremotescale'] = 'Unable to fetch grades: the remote final grade item uses local scale.';
-$string['errnonnumeric'] = 'Non-numeric argument';
 $string['fetchnow'] = 'Fetch now';
 $string['gotocoursename'] = 'Go to the course <a href="{$a->href}">{$a->name}</a>';
 $string['hiddencourse'] = '*hidden*';
@@ -38,11 +37,15 @@ $string['lastfetchtime'] = 'Last fetch: {$a}';
 $string['modulename'] = 'Subcourse';
 $string['modulename_help'] = 'The module provides very simple yet useful functionality. When added into a course, it behaves as a graded activity. The grade for each student is taken from a final grade in another course. Combined with metacourses, this allows course designers to organize courses into separate units.';
 $string['modulenameplural'] = 'Subcourses';
-$string['nocoursesavailable'] = 'There are no courses you can fetch grades from. You may need to ask your site administrator to set up this subcourse for you.';
+$string['nocoursesavailable'] = 'No courses you could fetch grades from';
 $string['nosubcourses'] = 'There are no subcourses in this course';
 $string['pluginadministration'] = 'Subcourse administration';
 $string['pluginname'] = 'Subcourse';
 $string['refcourse'] = 'Referenced course';
-$string['refcourse_help'] = 'The referenced course is the one the grade of the activity is taken from. Students should be enroled into the referenced course.';
-$string['refcourselabel'] = 'Take grades from';
+$string['refcourse_help'] = 'The referenced course is the one the grade of the activity is taken from. Students should be enroled into the referenced course.
+
+You need to be a teacher in the course to have it listed here. You may want to ask your site administrator to set up this subcourse for you to fetch grades from other courses.';
+$string['refcoursecurrent'] = 'Keep current reference';
+$string['refcourselabel'] = 'Fetch grades from';
+$string['refcoursenull'] = 'No referenced course configured';
 $string['subcoursename'] = 'Subcourse name';
