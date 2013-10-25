@@ -58,6 +58,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
 
         // Referenced course ---------------------------------------------------
         $mform->addElement('header', 'section-refcourse', get_string('refcourse', 'subcourse'));
+        $mform->setExpanded('section-refcourse');
         $mform->addHelpButton('section-refcourse', 'refcourse', 'subcourse');
 
         $mycourses = subcourse_available_courses();
