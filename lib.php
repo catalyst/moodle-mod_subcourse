@@ -46,6 +46,7 @@ function subcourse_supports($feature) {
         case FEATURE_GROUPS:            return true;
         case FEATURE_GROUPINGS:         return true;
         case FEATURE_GROUPMEMBERSONLY:  return true;
+        case FEATURE_BACKUP_MOODLE2:    return true;
         default:                        return null;
     }
 }
