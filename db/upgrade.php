@@ -27,15 +27,27 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Perform an upgrade from an old version
+ * Performs upgrade of the database structure and data
  *
- * @param int $oldversion Old (installed) version of the module API
- * @access public
- * @return boolean
+ * @param int $oldversion the version we are upgrading from
+ * @return bool true
  */
 function xmldb_subcourse_upgrade($oldversion=0) {
+    global $DB;
 
-    $result = true;
+    $dbman = $DB->get_manager();
 
-    return $result;
+    if ($oldversion < 2013102501) {
+        // drop the 'grade' field from the 'subcourse' table
+
+        $table = new xmldb_table('subcourse');
+        $field = new xmldb_field('grade');
+        if ($dbman->field_exists($table, $field)) {
+            $dbman->drop_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2013102501, 'subcourse');
+    }
+
+    return true;
 }
