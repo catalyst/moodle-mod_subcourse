@@ -49,3 +49,8 @@ $string['refcoursecurrent'] = 'Keep current reference';
 $string['refcourselabel'] = 'Fetch grades from';
 $string['refcoursenull'] = 'No referenced course configured';
 $string['subcoursename'] = 'Subcourse name';
+
+//Capabilities
+$string['subcourse:addinstance'] = "Add instance";
+$string['subcourse:begraded'] = "To be graded";
+$string['subcourse:fetchgrades'] = "Fetch grades";
