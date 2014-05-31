@@ -52,7 +52,15 @@ if (empty($subcourse->refcourse)) {
 if ($fetchnow and $refcourse) {
     require_sesskey();
     require_capability('mod/subcourse:fetchgrades', $context);
-    add_to_log($course->id, 'subcourse', 'fetch', "view.php?id=$cm->id", $refcourse->id, $cm->id);
+    $event = \mod_subcourse\event\subcourse_grades_fetched::create(array(
+        'objectid' => $subcourse->id,
+        'context' => $context,
+        'other' => array('refcourse' => $refcourse->id)
+    ));
+    $event->add_record_snapshot('course_modules', $cm);
+    $event->add_record_snapshot('course', $course);
+    $event->add_record_snapshot('subcourse', $subcourse);
+    $event->trigger();
     $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
     if ($result == GRADE_UPDATE_OK) {
         subcourse_update_timefetched($subcourse->id);
@@ -62,7 +70,14 @@ if ($fetchnow and $refcourse) {
     }
 }
 
-add_to_log($course->id, 'subcourse', 'view', "view.php?id=$cm->id", $subcourse->id, $cm->id);
+$event = \mod_subcourse\event\course_module_viewed::create(array(
+    'objectid' => $subcourse->id,
+    'context' => $context,
+));
+$event->add_record_snapshot('course_modules', $cm);
+$event->add_record_snapshot('course', $course);
+$event->add_record_snapshot('subcourse', $subcourse);
+$event->trigger();
 
 echo $OUTPUT->header();
 

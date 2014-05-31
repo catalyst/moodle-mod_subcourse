@@ -29,6 +29,7 @@ defined('MOODLE_INTERNAL') || die();
 $string['currentgrade'] = 'Your currrent grade: {$a}';
 $string['errfetch'] = 'Unable to fetch grades: error code {$a}';
 $string['errlocalremotescale'] = 'Unable to fetch grades: the remote final grade item uses local scale.';
+$string['eventgradesfetched'] = 'Grades fetched';
 $string['fetchnow'] = 'Fetch now';
 $string['gotocoursename'] = 'Go to the course <a href="{$a->href}">{$a->name}</a>';
 $string['hiddencourse'] = '*hidden*';
