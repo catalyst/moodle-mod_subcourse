@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,18 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin meta-data
+ * The mod_subcourse instance list viewed event.
  *
- * @package     mod_subcourse
- * @copyright   2008 David Mudrak <david@moodle.com>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    mod_subcourse
+ * @copyright  2014 Rajesh Taneja <rajesh@moodle.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+namespace mod_subcourse\event;
 
 defined('MOODLE_INTERNAL') || die();
 
-$module->component = 'mod_subcourse';
-$module->release = '2.7.0';
-$module->maturity = MATURITY_STABLE;
-$module->version = 2014053100;
-$module->requires = 2014050800;  // Moodle 2.7.0
-$module->cron = 600;
+/**
+ * The mod_subcourse instance list viewed event class.
+ *
+ * @package    mod_subcourse
+ * @since      Moodle 2.7
+ * @copyright  2014 Rajesh Taneja <rajesh@moodle.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
+    // No need for any code here as everything is handled by the parent class.
+}
