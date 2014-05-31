@@ -384,7 +384,7 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
     if (!$gradeitemonly) {
         // get grades
         $cm = get_coursemodule_from_instance("subcourse", $subcourseid);
-        $context = get_context_instance(CONTEXT_MODULE, $cm->id);
+        $context = context_module::instance($cm->id);
         $users = get_users_by_capability($context, 'mod/subcourse:begraded', 'u.id,u.lastname',
                                          'u.lastname', '', '', '', '', false, true);
         foreach ($users as $user) {
