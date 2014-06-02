@@ -26,8 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 $module->component = 'mod_subcourse';
-$module->release = 'DEV';
-$module->maturity = MATURITY_ALPHA;
-$module->version = 2013102600;
-$module->requires = 2013040500;  // Moodle 2.5.0
+$module->release = '2.6.0';
+$module->maturity = MATURITY_STABLE;
+$module->version = 2013111800;
+$module->requires = 2013101800;
 $module->cron = 600;
