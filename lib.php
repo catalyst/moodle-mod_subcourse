@@ -130,49 +130,6 @@ function subcourse_delete_instance($id) {
 }
 
 /**
- * Function to be run periodically according to the moodle cron
- * This function searches for things that need to be done, such
- * as sending out mail, toggling flags etc ...
- *
- * @return boolean
- */
-function subcourse_cron() {
-    global $DB;
-
-    $subcourse_instances = $DB->get_records('subcourse', null, '', 'id, course, refcourse');
-    if (empty($subcourse_instances)) {
-        // nothing to do here
-        return true;
-    }
-
-    $status = true;
-    $updatedids = array();
-    echo "Fetching grades from remote gradebooks...\n";
-    foreach ($subcourse_instances as $subcourse) {
-        if (empty($subcourse->refcourse)) {
-            echo "Subcourse $subcourse->id: no referenced course configured ... skipped".PHP_EOL;
-            continue;
-        }
-        $message = "Subcourse $subcourse->id: fetching grades from course $subcourse->refcourse to course $subcourse->course ... ";
-        echo $message;
-        $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
-        if ($result == GRADE_UPDATE_OK) {
-            $updatedids[] = $subcourse->id;
-            echo 'ok'.PHP_EOL;
-        } else {
-            echo 'failed with error code '.$result.PHP_EOL;
-            $status = false;
-        }
-    }
-
-    if (!empty($updatedids)) {
-        subcourse_update_timefetched($updatedids);
-    }
-
-    return $status;
-}
-
-/**
  * Must return an array of user records (all data) who are participants
  * for a given instance of subcourse. Must include every user involved
  * in the instance, independient of his role (student, teacher, admin...)

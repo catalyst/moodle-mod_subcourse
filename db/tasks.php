@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -16,17 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin meta-data
- *
  * @package     mod_subcourse
- * @copyright   2008 David Mudrak <david@moodle.com>
+ * @category    task
+ * @copyright   2014 David Mudrak <david@moodle.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_subcourse';
-$plugin->release = '2.7.0';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->version = 2014060201;
-$plugin->requires = 2014041100;
+$tasks = array(
+    array(
+        'classname' => 'mod_subcourse\task\fetch_grades',
+        'blocking' => 0,
+        'minute' => '57',
+        'hour' => '*',
+        'day' => '*',
+        'dayofweek' => '1-5',
+        'month' => '*'
+    )
+);

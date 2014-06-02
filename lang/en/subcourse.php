@@ -50,3 +50,4 @@ $string['refcoursecurrent'] = 'Keep current reference';
 $string['refcourselabel'] = 'Fetch grades from';
 $string['refcoursenull'] = 'No referenced course configured';
 $string['subcoursename'] = 'Subcourse name';
+$string['taskfetchgrades'] = 'Fetch subcourse grades';
