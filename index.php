@@ -38,7 +38,11 @@ $PAGE->set_heading($course->shortname);
 $PAGE->set_pagelayout('incourse');
 $PAGE->navbar->add(get_string('modulenameplural', 'subcourse'));
 
-add_to_log($course->id, 'subcourse', 'view all', "index.php?id=$course->id");
+$event = \mod_subcourse\event\course_module_instance_list_viewed::create(array(
+    'context' => context_course::instance($course->id)
+));
+$event->add_record_snapshot('course', $course);
+$event->trigger();
 
 echo $OUTPUT->header();
 
