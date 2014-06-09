@@ -79,6 +79,12 @@ $event->add_record_snapshot('course', $course);
 $event->add_record_snapshot('subcourse', $subcourse);
 $event->trigger();
 
+if ($refcourse and !empty($subcourse->instantredirect)) {
+    if (!has_capability('mod/subcourse:fetchgrades', $context)) {
+        redirect(new moodle_url('/course/view.php', array('id' => $refcourse->id)));
+    }
+}
+
 echo $OUTPUT->header();
 
 echo $OUTPUT->heading($subcourse->name);

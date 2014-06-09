@@ -140,6 +140,9 @@ class mod_subcourse_mod_form extends moodleform_mod {
             }
         }
 
+        $mform->addElement('checkbox', 'instantredirect', get_string('instantredirect', 'subcourse'));
+        $mform->addHelpButton('instantredirect', 'instantredirect', 'subcourse');
+
         // Common module settings ----------------------------------------------
         $this->standard_coursemodule_elements();
 

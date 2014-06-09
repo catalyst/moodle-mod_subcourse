@@ -64,6 +64,10 @@ function subcourse_add_instance(stdClass $subcourse) {
 
     $subcourse->timecreated = time();
 
+    if (empty($subcourse->instantredirect)) {
+        $subcourse->instantredirect = 0;
+    }
+
     $newid = $DB->insert_record("subcourse", $subcourse);
 
     if (!empty($subcourse->refcourse)) {
@@ -90,6 +94,10 @@ function subcourse_update_instance(stdClass $subcourse) {
 
     if (!empty($subcourse->refcoursecurrent)) {
         unset($subcourse->refcourse);
+    }
+
+    if (empty($subcourse->instantredirect)) {
+        $subcourse->instantredirect = 0;
     }
 
     $DB->update_record('subcourse', $subcourse);

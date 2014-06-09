@@ -33,6 +33,8 @@ $string['eventgradesfetched'] = 'Grades fetched';
 $string['fetchnow'] = 'Fetch now';
 $string['gotocoursename'] = 'Go to the course <a href="{$a->href}">{$a->name}</a>';
 $string['hiddencourse'] = '*hidden*';
+$string['instantredirect'] = 'Redirect to the referenced course';
+$string['instantredirect_help'] = 'If enabled, users will be redirected to the referenced course when attempting to view the subcourse module page. Does not affect users with the permission to fetch grades manually.';
 $string['lastfetchnever'] = 'The grades have not been fetched yet';
 $string['lastfetchtime'] = 'Last fetch: {$a}';
 $string['modulename'] = 'Subcourse';

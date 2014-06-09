@@ -49,5 +49,17 @@ function xmldb_subcourse_upgrade($oldversion=0) {
         upgrade_mod_savepoint(true, 2013102501, 'subcourse');
     }
 
+    if ($oldversion < 2014060900) {
+        // Add the field 'instantredirect' to the table 'subcourse'.
+        $table = new xmldb_table('subcourse');
+        $field = new xmldb_field('instantredirect', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'refcourse');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2014060900, 'subcourse');
+    }
+
     return true;
 }
