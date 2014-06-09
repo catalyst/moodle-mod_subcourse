@@ -89,6 +89,8 @@ function subcourse_add_instance(stdClass $subcourse) {
 function subcourse_update_instance(stdClass $subcourse) {
     global $DB;
 
+    $cmid = $subcourse->coursemodule;
+
     $subcourse->timemodified = time();
     $subcourse->id = $subcourse->instance;
 
@@ -105,8 +107,10 @@ function subcourse_update_instance(stdClass $subcourse) {
     $subcourse = $DB->get_record('subcourse', array('id' => $subcourse->id));
 
     if (!empty($subcourse->refcourse)) {
-        subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse, $subcourse->name);
-        $DB->set_field('subcourse', 'timefetched', time());
+        if (has_capability('mod/subcourse:fetchgrades', context_module::instance($cmid))) {
+            subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse, $subcourse->name);
+            subcourse_update_timefetched($subcourse->id);
+        }
     }
 
     return true;
