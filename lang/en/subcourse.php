@@ -51,5 +51,7 @@ You need to be a teacher in the course to have it listed here. You may want to a
 $string['refcoursecurrent'] = 'Keep current reference';
 $string['refcourselabel'] = 'Fetch grades from';
 $string['refcoursenull'] = 'No referenced course configured';
+$string['subcourse:begraded'] = 'Receive grade from the referenced course';
+$string['subcourse:fetchgrades'] = 'Fetch grades manually from the referenced course';
 $string['subcoursename'] = 'Subcourse name';
 $string['taskfetchgrades'] = 'Fetch subcourse grades';
