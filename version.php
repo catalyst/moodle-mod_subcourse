@@ -27,6 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_subcourse';
 $plugin->release = '2.7.1';
-$plugin->maturity = MATURITY_RC;
+$plugin->maturity = MATURITY_STABLE;
 $plugin->version = 2014081200;
 $plugin->requires = 2014050800;  // Moodle 2.7.0
