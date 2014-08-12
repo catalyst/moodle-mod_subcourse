@@ -36,38 +36,13 @@ $subcourse = $DB->get_record('subcourse', array('id' => $cm->instance), '*', MUS
 
 require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
-$coursecontext = context_course::instance($course->id);
 
 $PAGE->set_url(new moodle_url('/mod/subcourse/view.php', array('id' => $cm->id)));
-$PAGE->set_title($subcourse->name);
-$PAGE->set_heading($course->fullname);
 
 if (empty($subcourse->refcourse)) {
     $refcourse = false;
-
 } else {
     $refcourse = $DB->get_record('course', array('id' => $subcourse->refcourse), '*', IGNORE_MISSING);
-}
-
-if ($fetchnow and $refcourse) {
-    require_sesskey();
-    require_capability('mod/subcourse:fetchgrades', $context);
-    $event = \mod_subcourse\event\subcourse_grades_fetched::create(array(
-        'objectid' => $subcourse->id,
-        'context' => $context,
-        'other' => array('refcourse' => $refcourse->id)
-    ));
-    $event->add_record_snapshot('course_modules', $cm);
-    $event->add_record_snapshot('course', $course);
-    $event->add_record_snapshot('subcourse', $subcourse);
-    $event->trigger();
-    $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
-    if ($result == GRADE_UPDATE_OK) {
-        subcourse_update_timefetched($subcourse->id);
-        redirect(new moodle_url('/mod/subcourse/view.php', array('id' => $cm->id)));
-    } else {
-        print_error('errfetch', 'subcourse', $CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id, $result);
-    }
 }
 
 $event = \mod_subcourse\event\course_module_viewed::create(array(
@@ -85,62 +60,8 @@ if ($refcourse and !empty($subcourse->instantredirect)) {
     }
 }
 
-echo $OUTPUT->header();
-
-echo $OUTPUT->heading($subcourse->name);
-echo $OUTPUT->box(format_module_intro('subcourse', $subcourse, $cm->id));
-
 if ($refcourse) {
-    $refcourseurl = new moodle_url('/course/view.php', array('id' => $refcourse->id));
-    $refcourselink = array(
-        'name' => $refcourse->fullname,
-        'href' => $refcourseurl->out(),
-    );
-
-    echo $OUTPUT->heading(get_string('gotocoursename', 'subcourse', $refcourselink), 3);
-
-    echo $OUTPUT->box_start('generalbox', 'gradeinfobox');
-
-    $currentgrade = grade_get_grades($subcourse->course, 'mod', 'subcourse', $subcourse->id, $USER->id);
-    if (!empty($currentgrade->items[0]->grades)) {
-        $currentgrade = reset($currentgrade->items[0]->grades);
-        if (isset($currentgrade->grade) and !($currentgrade->hidden)) {
-            $strgrade = $currentgrade->str_grade;
-            echo $OUTPUT->container(get_string('currentgrade', 'subcourse', $strgrade), 'currentgrade');
-        }
-    }
-
-    if (has_capability('gradereport/grader:view', $coursecontext)
-            and has_capability('moodle/grade:viewall', $coursecontext)) {
-        echo $OUTPUT->single_button(
-            new moodle_url('/grade/report/grader/index.php', array('id' => $course->id)),
-            get_string('seeallcoursegrades', 'grades'), 'get'
-        );
-    }
-
-    echo $OUTPUT->box_end();
-
-    echo $OUTPUT->box_start('generalbox', 'fetchinfobox');
-
-    if (empty($subcourse->timefetched)) {
-        echo get_string('lastfetchnever', 'subcourse');
-    } else {
-        echo get_string('lastfetchtime', 'subcourse', userdate($subcourse->timefetched));
-    }
-
-    if (has_capability('mod/subcourse:fetchgrades', $context)) {
-        echo $OUTPUT->single_button(
-            new moodle_url($PAGE->url, array('sesskey' => sesskey(), 'fetchnow' => 1)),
-            get_string('fetchnow', 'subcourse')
-        );
-    }
-
-    echo $OUTPUT->box_end();
-
+    redirect(new moodle_url('/course/view.php', array('id' => $subcourse->refcourse)));
 } else {
-    if (has_capability('mod/subcourse:fetchgrades', $context)) {
-        echo $OUTPUT->notification(get_string('refcoursenull', 'subcourse'));
-    }
+    print_error('refcoursenull', 'subcourse', new moodle_url('/course/view.php', array('id' => $cm->course)));
 }
-
-echo $OUTPUT->footer();

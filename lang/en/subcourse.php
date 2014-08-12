@@ -27,16 +27,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['currentgrade'] = 'Your currrent grade: {$a}';
-$string['errfetch'] = 'Unable to fetch grades: error code {$a}';
 $string['errlocalremotescale'] = 'Unable to fetch grades: the remote final grade item uses local scale.';
 $string['eventgradesfetched'] = 'Grades fetched';
-$string['fetchnow'] = 'Fetch now';
-$string['gotocoursename'] = 'Go to the course <a href="{$a->href}">{$a->name}</a>';
 $string['hiddencourse'] = '*hidden*';
 $string['instantredirect'] = 'Redirect to the referenced course';
-$string['instantredirect_help'] = 'If enabled, users will be redirected to the referenced course when attempting to view the subcourse module page. Does not affect users with the permission to fetch grades manually.';
-$string['lastfetchnever'] = 'The grades have not been fetched yet';
-$string['lastfetchtime'] = 'Last fetch: {$a}';
 $string['modulename'] = 'Subcourse';
 $string['modulename_help'] = 'The module provides very simple yet useful functionality. When added into a course, it behaves as a graded activity. The grade for each student is taken from a final grade in another course. Combined with metacourses, this allows course designers to organize courses into separate units.';
 $string['modulenameplural'] = 'Subcourses';
@@ -52,6 +46,5 @@ $string['refcoursecurrent'] = 'Keep current reference';
 $string['refcourselabel'] = 'Fetch grades from';
 $string['refcoursenull'] = 'No referenced course configured';
 $string['subcourse:begraded'] = 'Receive grade from the referenced course';
-$string['subcourse:fetchgrades'] = 'Fetch grades manually from the referenced course';
 $string['subcoursename'] = 'Subcourse name';
 $string['taskfetchgrades'] = 'Fetch subcourse grades';
