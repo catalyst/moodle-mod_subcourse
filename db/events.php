@@ -16,17 +16,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin meta-data
- *
- * @package     mod_subcourse
- * @copyright   2008 David Mudrak <david@moodle.com>
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    mod_subcourse
+ * @copyright  2014 Vadim Dvorovenko (Vadimon@mail.ru)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_subcourse';
-$plugin->release = '2.7.1';
-$plugin->maturity = MATURITY_RC;
-$plugin->version = 2014060900;
-$plugin->requires = 2014050800;  // Moodle 2.7.0
+$observers = array(
+    array(
+        'eventname' => '\core\event\user_graded',
+        'callback'  => '\mod_subcourse\observers::user_graded',
+    ),
+    array(
+        'eventname' => '\core\event\role_assigned',
+        'callback'  => '\mod_subcourse\observers::role_assigned',
+    ),
+);
