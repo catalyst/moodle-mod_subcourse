@@ -30,7 +30,6 @@ $string['currentgrade'] = 'Your currrent grade: {$a}';
 $string['errlocalremotescale'] = 'Unable to fetch grades: the remote final grade item uses local scale.';
 $string['eventgradesfetched'] = 'Grades fetched';
 $string['hiddencourse'] = '*hidden*';
-$string['instantredirect'] = 'Redirect to the referenced course';
 $string['modulename'] = 'Subcourse';
 $string['modulename_help'] = 'The module provides very simple yet useful functionality. When added into a course, it behaves as a graded activity. The grade for each student is taken from a final grade in another course. Combined with metacourses, this allows course designers to organize courses into separate units.';
 $string['modulenameplural'] = 'Subcourses';
