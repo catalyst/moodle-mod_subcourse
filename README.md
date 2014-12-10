@@ -5,6 +5,16 @@ This Moodle module provides very simple yet useful functionality. When added int
 grade for each student is took from a final grade in another course. Combined with
 [metacourses](http://docs.moodle.org/en/Course_meta_link), this allows course designers to organize courses into separate units.
 
+v3.0
+----
+
+* The module now observes "user graded" and "role assigned" events and fetches grades instantly on them (no need to rely on pressing
+  the "Fetch now" button or the cron task running). Credit goes to Vadim Dvorovenko for implementing this.
+* Added Behat tests.
+* Fixed missing name of the "addinstance" capability.
+* Requires Moodle 2.8.
+* Changed versioning scheme of the plugin. The "master" branch now contains the most recent stable code.
+
 v2.7.0
 ------
 
