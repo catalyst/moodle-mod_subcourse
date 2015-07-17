@@ -34,7 +34,7 @@ Feature:
     #
     And I log in as "teacher1"
     And I follow "SlaveCourse"
-    And I follow "Grades"
+    And I navigate to "Grades" node in "Course administration"
     And I navigate to "Categories and items" node in "Grade administration > Setup"
     And I click on "Edit" "link" in the "SlaveCourse" "table_row"
     And I click on "Edit settings" "link" in the "SlaveCourse" "table_row"
@@ -85,7 +85,7 @@ Feature:
     #
     And I am on homepage
     And I follow "SlaveCourse"
-    And I follow "Grades"
+    And I navigate to "Grades" node in "Course administration"
     And I navigate to "Grader report" node in "Grade administration"
     And I turn editing mode on
     And I give the grade "150" to the user "Student 1" for the grade item "Manual item 1"
@@ -93,7 +93,7 @@ Feature:
     And I turn editing mode off
     And I am on homepage
     And I follow "MasterCourse"
-    And I follow "Grades"
+    And I navigate to "Grades" node in "Course administration"
     And I should not see "Student 2"
     And I navigate to "User report" node in "Grade administration"
     And I set the field "Select all or one user" to "Student 1"
@@ -108,7 +108,7 @@ Feature:
       | student2      | M         | student           |
     And I am on homepage
     And I follow "MasterCourse"
-    And I follow "Grades"
+    And I navigate to "Grades" node in "Course administration"
     And I navigate to "User report" node in "Grade administration"
     And I set the field "Select all or one user" to "Student 2"
     And the following should exist in the "user-grade" table:
