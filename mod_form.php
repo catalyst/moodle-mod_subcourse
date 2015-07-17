@@ -55,7 +55,11 @@ class mod_subcourse_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
-        $this->add_intro_editor();
+        if ($CFG->branch >= 29) {
+            $this->standard_intro_elements();
+        } else {
+            $this->add_intro_editor();
+        }
 
         // Referenced course ---------------------------------------------------
         $mform->addElement('header', 'section-refcourse', get_string('refcourse', 'subcourse'));
