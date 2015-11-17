@@ -1,6 +1,8 @@
 Subcourse module for Moodle
 ===========================
 
+[![Build Status](https://travis-ci.org/mudrd8mz/moodle-mod_subcourse.svg?branch=master)](https://travis-ci.org/mudrd8mz/moodle-mod_subcourse)
+
 This Moodle module provides very simple yet useful functionality. When added into a course, it behaves as a graded activity. The
 grade for each student is took from a final grade in another course. Combined with
 [metacourses](http://docs.moodle.org/en/Course_meta_link), this allows course designers to organize courses into separate units.
