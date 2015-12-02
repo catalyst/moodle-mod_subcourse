@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -42,11 +41,9 @@ class mod_subcourse_mod_form extends moodleform_mod {
 
         $mform = $this->_form;
 
-        // General -------------------------------------------------------------
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-        $mform->addElement('text', 'name', get_string('subcoursename', 'subcourse'),
-                           array('size'=>'64'));
+        $mform->addElement('text', 'name', get_string('subcoursename', 'subcourse'), array('size' => '64'));
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -61,7 +58,6 @@ class mod_subcourse_mod_form extends moodleform_mod {
             $this->add_intro_editor();
         }
 
-        // Referenced course ---------------------------------------------------
         $mform->addElement('header', 'section-refcourse', get_string('refcourse', 'subcourse'));
         $mform->setExpanded('section-refcourse');
         $mform->addHelpButton('section-refcourse', 'refcourse', 'subcourse');
@@ -100,9 +96,9 @@ class mod_subcourse_mod_form extends moodleform_mod {
         }
 
         if (!empty($currentrefcourseid) and !$currentrefcourseavailable) {
-            // Currently referring to a course that is not available for us (e.g. the admin
-            // has set up this Subcourse for the teacher or the teacher lost his role in the referred
-            // course etc. Give them a chance to just keep such a reference.
+            // Currently referring to a course that is not available for us.
+            // E.g. the admin has set up this Subcourse for the teacher or the teacher lost his role in the referred course etc.
+            // Give them a chance to just keep such a reference.
             $mform->addElement('checkbox', 'refcoursecurrent', get_string('refcoursecurrent', 'subcourse'),
                 format_string($currentrefcoursename));
             $mform->setDefault('refcoursecurrent', 1);
@@ -147,10 +143,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
         $mform->addElement('checkbox', 'instantredirect', get_string('instantredirect', 'subcourse'));
         $mform->addHelpButton('instantredirect', 'instantredirect', 'subcourse');
 
-        // Common module settings ----------------------------------------------
         $this->standard_coursemodule_elements();
-
-        // Common action buttons
         $this->add_action_buttons();
     }
 }

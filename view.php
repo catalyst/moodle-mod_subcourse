@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -27,8 +26,8 @@ require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once(dirname(__FILE__).'/lib.php');
 require_once($CFG->libdir.'/gradelib.php');
 
-$id = required_param('id', PARAM_INT); // course module id
-$fetchnow = optional_param('fetchnow', 0, PARAM_INT); // manual fetch
+$id = required_param('id', PARAM_INT);
+$fetchnow = optional_param('fetchnow', 0, PARAM_INT);
 
 $cm = get_coursemodule_from_id('subcourse', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);

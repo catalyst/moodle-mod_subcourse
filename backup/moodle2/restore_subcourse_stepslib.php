@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -32,7 +31,6 @@ class restore_subcourse_activity_structure_step extends restore_activity_structu
     protected function define_structure() {
 
         $paths = array();
-        $userinfo = $this->get_setting_value('userinfo');
 
         $paths[] = new restore_path_element('subcourse', '/activity/subcourse');
 
@@ -43,7 +41,6 @@ class restore_subcourse_activity_structure_step extends restore_activity_structu
         global $DB;
 
         $data = (object)$data;
-        $oldid = $data->id;
         $data->course = $this->get_courseid();
 
         $data->timemodified = $this->apply_date_offset($data->timemodified);
@@ -54,12 +51,12 @@ class restore_subcourse_activity_structure_step extends restore_activity_structu
         }
 
         $newitemid = $DB->insert_record('subcourse', $data);
-        // immediately after inserting "activity" record, call this
+        // Immediately after inserting "activity" record, call this.
         $this->apply_activity_instance($newitemid);
     }
 
     protected function after_execute() {
-        // Add subcourse related files, no need to match by itemname (just internally handled context)
+        // Add subcourse related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_subcourse', 'intro', null);
     }
 }

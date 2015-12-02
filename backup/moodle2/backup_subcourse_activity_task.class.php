@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -36,7 +35,7 @@ class backup_subcourse_activity_task extends backup_activity_task {
      * Define (add) particular settings this activity can have
      */
     protected function define_my_settings() {
-        // No particular settings for this activity
+        // No particular settings for this activity.
     }
 
     /**
@@ -55,13 +54,13 @@ class backup_subcourse_activity_task extends backup_activity_task {
 
         $base = preg_quote($CFG->wwwroot, "/");
 
-        // Link to the list of subcourses
-        $search="/(".$base."\/mod\/subcourse\/index.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@SUBCOURSEINDEX*$2@$', $content);
+        // Link to the list of subcourses.
+        $search = "/(".$base."\/mod\/subcourse\/index.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@SUBCOURSEINDEX*$2@$', $content);
 
-        // Link to subcourse by moduleid
-        $search="/(".$base."\/mod\/subcourse\/view.php\?id\=)([0-9]+)/";
-        $content= preg_replace($search, '$@SUBCOURSEVIEWBYID*$2@$', $content);
+        // Link to subcourse by moduleid.
+        $search = "/(".$base."\/mod\/subcourse\/view.php\?id\=)([0-9]+)/";
+        $content = preg_replace($search, '$@SUBCOURSEVIEWBYID*$2@$', $content);
 
         return $content;
     }

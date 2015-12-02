@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -38,7 +37,7 @@ function xmldb_subcourse_upgrade($oldversion=0) {
     $dbman = $DB->get_manager();
 
     if ($oldversion < 2013102501) {
-        // drop the 'grade' field from the 'subcourse' table
+        // Drop the 'grade' field from the 'subcourse' table.
 
         $table = new xmldb_table('subcourse');
         $field = new xmldb_field('grade');

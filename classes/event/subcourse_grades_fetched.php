@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 class subcourse_grades_fetched extends \core\event\base {
 
     protected function init() {
-        $this->data['crud'] = 'u'; // c(reate), r(ead), u(pdate), d(elete)
+        $this->data['crud'] = 'u';
         $this->data['edulevel'] = self::LEVEL_TEACHING;
         $this->data['objecttable'] = 'subcourse';
     }
@@ -38,7 +38,8 @@ class subcourse_grades_fetched extends \core\event\base {
     }
 
     public function get_description() {
-        return "The user with id '{$this->userid}' fetched grades from the course with id '{$this->other['refcourse']}' into the 'subcourse' activity with the course module id '{$this->contextinstanceid}'.";
+        return "The user with id '{$this->userid}' fetched grades from the course with id '{$this->other['refcourse']}' ".
+                "into the 'subcourse' activity with the course module id '{$this->contextinstanceid}'.";
     }
 
     public function get_url() {
