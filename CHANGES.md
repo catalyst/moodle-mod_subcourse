@@ -1,6 +1,13 @@
 Changes
 =======
 
+v4.0.0
+------
+
+* Fixed Behat test failure in Moodle 3.0 due to MDL-51051.
+* Fixed coding style violations reported by the codechecker.
+* Added support for Travis CI.
+
 v3.1
 ----
 
