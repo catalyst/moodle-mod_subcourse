@@ -35,7 +35,7 @@ Feature:
     And I log in as "teacher1"
     And I follow "SlaveCourse"
     And I navigate to "Grades" node in "Course administration"
-    And I navigate to "Categories and items" node in "Grade administration > Setup"
+    And I navigate to "Gradebook setup" node in "Grade administration > Setup"
     And I click on "Edit" "link" in the "SlaveCourse" "table_row"
     And I click on "Edit settings" "link" in the "SlaveCourse" "table_row"
     And I set the following fields to these values:
