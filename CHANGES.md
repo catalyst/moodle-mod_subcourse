@@ -1,6 +1,12 @@
 Changes
 =======
 
+v3.2
+----
+
+* Fixed coding style violations reported by the codechecker
+* Added support for Travis CI
+
 v3.1
 ----
 
