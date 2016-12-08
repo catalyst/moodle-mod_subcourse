@@ -34,8 +34,7 @@ Feature:
     #
     And I log in as "teacher1"
     And I follow "SlaveCourse"
-    And I navigate to "Grades" node in "Course administration"
-    And I navigate to "Gradebook setup" node in "Grade administration > Setup"
+    And I navigate to "Setup > Gradebook setup" in the course gradebook
     And I click on "Edit" "link" in the "SlaveCourse" "table_row"
     And I click on "Edit settings" "link" in the "SlaveCourse" "table_row"
     And I set the following fields to these values:
@@ -47,7 +46,7 @@ Feature:
       | Item name     | Manual item 1   |
       | Maximum grade | 200             |
     And I press "Save changes"
-    And I navigate to "Grader report" node in "Grade administration"
+    And I navigate to "View > Grader report" in the course gradebook
     And I turn editing mode on
     And I give the grade "100" to the user "Student 1" for the grade item "Manual item 1"
     And I give the grade "50" to the user "Student 2" for the grade item "Manual item 1"
@@ -75,7 +74,7 @@ Feature:
     # After fetching, the grades are copied.
     #
     And I press "See all course grades"
-    And I navigate to "User report" node in "Grade administration"
+    And I navigate to "View > User report" in the course gradebook
     And I set the field "Select all or one user" to "Student 1"
     And the following should exist in the "user-grade" table:
       | Grade item    | Grade | Range   |
@@ -85,17 +84,16 @@ Feature:
     #
     And I am on homepage
     And I follow "SlaveCourse"
-    And I navigate to "Grades" node in "Course administration"
-    And I navigate to "Grader report" node in "Grade administration"
+    And I navigate to "View > Grader report" in the course gradebook
     And I turn editing mode on
     And I give the grade "150" to the user "Student 1" for the grade item "Manual item 1"
     And I press "Save changes"
     And I turn editing mode off
     And I am on homepage
     And I follow "MasterCourse"
-    And I navigate to "Grades" node in "Course administration"
+    And I navigate to "View > Grader report" in the course gradebook
     And I should not see "Student 2"
-    And I navigate to "User report" node in "Grade administration"
+    And I navigate to "View > User report" in the course gradebook
     And I set the field "Select all or one user" to "Student 1"
     And the following should exist in the "user-grade" table:
       | Grade item    | Grade | Range   |
@@ -108,8 +106,7 @@ Feature:
       | student2      | M         | student           |
     And I am on homepage
     And I follow "MasterCourse"
-    And I navigate to "Grades" node in "Course administration"
-    And I navigate to "User report" node in "Grade administration"
+    And I navigate to "View > User report" in the course gradebook
     And I set the field "Select all or one user" to "Student 2"
     And the following should exist in the "user-grade" table:
       | Grade item    | Grade | Range   |
