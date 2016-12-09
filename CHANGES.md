@@ -1,6 +1,11 @@
 Changes
 =======
 
+v4.0.1
+------
+
+* Fixed Behat tests syntax for Moodle 3.1 and 3.2
+
 v4.0.0
 ------
 
