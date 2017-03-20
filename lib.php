@@ -206,27 +206,6 @@ function subcourse_print_recent_activity($course, $isteacher, $timestart) {
 }
 
 /**
- * Must return an array of grades for a given instance of this module,
- * indexed by user.  It also returns a maximum allowed grade.
- *
- * @param int $subcourseid ID of an instance of this module
- * @return stdClass|null object with an array of grades and with the maximum grade
- */
-function subcourse_grades($subcourseid) {
-    global $DB;
-    $subcourse = $DB->get_record("subcourse", array("id" => $subcourseid), '', 'id, refcourse');
-    if (empty($subcourse->refcourse)) {
-        return null;
-    }
-    $refgrades = subcourse_fetch_refgrades($subcourse->id, $subcourse->refcourse);
-    $return = new stdClass();
-    $return->grades = $refgrades->grades;
-    $return->maxgrade = $refgrades->grademax;
-
-    return $return;
-}
-
-/**
  * Is a scale used by the given subcourse instance?
  *
  * The subcourse itself does not generate grades so we always return
