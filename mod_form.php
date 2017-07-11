@@ -25,8 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/course/moodleform_mod.php');
-require_once($CFG->libdir . '/coursecatlib.php');
+require_once($CFG->dirroot.'/mod/subcourse/locallib.php');
+require_once($CFG->dirroot.'/course/moodleform_mod.php');
+require_once($CFG->libdir.'/coursecatlib.php');
 
 /**
  * Subcourse settings form
