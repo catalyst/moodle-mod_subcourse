@@ -78,9 +78,10 @@ function subcourse_available_courses($userid = null) {
  * @param int $subcourseid ID of subcourse instance
  * @param int $refcourseid ID of referenced course
  * @param bool $gradeitemonly If true, fetch only grade item info without grades
+ * @param int|array $userids If fetching grades, limit only to this user(s), defaults to all.
  * @return stdClass containing grades array and gradeitem info
  */
-function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = false) {
+function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = false, $userids = []) {
 
     if (empty($refcourseid)) {
         throw new coding_exception('Empty referenced course id');
@@ -111,11 +112,21 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
 
     if (!$gradeitemonly) {
         // Get grades.
+
+        if (!is_array($userids)) {
+            $userids = array($userids);
+        }
+
         $cm = get_coursemodule_from_instance("subcourse", $subcourseid);
         $context = context_module::instance($cm->id);
+
         $users = get_users_by_capability($context, 'mod/subcourse:begraded', 'u.id,u.lastname',
                                          'u.lastname', '', '', '', '', false, true);
+
         foreach ($users as $user) {
+            if ($userids && !in_array($user->id, $userids)) {
+                continue;
+            }
             $grade = new grade_grade(array('itemid' => $refgradeitem->id, 'userid' => $user->id));
             $grade->grade_item =& $refgradeitem;
             $return->grades[$user->id] = new stdClass();
@@ -140,9 +151,11 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
  * @param str $itemname     Set the itemname
  * @param bool $gradeitemonly If true, fetch only grade item info without grades
  * @param bool $reset Reset grades in gradebook
+ * @param int|array $userids If fetching grades, limit only to this user(s), defaults to all.
  * @return int GRADE_UPDATE_OK etc
  */
-function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemname = null, $gradeitemonly = false, $reset = false) {
+function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemname = null,
+        $gradeitemonly = false, $reset = false, $userids = []) {
     global $DB;
 
     if (empty($refcourseid)) {
@@ -155,7 +168,7 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
 
     $fetchedfields = subcourse_get_fetched_item_fields();
 
-    $refgrades = subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly);
+    $refgrades = subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly, $userids);
 
     if (!empty($refgrades->localremotescale)) {
         // Unable to fetch remote grades - local scale is used in the remote course.
@@ -180,8 +193,7 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
         $grades = null;
     }
 
-    return grade_update('mod/subcourse', $courseid, 'mod', 'subcourse', $subcourseid,
-                        0, $grades, $params);
+    return grade_update('mod/subcourse', $courseid, 'mod', 'subcourse', $subcourseid, 0, $grades, $params);
 }
 
 /**

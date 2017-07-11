@@ -38,16 +38,13 @@ class observers {
         global $DB;
 
         $courseid = $event->courseid;
+        $userid = $event->relateduserid;
 
         $subcourses = $DB->get_records('subcourse', array('refcourse' => $courseid));
+
         foreach ($subcourses as $subcourse) {
-            $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
-            if ($result == GRADE_UPDATE_OK) {
-                $updatedids[] = $subcourse->id;
-            }
-        }
-        if (!empty($updatedids)) {
-            subcourse_update_timefetched($updatedids);
+            $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse,
+                null, false, false, $userid);
         }
     }
 
@@ -64,17 +61,13 @@ class observers {
         global $DB;
 
         $courseid = $event->courseid;
+        $userid = $event->relateduserid;
 
         $subcourses = $DB->get_records('subcourse', array('course' => $courseid));
+
         foreach ($subcourses as $subcourse) {
-            $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
-            if ($result == GRADE_UPDATE_OK) {
-                $updatedids[] = $subcourse->id;
-            }
-        }
-        if (!empty($updatedids)) {
-            subcourse_update_timefetched($updatedids);
+            $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse,
+                null, false, false, $userid);
         }
     }
-
 }
