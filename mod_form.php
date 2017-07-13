@@ -147,5 +147,31 @@ class mod_subcourse_mod_form extends moodleform_mod {
         $this->standard_coursemodule_elements();
         $this->add_action_buttons();
     }
-}
 
+    /**
+     * Add elements for setting the custom completion rules.
+     *
+     * @category completion
+     * @return array List of added element names, or names of wrapping group elements.
+     */
+    public function add_completion_rules() {
+
+        $mform = $this->_form;
+
+        $mform->addElement('advcheckbox', 'completioncourse', get_string('completioncourse', 'mod_subcourse'),
+            get_string('completioncourse_text', 'mod_subcourse'));
+        $mform->addHelpButton('completioncourse', 'completioncourse', 'mod_subcourse');
+
+        return ['completioncourse'];
+    }
+
+    /**
+     * Called during validation to see whether some module-specific completion rules are selected.
+     *
+     * @param array $data Input data not yet validated.
+     * @return bool True if one or more rules is enabled, false if none are.
+     */
+    public function completion_rule_enabled($data) {
+        return (!empty($data['completioncourse']));
+    }
+}

@@ -55,3 +55,6 @@ $string['subcourse:begraded'] = 'Receive grade from the referenced course';
 $string['subcourse:fetchgrades'] = 'Fetch grades manually from the referenced course';
 $string['subcoursename'] = 'Subcourse name';
 $string['taskfetchgrades'] = 'Fetch subcourse grades';
+$string['completioncourse'] = 'Require course completed';
+$string['completioncourse_help'] = 'If enabled, the activity is considered complete when a student completes the referenced course.';
+$string['completioncourse_text'] = 'Student must complete the referenced course to complete this activity.';
