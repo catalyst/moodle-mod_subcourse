@@ -35,7 +35,7 @@ class backup_subcourse_activity_structure_step extends backup_activity_structure
 
         $subcourse = new backup_nested_element('subcourse', array('id'), array(
             'name', 'intro', 'introformat', 'timecreated', 'timemodified', 'timefetched',
-            'refcourse'
+            'refcourse', 'instantredirect', 'completioncourse'
         ));
 
         $subcourse->set_source_table('subcourse', array('id' => backup::VAR_ACTIVITYID));
