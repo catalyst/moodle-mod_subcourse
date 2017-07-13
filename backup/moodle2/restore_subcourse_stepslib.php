@@ -43,8 +43,7 @@ class restore_subcourse_activity_structure_step extends restore_activity_structu
         $data = (object)$data;
         $data->course = $this->get_courseid();
 
-        $data->timemodified = $this->apply_date_offset($data->timemodified);
-        $data->timefetched = $this->apply_date_offset($data->timefetched);
+        $data->timefetched = 0;
 
         if (!$this->task->is_samesite() or !$DB->record_exists('course', array('id' => $data->refcourse))) {
             $data->refcourse = 0;
