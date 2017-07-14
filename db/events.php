@@ -31,4 +31,8 @@ $observers = array(
         'eventname' => '\core\event\role_assigned',
         'callback'  => '\mod_subcourse\observers::role_assigned',
     ),
+    array(
+        'eventname' => '\core\event\course_completed',
+        'callback' => '\mod_subcourse\observers::course_completed',
+    ),
 );

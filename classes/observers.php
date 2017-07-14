@@ -22,6 +22,8 @@
 
 namespace mod_subcourse;
 
+use completion_info;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/subcourse/locallib.php');
@@ -68,6 +70,52 @@ class observers {
         foreach ($subcourses as $subcourse) {
             $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse,
                 null, false, false, $userid);
+        }
+    }
+
+    /**
+     * Handle the course_completed event.
+     *
+     * Notify all subcourse instances with the relevant completion rule enabled
+     * that the user completed the referenced course - so that  they can be eventually
+     * marked as completed, too.
+     *
+     * @param \core\event\course_completed $event
+     * @return void
+     */
+    public static function course_completed(\core\event\course_completed $event) {
+        global $CFG, $DB;
+        require_once($CFG->dirroot.'/lib/completionlib.php');
+
+        $courseid = $event->courseid;
+        $userid = $event->relateduserid;
+
+        // Get all subcourses that have the completed course as the referenced one.
+        $subcourses = $DB->get_records('subcourse', ['refcourse' => $courseid, 'completioncourse' => 1]);
+
+        if (empty($subcourses)) {
+            // No subcourse interested in this.
+            return;
+        }
+
+        // Load the courses where the subcourses are located in.
+        $courseids = [];
+
+        foreach ($subcourses as $subcourse) {
+            $courseids[$subcourse->course] = true;
+        }
+
+        $courses = $DB->get_records_list('course', 'id', array_keys($courseids), '', '*');
+
+        foreach ($subcourses as $subcourse) {
+            $course = $courses[$subcourse->course];
+            $cm = get_coursemodule_from_instance('subcourse', $subcourse->id, $course->id);
+            $completion = new completion_info($course);
+
+            if ($completion->is_enabled($cm)) {
+                // Notify the subcourse to check the completion status.
+                $completion->update_state($cm, COMPLETION_COMPLETE, $userid);
+            }
         }
     }
 }
