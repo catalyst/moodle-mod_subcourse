@@ -54,6 +54,7 @@ $string['subcourse:addinstance'] = 'Add a new subcourse';
 $string['subcourse:begraded'] = 'Receive grade from the referenced course';
 $string['subcourse:fetchgrades'] = 'Fetch grades manually from the referenced course';
 $string['subcoursename'] = 'Subcourse name';
+$string['taskcheckcompletedrefcourses'] = 'Check referenced courses completion';
 $string['taskfetchgrades'] = 'Fetch subcourse grades';
 $string['completioncourse'] = 'Require course completed';
 $string['completioncourse_help'] = 'If enabled, the activity is considered complete when a student completes the referenced course.';

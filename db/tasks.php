@@ -32,5 +32,14 @@ $tasks = array(
         'day' => '*',
         'dayofweek' => '1-5',
         'month' => '*'
-    )
+    ),
+    array(
+        'classname' => '\mod_subcourse\task\check_completed_refcourses',
+        'blocking' => 0,
+        'minute' => 'R',
+        'hour' => '4',
+        'day' => '*',
+        'dayofweek' => '1-5',
+        'month' => '*'
+    ),
 );
