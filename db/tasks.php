@@ -25,10 +25,10 @@ defined('MOODLE_INTERNAL') || die();
 
 $tasks = array(
     array(
-        'classname' => 'mod_subcourse\task\fetch_grades',
+        'classname' => '\mod_subcourse\task\fetch_grades',
         'blocking' => 0,
-        'minute' => '57',
-        'hour' => '*',
+        'minute' => 'R',
+        'hour' => '3',
         'day' => '*',
         'dayofweek' => '1-5',
         'month' => '*'
