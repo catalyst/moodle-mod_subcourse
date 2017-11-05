@@ -21,8 +21,7 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | student1      | S         | student           |
     And I log in as "teacher1"
     # Create the subcourse instance.
-    And I am on homepage
-    And I follow "MasterCourse"
+    And I am on "MasterCourse" course homepage
     And I turn editing mode on
     And I add a "Subcourse" to section "1" and I fill the form with:
       | Subcourse name                    | Unit course 1                                     |
@@ -31,8 +30,7 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | Completion tracking               | Show activity as complete when conditions are met |
       | Require course completed          | 1                                                 |
     # Add the block to a the slave course to allow students to manually complete it
-    And I am on homepage
-    And I follow "SlaveCourse"
+    And I am on "SlaveCourse" course homepage
     And I add the "Self completion" block
     And I navigate to "Course completion" node in "Course administration"
     And I expand all fieldsets
@@ -44,18 +42,17 @@ Feature: Completing the referenced course can lead to completing the subcourse a
   @javascript
   Scenario: Completing the referenced course leads to completing the subcourse
     Given I log in as "student1"
-    And I follow "SlaveCourse"
+    And I am on "SlaveCourse" course homepage
     And I follow "Complete course"
     And I should see "Confirm self completion"
     And I press "Yes"
     # Running completion task just after clicking sometimes fail, as record should be created before the task runs.
     And I wait "1" seconds
     When I run the scheduled task "core\task\completion_regular_task"
-    And I am on site homepage
-    And I follow "MasterCourse"
+    And I am on "MasterCourse" course homepage
     Then "//img[contains(@alt, 'Completed: Unit course 1')]" "xpath_element" should exist in the "li.modtype_subcourse" "css_element"
     And I log out
     And I log in as "teacher1"
-    And I follow "MasterCourse"
+    And I am on "MasterCourse" course homepage
     And I navigate to "Activity completion" node in "Course administration > Reports"
     And "//img[contains(@title, 'Unit course 1') and @alt='Completed']" "xpath_element" should exist in the "Student 1" "table_row"

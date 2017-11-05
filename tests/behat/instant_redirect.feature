@@ -20,7 +20,7 @@ Feature:
       | teacher1      | S         | editingteacher    |
       | student1      | S         | student           |
     And I log in as "teacher1"
-    And I follow "MasterCourse"
+    And I am on "MasterCourse" course homepage
     And I turn editing mode on
 
   Scenario: Student has to click the link to the referenced course manually
@@ -30,7 +30,7 @@ Feature:
       | Redirect to the referenced course | 0                   |
     And I log out
     When I log in as "student1"
-    And I follow "MasterCourse"
+    And I am on "MasterCourse" course homepage
     And I follow "Unit course 1"
     Then I should see "Go to the course SlaveCourse"
     And I follow "SlaveCourse"
@@ -43,7 +43,7 @@ Feature:
       | Redirect to the referenced course | 1                   |
     And I log out
     When I log in as "student1"
-    And I follow "MasterCourse"
+    And I am on "MasterCourse" course homepage
     And I follow "Unit course 1"
     Then I should see "SlaveCourse" in the "page-header" "region"
 

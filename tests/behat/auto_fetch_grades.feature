@@ -33,7 +33,7 @@ Feature:
     # Set grades in the referenced course.
     #
     And I log in as "teacher1"
-    And I follow "SlaveCourse"
+    And I am on "SlaveCourse" course homepage
     And I navigate to "Setup > Gradebook setup" in the course gradebook
     And I click on "Edit" "link" in the "SlaveCourse" "table_row"
     And I click on "Edit settings" "link" in the "SlaveCourse" "table_row"
@@ -55,8 +55,7 @@ Feature:
     #
     # Create the subcourse instance.
     #
-    And I am on homepage
-    And I follow "MasterCourse"
+    And I am on "MasterCourse" course homepage
     And I turn editing mode on
     And I add a "Subcourse" to section "1" and I fill the form with:
       | Subcourse name                    | Unit course 1       |
@@ -82,15 +81,13 @@ Feature:
     #
     # Changing grades in the referenced course has instant effect.
     #
-    And I am on homepage
-    And I follow "SlaveCourse"
+    And I am on "SlaveCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     And I turn editing mode on
     And I give the grade "150" to the user "Student 1" for the grade item "Manual item 1"
     And I press "Save changes"
     And I turn editing mode off
-    And I am on homepage
-    And I follow "MasterCourse"
+    And I am on "MasterCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     And I should not see "Student 2"
     And I navigate to "View > User report" in the course gradebook
@@ -104,8 +101,7 @@ Feature:
     And the following "course enrolments" exist:
       | user          | course    | role              |
       | student2      | M         | student           |
-    And I am on homepage
-    And I follow "MasterCourse"
+    And I am on "MasterCourse" course homepage
     And I navigate to "View > User report" in the course gradebook
     And I set the field "Select all or one user" to "Student 2"
     And the following should exist in the "user-grade" table:
