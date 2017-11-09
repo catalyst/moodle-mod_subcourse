@@ -1,3 +1,8 @@
+### 5.0.1 ###
+
+* Fixed a typo in the string (currrent -> current).
+* Updated Behat tests to work in Moodle 3.3 and 3.4.
+
 ### 5.0.0 ###
 
 * Performance improvements: On triggered events (such as when a student
