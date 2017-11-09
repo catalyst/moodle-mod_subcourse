@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Provides {@link restore_subcourse_activity_structure_step} class
+ *
  * @package     mod_subcourse
  * @category    backup
  * @copyright   2013 David Mudrak <david@moodle.com>
@@ -25,9 +27,17 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Structure step to restore one subcourse activity
+ *
+ * @copyright 2017 David Mudrak <david@moodle.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_subcourse_activity_structure_step extends restore_activity_structure_step {
 
+    /**
+     * Attaches the handlers of the backup XML tree parts.
+     *
+     * @return array of restore_path_element
+     */
     protected function define_structure() {
 
         $paths = array();
@@ -37,6 +47,11 @@ class restore_subcourse_activity_structure_step extends restore_activity_structu
         return $this->prepare_activity_structure($paths);
     }
 
+    /**
+     * Process the /activity/subcourse path element.
+     *
+     * @param object|array $data node contents
+     */
     protected function process_subcourse($data) {
         global $DB;
 
@@ -54,6 +69,9 @@ class restore_subcourse_activity_structure_step extends restore_activity_structu
         $this->apply_activity_instance($newitemid);
     }
 
+    /**
+     * Callback to be executed after the restore.
+     */
     protected function after_execute() {
         // Add subcourse related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_subcourse', 'intro', null);

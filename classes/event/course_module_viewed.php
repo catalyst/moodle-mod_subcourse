@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Provides the {@link mod_subcourse\event\course_module_viewed} class.
+ *
  * @package     mod_subcourse
  * @category    event
  * @copyright   2014 Vadim Dvorovenko <vadimon@mail.ru>
@@ -25,8 +27,17 @@ namespace mod_subcourse\event;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Represents the "course module viewed" event.
+ *
+ * @copyright 2017 David Mudrak <david@moodle.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class course_module_viewed extends \core\event\course_module_viewed {
 
+    /**
+     * Initialize the event - set the objecttable.
+     */
     protected function init() {
         $this->data['objecttable'] = 'subcourse';
         parent::init();

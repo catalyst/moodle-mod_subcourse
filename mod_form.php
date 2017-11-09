@@ -31,6 +31,9 @@ require_once($CFG->libdir.'/coursecatlib.php');
 
 /**
  * Subcourse settings form
+ *
+ * @copyright 2008 David Mudrak <david@moodle.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_subcourse_mod_form extends moodleform_mod {
 

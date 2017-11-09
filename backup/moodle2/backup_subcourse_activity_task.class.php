@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Provides {@link backup_subcourse_activity_task} class.
+ *
  * @package     mod_subcourse
  * @category    backup
  * @copyright   2013 David Mudrak <david@moodle.com>
@@ -26,8 +28,10 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot.'/mod/subcourse/backup/moodle2/backup_subcourse_stepslib.php');
 
 /**
- * Backup task that provides all the settings and steps to perform one
- * complete backup of the activity.
+ * Provides settings and steps to perform a complete backup of the activity.
+ *
+ * @copyright 2013 David Mudrak <david@moodle.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_subcourse_activity_task extends backup_activity_task {
 
@@ -46,8 +50,9 @@ class backup_subcourse_activity_task extends backup_activity_task {
     }
 
     /**
-     * Code the transformations to perform in the activity in
-     * order to get transportable (encoded) links
+     * Code the transformations to perform in the activity in order to get transportable (encoded) links
+     *
+     * @param string $content User text content
      */
     static public function encode_content_links($content) {
         global $CFG;

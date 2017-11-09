@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Defines the list of the module's scheduled tasks.
+ *
  * @package     mod_subcourse
  * @category    task
  * @copyright   2014 David Mudrak <david@moodle.com>

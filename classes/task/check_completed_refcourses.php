@@ -39,6 +39,9 @@ require_once($CFG->dirroot.'/mod/subcourse/locallib.php');
  * Normally, completed course triggers the subcourse completion automatically
  * via observing the event. This task is there for rechecking the completions to catch
  * up with courses that were completed in the past (and the event was missed).
+ *
+ * @copyright 2017 David Mudrak <david@moodle.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class check_completed_refcourses extends \core\task\scheduled_task {
 

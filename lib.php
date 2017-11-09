@@ -167,12 +167,11 @@ function subcourse_get_participants($subcourseid) {
  * $return->time = the time they did it
  * $return->info = a short text description
  *
- * @param $course
- * @param $user
- * @param $mod
- * @param $subcourse
+ * @param stdClass $course The course record.
+ * @param stdClass $user The user record.
+ * @param cm_info|stdClass $mod The course module info object or record.
+ * @param stdClass $subcourse The subcourse instance record.
  * @return null
- * @todo Finish documenting this function
  */
 function subcourse_user_outline($course, $user, $mod, $subcourse) {
     return true;
@@ -182,12 +181,11 @@ function subcourse_user_outline($course, $user, $mod, $subcourse) {
  * Print a detailed representation of what a user has done with
  * a given particular instance of this module, for user activity reports.
  *
- * @param $course
- * @param $user
- * @param $mod
- * @param $subcourse
+ * @param stdClass $course The course record.
+ * @param stdClass $user The user record.
+ * @param cm_info|stdClass $mod The course module info object or record.
+ * @param stdClass $subcourse The subcourse instance record.
  * @return boolean
- * @todo Finish documenting this function
  */
 function subcourse_user_complete($course, $user, $mod, $subcourse) {
     return true;
@@ -198,13 +196,12 @@ function subcourse_user_complete($course, $user, $mod, $subcourse) {
  * that has occurred in subcourse activities and print it out.
  * Return true if there was output, or false is there was none.
  *
- * @param $course
- * @param $isteacher
- * @param $timestart
+ * @param stdClass $course
+ * @param bool $viewfullnames
+ * @param int $timestart
  * @return boolean true if anything was printed, otherwise false
- * @todo Finish documenting this function
  */
-function subcourse_print_recent_activity($course, $isteacher, $timestart) {
+function subcourse_print_recent_activity($course, $viewfullnames, $timestart) {
     return false;
 }
 

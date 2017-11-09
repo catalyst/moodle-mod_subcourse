@@ -74,7 +74,6 @@ function subcourse_available_courses($userid = null) {
  *      ...
  *  )
  *
- * @access public
  * @param int $subcourseid ID of subcourse instance
  * @param int $refcourseid ID of referenced course
  * @param bool $gradeitemonly If true, fetch only grade item info without grades
@@ -143,7 +142,6 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
 /**
  * Create or update grade item and grades for given subcourse
  *
- * @access public
  * @param int $courseid     ID of referencing course (the course containing the instance of
  * subcourse)
  * @param int $subcourseid  ID of subcourse instance
@@ -200,7 +198,6 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
  * Checks if a remote scale can be re-used, i.e. if it is global (standard, server wide) scale
  *
  * @param mixed $scaleid ID of the scale
- * @access public
  * @return boolean True if scale is global, false if not.
  */
 function subcourse_is_global_scale($scaleid) {
@@ -224,7 +221,6 @@ function subcourse_is_global_scale($scaleid) {
  *
  * @param array|int $subcourseids ID of subcourse instance or array of IDs
  * @param mixed $time The timestamp, defaults to the current time
- * @access public
  * @return bool
  */
 function subcourse_update_timefetched($subcourseids, $time = null) {

@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Provides the {@link mod_subcourse\task\fetch_grades} class.
+ *
  * @package     mod_subcourse
  * @category    task
  * @copyright   2014 David Mudrak <david@moodle.com>
@@ -29,6 +31,9 @@ require_once($CFG->dirroot.'/mod/subcourse/locallib.php');
 
 /**
  * Fetches remote grades into all subcourse instances
+ *
+ * @copyright 2014 David Mudrak <david@moodle.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class fetch_grades extends \core\task\scheduled_task {
 

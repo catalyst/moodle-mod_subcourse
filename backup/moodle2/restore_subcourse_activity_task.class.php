@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Provides {@link restore_subcourse_activity_task} class.
+ *
  * @package     mod_subcourse
  * @category    backup
  * @copyright   2013 David Mudrak <david@moodle.com>
@@ -25,6 +27,12 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/subcourse/backup/moodle2/restore_subcourse_stepslib.php');
 
+/**
+ * Defines all settings and step to perform the activity restore.
+ *
+ * @copyright 2013 David Mudrak <david@moodle.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class restore_subcourse_activity_task extends restore_activity_task {
 
     /**

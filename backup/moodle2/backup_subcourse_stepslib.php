@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Provides {@link backup_subcourse_activity_structure_step} class.
+ *
  * @package     mod_subcourse
  * @category    backup
  * @copyright   2013 David Mudrak <david@moodle.com>
@@ -25,6 +27,9 @@ defined('MOODLE_INTERNAL') || die();
 
 /**
  * Defines the complete subcourse structure for backup
+ *
+ * @copyright 2013 David Mudrak <david@moodle.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_subcourse_activity_structure_step extends backup_activity_structure_step {
 
