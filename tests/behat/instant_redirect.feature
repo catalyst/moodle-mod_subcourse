@@ -1,5 +1,5 @@
 @mod @mod_subcourse
-Feature:
+Feature: Clicking the subcourse instance in the course outline may or may not redirect to the referenced course
   In order to visit the referenced course
   As a user
   I need to visit the subcourse activity and either click a link or there is no need to do so

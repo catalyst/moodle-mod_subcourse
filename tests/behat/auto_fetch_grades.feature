@@ -1,5 +1,5 @@
 @mod @mod_subcourse
-Feature:
+Feature: Grades are fetched automatically from the referenced course
   In order to see student's final course grade as a grade item in another course
   As a teacher
   I need to give the final grade in a referenced course and that's enough
