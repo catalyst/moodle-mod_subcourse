@@ -55,4 +55,4 @@ Feature: Completing the referenced course can lead to completing the subcourse a
     And I log in as "teacher1"
     And I am on "MasterCourse" course homepage
     And I navigate to "Activity completion" node in "Course administration > Reports"
-    And "//img[contains(@title, 'Unit course 1') and @alt='Completed']" "xpath_element" should exist in the "Student 1" "table_row"
+    And "//img[contains(@title, 'Unit course 1') and contains(@title, 'Completed')]" "xpath_element" should exist in the "Student 1" "table_row"
