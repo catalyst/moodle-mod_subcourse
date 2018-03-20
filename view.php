@@ -86,13 +86,13 @@ if ($refcourse and !empty($subcourse->instantredirect)) {
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->heading($subcourse->name);
+echo $OUTPUT->heading(format_string($subcourse->name));
 echo $OUTPUT->box(format_module_intro('subcourse', $subcourse, $cm->id));
 
 if ($refcourse) {
     $refcourseurl = new moodle_url('/course/view.php', array('id' => $refcourse->id));
     $refcourselink = array(
-        'name' => $refcourse->fullname,
+        'name' => format_string($refcourse->fullname),
         'href' => $refcourseurl->out(),
     );
 

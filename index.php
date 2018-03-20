@@ -76,7 +76,7 @@ foreach ($subcourses as $subcourse) {
         $attributes['class'] = 'dimmed';
     }
     $link = html_writer::link(new moodle_url('/mod/subcourse/view.php',
-        array('id' => $subcourse->coursemodule)), $subcourse->name, $attributes);
+        array('id' => $subcourse->coursemodule)), format_string($subcourse->name), $attributes);
     $description = format_module_intro('subcourse', $subcourse, $subcourse->coursemodule);
     if ($usesections) {
         $table->data[] = array(get_section_name($course, $subcourse->section), $link, $description);
