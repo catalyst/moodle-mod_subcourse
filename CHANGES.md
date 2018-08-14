@@ -1,3 +1,12 @@
+### 6.0.0 ###
+
+* Filters are applied displaying course names - credit goes to Philipp Hager
+* The "should be completed" event is displayed on the dashboard if expected completion
+  date/time is set.
+* Privacy API implemented to make it GDPR friendly. No personal data are stored by the
+  module itself.
+* Requires Moodle 3.3 or higher, updated tests for Moodle 3.5.
+
 ### 5.0.1 ###
 
 * Fixed a typo in the string (currrent -> current).
