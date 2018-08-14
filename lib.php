@@ -245,8 +245,26 @@ function subcourse_scale_used_anywhere($scaleid) {
  * @return void
  */
 function mod_subcourse_cm_info_view(cm_info $cm) {
-    global $CFG, $USER;
+    global $CFG, $USER, $DB;
     require_once($CFG->libdir.'/gradelib.php');
+
+    $html = '';
+
+    $sql = "SELECT r.*
+              FROM {course} r
+              JOIN {subcourse} s ON s.refcourse = r.id
+             WHERE s.id = :subcourseid";
+
+    $refcourse = $DB->get_record_sql($sql, ['subcourseid' => $cm->instance], IGNORE_MISSING);
+
+    if ($refcourse) {
+        $percentage = \core_completion\progress::get_course_progress_percentage($refcourse);
+        if ($percentage !== null) {
+            $percentage = floor($percentage);
+            $html .= html_writer::tag('div', get_string('currentprogress', 'subcourse', $percentage),
+                ['class' => 'contentafterlink']);
+        }
+    }
 
     $currentgrade = grade_get_grades($cm->course, 'mod', 'subcourse', $cm->instance, $USER->id);
 
@@ -254,10 +272,13 @@ function mod_subcourse_cm_info_view(cm_info $cm) {
         $currentgrade = reset($currentgrade->items[0]->grades);
         if (isset($currentgrade->grade) and !($currentgrade->hidden)) {
             $strgrade = $currentgrade->str_grade;
-            $html = html_writer::tag('div', get_string('currentgrade', 'subcourse', $strgrade),
-                array('class' => 'contentafterlink'));
-            $cm->set_after_link($html);
+            $html .= html_writer::tag('div', get_string('currentgrade', 'subcourse', $strgrade),
+                ['class' => 'contentafterlink']);
         }
+    }
+
+    if ($html !== '') {
+        $cm->set_after_link($html);
     }
 }
 
