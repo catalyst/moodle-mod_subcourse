@@ -80,6 +80,11 @@ function subcourse_add_instance(stdClass $subcourse) {
         subcourse_grades_update($subcourse->course, $newid, $subcourse->refcourse, $subcourse->name, true);
     }
 
+    if (!empty($subcourse->completionexpected)) {
+        \core_completion\api::update_completion_date_event($subcourse->coursemodule, 'subcourse', $newid,
+            $subcourse->completionexpected);
+    }
+
     return $newid;
 }
 
@@ -109,14 +114,14 @@ function subcourse_update_instance(stdClass $subcourse) {
 
     $DB->update_record('subcourse', $subcourse);
 
-    $subcourse = $DB->get_record('subcourse', array('id' => $subcourse->id));
-
     if (!empty($subcourse->refcourse)) {
         if (has_capability('mod/subcourse:fetchgrades', context_module::instance($cmid))) {
             subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse, $subcourse->name);
             subcourse_update_timefetched($subcourse->id);
         }
     }
+
+    \core_completion\api::update_completion_date_event($cmid, 'subcourse', $subcourse->id, $subcourse->completionexpected);
 
     return true;
 }
