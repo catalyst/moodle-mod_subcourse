@@ -291,3 +291,25 @@ function subcourse_get_completion_state($course, $cm, $userid, $type) {
 
     return $coursecompletion->is_complete();
 }
+
+/**
+ * Return the action associated with the given calendar event, or null if there is none.
+ *
+ * This is used by block_myoverview in order to display the event appropriately. If null is returned then the event
+ * is not displayed on the block.
+ *
+ * @param calendar_event $event
+ * @param \core_calendar\action_factory $factory
+ * @return \core_calendar\local\event\entities\action_interface|null
+ */
+function mod_subcourse_core_calendar_provide_event_action(calendar_event $event, \core_calendar\action_factory $factory) {
+
+    $cm = get_fast_modinfo($event->courseid)->instances['subcourse'][$event->instance];
+
+    return $factory->create_instance(
+        get_string('view'),
+        new \moodle_url('/mod/subcourse/view.php', ['id' => $cm->id]),
+        1,
+        true
+    );
+}
