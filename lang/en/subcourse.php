@@ -43,6 +43,7 @@ $string['nocoursesavailable'] = 'No courses you could fetch grades from';
 $string['nosubcourses'] = 'There are no subcourses in this course';
 $string['pluginadministration'] = 'Subcourse administration';
 $string['pluginname'] = 'Subcourse';
+$string['privacy:metadata'] = 'Subcourse does not store any personal data';
 $string['refcourse'] = 'Referenced course';
 $string['refcourse_help'] = 'The referenced course is the one the grade of the activity is taken from. Students should be enroled into the referenced course.
 
