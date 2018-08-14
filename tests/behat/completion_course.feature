@@ -29,6 +29,9 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | Redirect to the referenced course | 0                                                 |
       | Completion tracking               | Show activity as complete when conditions are met |
       | Require course completed          | 1                                                 |
+      | id_completionexpected_enabled     | 1 |
+      | id_completionexpected_hour        | 23 |
+      | id_completionexpected_minute      | 59 |
     # Add the block to a the slave course to allow students to manually complete it
     And I am on "SlaveCourse" course homepage
     And I add the "Self completion" block
@@ -38,6 +41,11 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | id_criteria_self | 1 |
     And I press "Save changes"
     And I log out
+
+  @javascript
+  Scenario: Student is informed about a subcourse to be completed
+    When I log in as "student1"
+    Then I should see "Unit course 1 should be completed" in the "Course overview" "block"
 
   @javascript
   Scenario: Completing the referenced course leads to completing the subcourse
