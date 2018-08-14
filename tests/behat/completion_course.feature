@@ -29,9 +29,8 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | Redirect to the referenced course | 0                                                 |
       | Completion tracking               | Show activity as complete when conditions are met |
       | Require course completed          | 1                                                 |
-      | id_completionexpected_enabled     | 1 |
-      | id_completionexpected_hour        | 23 |
-      | id_completionexpected_minute      | 59 |
+      | id_completionexpected_enabled     | 1                                                 |
+      | id_completionexpected_day         | 31                                                |
     # Add the block to a the slave course to allow students to manually complete it
     And I am on "SlaveCourse" course homepage
     And I add the "Self completion" block
