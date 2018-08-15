@@ -32,7 +32,7 @@ Feature: Clicking the subcourse instance in the course outline may or may not re
     When I log in as "student1"
     And I am on "MasterCourse" course homepage
     And I follow "Unit course 1"
-    Then I should see "Go to the course SlaveCourse"
+    Then I should see "Go to SlaveCourse"
     And I follow "SlaveCourse"
     And I should see "SlaveCourse" in the "page-header" "region"
 
@@ -53,7 +53,7 @@ Feature: Clicking the subcourse instance in the course outline may or may not re
       | Fetch grades from                 | SlaveCourse (S)     |
       | Redirect to the referenced course | 1                   |
     And I follow "Unit course 1"
-    Then I should see "Go to the course SlaveCourse"
+    Then I should see "Go to SlaveCourse"
     And I follow "SlaveCourse"
     And I should see "SlaveCourse" in the "page-header" "region"
 

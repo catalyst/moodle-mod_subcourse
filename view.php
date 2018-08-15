@@ -90,51 +90,92 @@ echo $OUTPUT->heading(format_string($subcourse->name));
 echo $OUTPUT->box(format_module_intro('subcourse', $subcourse, $cm->id));
 
 if ($refcourse) {
-    $refcourseurl = new moodle_url('/course/view.php', array('id' => $refcourse->id));
-    $refcourselink = array(
-        'name' => format_string($refcourse->fullname),
-        'href' => $refcourseurl->out(),
-    );
+    $percentage = \core_completion\progress::get_course_progress_percentage($refcourse);
 
-    echo $OUTPUT->heading(get_string('gotocoursename', 'subcourse', $refcourselink), 3);
+    echo html_writer::start_div('container-fluid');
+    echo html_writer::start_div('row-fluid');
 
-    echo $OUTPUT->box_start('generalbox', 'gradeinfobox');
+    if ($percentage !== null) {
+        $percentage = floor($percentage);
+        echo html_writer::start_div('col-md-6 span6');
+        echo html_writer::start_div('subcourseinfo subcourseinfo-progress');
+        echo html_writer::div(get_string('currentprogress', 'subcourse', $percentage), 'infotext');
+        echo html_writer::start_div('subcourse-progress-bar');
+        echo html_writer::div('', '', ['style' => 'width: '.$percentage.'%']);
+        echo html_writer::end_div();
+        echo html_writer::end_div();
+        echo html_writer::end_div();
+    }
 
     $currentgrade = grade_get_grades($subcourse->course, 'mod', 'subcourse', $subcourse->id, $USER->id);
+    $hasgrade = false;
+
     if (!empty($currentgrade->items[0]->grades)) {
         $currentgrade = reset($currentgrade->items[0]->grades);
-        if (isset($currentgrade->grade) and !($currentgrade->hidden)) {
+
+        if (isset($currentgrade->grade) && !($currentgrade->hidden)) {
+            $hasgrade = true;
             $strgrade = $currentgrade->str_grade;
-            echo $OUTPUT->container(get_string('currentgrade', 'subcourse', $strgrade), 'currentgrade');
+            echo html_writer::start_div('col-md-6 span6');
+            echo html_writer::start_div('subcourseinfo subcourseinfo-grade');
+            echo html_writer::div(get_string('currentgrade', 'subcourse', $strgrade), 'infotext');
+            echo html_writer::end_div();
+            echo html_writer::end_div();
         }
     }
 
-    if (has_capability('gradereport/grader:view', $coursecontext)
-            and has_capability('moodle/grade:viewall', $coursecontext)) {
-        echo $OUTPUT->single_button(
-            new moodle_url('/grade/report/grader/index.php', array('id' => $course->id)),
-            get_string('seeallcoursegrades', 'grades'), 'get'
+    echo html_writer::end_div();
+
+    echo html_writer::start_div('row-fluid');
+    echo html_writer::start_div('col-md-12 span12');
+    echo html_writer::start_div('actionbuttons');
+
+    echo html_writer::link(
+        new moodle_url('/course/view.php', ['id' => $refcourse->id]),
+        get_string('gotorefcourse', 'subcourse', format_string($refcourse->fullname)),
+        ['class' => 'btn btn-primary']
+    );
+
+    $refcoursecontext = context_course::instance($refcourse->id);
+
+    if (has_all_capabilities(['gradereport/grader:view', 'moodle/grade:viewall'], $refcoursecontext)) {
+        echo html_writer::link(
+            new moodle_url('/grade/report/grader/index.php', ['id' => $refcourse->id]),
+            get_string('gotorefcoursegrader', 'subcourse', format_string($refcourse->fullname)),
+            ['class' => 'btn btn-secondary']
         );
     }
 
-    echo $OUTPUT->box_end();
-
-    echo $OUTPUT->box_start('generalbox', 'fetchinfobox');
-
-    if (empty($subcourse->timefetched)) {
-        echo get_string('lastfetchnever', 'subcourse');
-    } else {
-        echo get_string('lastfetchtime', 'subcourse', userdate($subcourse->timefetched));
+    if (has_all_capabilities(['gradereport/user:view', 'moodle/grade:view'], $refcoursecontext)
+            && $refcourse->showgrades && $hasgrade) {
+        echo html_writer::link(
+            new moodle_url('/grade/report/user/index.php', ['id' => $refcourse->id]),
+            get_string('gotorefcoursemygrades', 'subcourse', format_string($refcourse->fullname)),
+            ['class' => 'btn btn-secondary']
+        );
     }
 
     if (has_capability('mod/subcourse:fetchgrades', $context)) {
-        echo $OUTPUT->single_button(
-            new moodle_url($PAGE->url, array('sesskey' => sesskey(), 'fetchnow' => 1)),
-            get_string('fetchnow', 'subcourse')
+        echo html_writer::link(
+            new moodle_url($PAGE->url, ['sesskey' => sesskey(), 'fetchnow' => 1]),
+            get_string('fetchnow', 'subcourse'),
+            ['class' => 'btn btn-link']
         );
+
+        if (empty($subcourse->timefetched)) {
+            $fetchinfo = get_string('lastfetchnever', 'subcourse');
+        } else {
+            $fetchinfo = get_string('lastfetchtime', 'subcourse', userdate($subcourse->timefetched));
+        }
+
+        echo html_writer::tag('small', $fetchinfo, ['class' => 'dimmed_text']);
     }
 
-    echo $OUTPUT->box_end();
+    echo html_writer::end_div();
+    echo html_writer::end_div();
+    echo html_writer::end_div();
+
+    echo html_writer::end_div();
 
 } else {
     if (has_capability('mod/subcourse:fetchgrades', $context)) {

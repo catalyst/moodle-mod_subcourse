@@ -67,12 +67,11 @@ Feature: Grades are fetched automatically from the referenced course
     # Upon creation, no grades are fetched yet.
     #
     Then I should see "The grades have not been fetched yet"
-    And I press "Fetch now"
+    And I follow "Fetch grades now"
     And I should see "Last fetch:"
     #
     # After fetching, the grades are copied.
     #
-    And I press "See all course grades"
     And I navigate to "View > User report" in the course gradebook
     And I set the field "Select all or one user" to "Student 1"
     And the following should exist in the "user-grade" table:

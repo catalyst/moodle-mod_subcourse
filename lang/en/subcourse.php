@@ -30,8 +30,10 @@ $string['currentprogress'] = 'Progress: {$a}%';
 $string['errfetch'] = 'Unable to fetch grades: error code {$a}';
 $string['errlocalremotescale'] = 'Unable to fetch grades: the remote final grade item uses local scale.';
 $string['eventgradesfetched'] = 'Grades fetched';
-$string['fetchnow'] = 'Fetch now';
-$string['gotocoursename'] = 'Go to the course <a href="{$a->href}">{$a->name}</a>';
+$string['fetchnow'] = 'Fetch grades now';
+$string['gotorefcourse'] = 'Go to {$a}';
+$string['gotorefcoursegrader'] = 'All grades in {$a}';
+$string['gotorefcoursemygrades'] = 'My grades in {$a}';
 $string['hiddencourse'] = '*hidden*';
 $string['instantredirect'] = 'Redirect to the referenced course';
 $string['instantredirect_help'] = 'If enabled, users will be redirected to the referenced course when attempting to view the subcourse module page. Does not affect users with the permission to fetch grades manually.';
@@ -61,3 +63,6 @@ $string['taskfetchgrades'] = 'Fetch subcourse grades';
 $string['completioncourse'] = 'Require course completed';
 $string['completioncourse_help'] = 'If enabled, the activity is considered complete when a student completes the referenced course.';
 $string['completioncourse_text'] = 'Student must complete the referenced course to complete this activity.';
+
+// Deprecated and no longer used.
+$string['gotocoursename'] = 'Go to the course <a href="{$a->href}">{$a->name}</a>';
