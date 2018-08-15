@@ -1,3 +1,10 @@
+### 7.0.0 ###
+
+* Progress in the referenced course is displayed.
+* The main view page now provides links to the gradebook in the referenced course
+  instead of the link to the gradebook in the current course (issue #22).
+* Overall cleanup and UI improvements of the main view page.
+
 ### 6.0.0 ###
 
 * Filters are applied displaying course names - credit goes to Philipp Hager
