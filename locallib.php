@@ -95,7 +95,7 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
 
     // Get grade_item info.
     foreach ($fetchedfields as $property) {
-        if (!empty($refgradeitem->$property)) {
+        if (isset($refgradeitem->$property)) {
             $return->$property = $refgradeitem->$property;
         } else {
             $return->$property = null;
@@ -176,7 +176,7 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
     $params = array();
 
     foreach ($fetchedfields as $property) {
-        if (!empty ($refgrades->$property)) {
+        if (isset($refgrades->$property)) {
             $params[$property] = $refgrades->$property;
         }
     }
@@ -252,5 +252,5 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
  * @return array
  */
 function subcourse_get_fetched_item_fields() {
-    return array('gradetype', 'grademax', 'grademin', 'scaleid');
+    return array('gradetype', 'grademax', 'grademin', 'scaleid', 'hidden');
 }
