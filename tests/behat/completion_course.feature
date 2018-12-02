@@ -33,7 +33,7 @@ Feature: Completing the referenced course can lead to completing the subcourse a
     # Add the block to a the slave course to allow students to manually complete it
     And I am on "SlaveCourse" course homepage
     And I add the "Self completion" block
-    And I navigate to "Course completion" node in "Course administration"
+    And I navigate to "Course completion" in current page administration
     And I expand all fieldsets
     And I set the following fields to these values:
       | id_criteria_self | 1 |
@@ -43,7 +43,7 @@ Feature: Completing the referenced course can lead to completing the subcourse a
   @javascript
   Scenario: Student is informed about a subcourse to be completed
     When I log in as "student1"
-    Then I should see "Unit course 1 should be completed" in the "Course overview" "block"
+    Then I should see "Unit course 1 should be completed"
 
   @javascript
   Scenario: Completing the referenced course leads to completing the subcourse
@@ -60,5 +60,5 @@ Feature: Completing the referenced course can lead to completing the subcourse a
     And I log out
     And I log in as "teacher1"
     And I am on "MasterCourse" course homepage
-    And I navigate to "Activity completion" node in "Course administration > Reports"
+    And I navigate to "Reports > Activity completion" in current page administration
     And "//img[contains(@title, 'Unit course 1') and contains(@title, 'Completed')]" "xpath_element" should exist in the "Student 1" "table_row"
