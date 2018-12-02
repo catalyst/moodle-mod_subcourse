@@ -27,7 +27,6 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot.'/mod/subcourse/locallib.php');
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
-require_once($CFG->libdir.'/coursecatlib.php');
 
 /**
  * Subcourse settings form
@@ -121,7 +120,12 @@ class mod_subcourse_mod_form extends moodleform_mod {
             }
 
         } else {
-            $catlist = coursecat::make_categories_list('', 0, ' / ');
+            if ($CFG->branch >= 36) {
+                $catlist = core_course_category::make_categories_list('', 0, ' / ');
+            } else {
+                require_once($CFG->libdir.'/coursecatlib.php');
+                $catlist = coursecat::make_categories_list('', 0, ' / ');
+            }
             foreach ($mycourses as $mycourse) {
                 if (empty($options[$catlist[$mycourse->category]])) {
                     $options[$catlist[$mycourse->category]] = array();
