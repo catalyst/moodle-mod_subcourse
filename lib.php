@@ -72,6 +72,10 @@ function subcourse_add_instance(stdClass $subcourse) {
         $subcourse->instantredirect = 0;
     }
 
+    if (empty($subcourse->blankwindow)) {
+        $subcourse->blankwindow = 0;
+    }
+
     $newid = $DB->insert_record("subcourse", $subcourse);
 
     if (!empty($subcourse->refcourse)) {
@@ -110,6 +114,10 @@ function subcourse_update_instance(stdClass $subcourse) {
 
     if (empty($subcourse->instantredirect)) {
         $subcourse->instantredirect = 0;
+    }
+
+    if (empty($subcourse->blankwindow)) {
+        $subcourse->blankwindow = 0;
     }
 
     $DB->update_record('subcourse', $subcourse);

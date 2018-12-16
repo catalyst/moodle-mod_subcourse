@@ -25,6 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+$string['blankwindow'] = 'Open in a new window';
+$string['blankwindow_help'] = 'When selected, the link will open the referenced course in a new browser window.';
 $string['currentgrade'] = 'Current grade: {$a}';
 $string['currentprogress'] = 'Progress: {$a}%';
 $string['errfetch'] = 'Unable to fetch grades: error code {$a}';
