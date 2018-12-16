@@ -151,6 +151,9 @@ class mod_subcourse_mod_form extends moodleform_mod {
         $mform->addElement('checkbox', 'instantredirect', get_string('instantredirect', 'subcourse'));
         $mform->addHelpButton('instantredirect', 'instantredirect', 'subcourse');
 
+        $mform->addElement('checkbox', 'blankwindow', get_string('blankwindow', 'subcourse'));
+        $mform->addHelpButton('blankwindow', 'blankwindow', 'subcourse');
+
         $this->standard_coursemodule_elements();
         $this->add_action_buttons();
     }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/subcourse/db" VERSION="20170713" COMMENT="XMLDB file for Moodle mod/subcourse"
+<XMLDB PATH="mod/subcourse/db" VERSION="20181216" COMMENT="XMLDB file for Moodle mod/subcourse"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -17,6 +17,7 @@
         <FIELD NAME="refcourse" TYPE="int" LENGTH="10" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Referenced course"/>
         <FIELD NAME="instantredirect" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Should the student be instantly redirected to the course page when viewing a subcourse module?"/>
         <FIELD NAME="completioncourse" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Should the activity be marked as completed when the referenced course is completed."/>
+        <FIELD NAME="blankwindow" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Should the referenced course be open in a new window?"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

@@ -72,6 +72,10 @@ function subcourse_add_instance(stdClass $subcourse) {
         $subcourse->instantredirect = 0;
     }
 
+    if (empty($subcourse->blankwindow)) {
+        $subcourse->blankwindow = 0;
+    }
+
     $newid = $DB->insert_record("subcourse", $subcourse);
 
     if (!empty($subcourse->refcourse)) {
@@ -110,6 +114,10 @@ function subcourse_update_instance(stdClass $subcourse) {
 
     if (empty($subcourse->instantredirect)) {
         $subcourse->instantredirect = 0;
+    }
+
+    if (empty($subcourse->blankwindow)) {
+        $subcourse->blankwindow = 0;
     }
 
     $DB->update_record('subcourse', $subcourse);
@@ -333,4 +341,40 @@ function mod_subcourse_core_calendar_provide_event_action(calendar_event $event,
         1,
         true
     );
+}
+
+/**
+ * Given a course_module object, this function returns any
+ * "extra" information that may be needed when printing
+ * this activity in a course listing.
+ *
+ * See {@link get_array_of_activities()} in course/lib.php
+ *
+ * @param object $coursemodule
+ * @return cached_cm_info info
+ */
+function subcourse_get_coursemodule_info($coursemodule) {
+    global $CFG, $DB;
+
+    $subcourse = $DB->get_record('subcourse', ['id' => $coursemodule->instance],
+        'id, name, intro, introformat, instantredirect, blankwindow');
+
+    if (!$subcourse) {
+        return null;
+    }
+
+    $info = new cached_cm_info();
+    $info->name = $subcourse->name;
+
+    if ($subcourse->instantredirect && $subcourse->blankwindow) {
+        $url = new moodle_url('/mod/subcourse/view.php', ['id' => $coursemodule->id]);
+        $info->onclick = "window.open('".$url->out(false)."'); return false;";
+    }
+
+    if ($coursemodule->showdescription) {
+        // Set content from intro and introformat. Filters are disabled because we filter with format_text at display time.
+        $info->content = format_module_intro('subcourse', $subcourse, $coursemodule->id, false);
+    }
+
+    return $info;
 }

@@ -133,7 +133,7 @@ if ($refcourse) {
     echo html_writer::link(
         new moodle_url('/course/view.php', ['id' => $refcourse->id]),
         get_string('gotorefcourse', 'subcourse', format_string($refcourse->fullname)),
-        ['class' => 'btn btn-primary']
+        ['class' => 'btn btn-primary', 'target' => ($subcourse->blankwindow ? '_blank' : '')]
     );
 
     $refcoursecontext = context_course::instance($refcourse->id);
