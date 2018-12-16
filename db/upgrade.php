@@ -72,5 +72,17 @@ function xmldb_subcourse_upgrade($oldversion=0) {
         upgrade_mod_savepoint(true, 2017071300, 'subcourse');
     }
 
+    if ($oldversion < 2018121600) {
+        // Add field 'blankwindow' to the table 'subcourse'.
+        $table = new xmldb_table('subcourse');
+        $field = new xmldb_field('blankwindow', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'completioncourse');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2018121600, 'subcourse');
+    }
+
     return true;
 }
