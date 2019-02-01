@@ -28,6 +28,7 @@ require_once($CFG->libdir.'/gradelib.php');
 
 $id = required_param('id', PARAM_INT);
 $fetchnow = optional_param('fetchnow', 0, PARAM_INT);
+$isblankwindow = optional_param('isblankwindow', false, PARAM_BOOL);
 
 $cm = get_coursemodule_from_id('subcourse', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
@@ -130,10 +131,16 @@ if ($refcourse) {
     echo html_writer::start_div('col-md-12 span12');
     echo html_writer::start_div('actionbuttons');
 
+    if ($subcourse->blankwindow && !$isblankwindow) {
+        $target = '_blank';
+    } else {
+        $target = '';
+    }
+
     echo html_writer::link(
         new moodle_url('/course/view.php', ['id' => $refcourse->id]),
         get_string('gotorefcourse', 'subcourse', format_string($refcourse->fullname)),
-        ['class' => 'btn btn-primary', 'target' => ($subcourse->blankwindow ? '_blank' : '')]
+        ['class' => 'btn btn-primary', 'target' => $target]
     );
 
     $refcoursecontext = context_course::instance($refcourse->id);

@@ -367,7 +367,7 @@ function subcourse_get_coursemodule_info($coursemodule) {
     $info->name = $subcourse->name;
 
     if ($subcourse->instantredirect && $subcourse->blankwindow) {
-        $url = new moodle_url('/mod/subcourse/view.php', ['id' => $coursemodule->id]);
+        $url = new moodle_url('/mod/subcourse/view.php', ['id' => $coursemodule->id, 'isblankwindow' => 1]);
         $info->onclick = "window.open('".$url->out(false)."'); return false;";
     }
 
