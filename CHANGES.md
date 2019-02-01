@@ -1,3 +1,7 @@
+### 7.2.0 ###
+
+* Links to the referenced course can open in a new window/tab (issue #27).
+
 ### 7.1.1 ###
 
 * Do not call a method deprecated in Moodle 3.6
