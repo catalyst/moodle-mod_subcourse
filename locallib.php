@@ -126,11 +126,22 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
             if ($userids && !in_array($user->id, $userids)) {
                 continue;
             }
+
             $grade = new grade_grade(array('itemid' => $refgradeitem->id, 'userid' => $user->id));
-            $grade->grade_item =& $refgradeitem;
+
+            if ($grade->finalgrade === null) {
+                continue;
+            }
+
             $return->grades[$user->id] = new stdClass();
             $return->grades[$user->id]->userid = $user->id;
-            $return->grades[$user->id]->rawgrade = $grade->finalgrade;
+
+            if ($grade->rawgrademax > 0) {
+                $return->grades[$user->id]->rawgrade = grade_floatval($grade->finalgrade / $grade->rawgrademax * $return->grademax);
+            } else {
+                $return->grades[$user->id]->rawgrade = 0;
+            }
+
             $return->grades[$user->id]->feedback = $grade->feedback;
             $return->grades[$user->id]->feedbackformat = $grade->feedbackformat;
         }
