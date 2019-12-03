@@ -2,15 +2,13 @@ language: php
 
 sudo: true
 
-services:
-  - mysql
-
 addons:
   firefox: "47.0.1"
   postgresql: "9.4"
-  apt:
-    packages:
-      - openjdk-8-jre-headless
+
+services:
+  - mysql
+  - postgresql
 
 cache:
   directories:
@@ -18,11 +16,12 @@ cache:
     - $HOME/.npm
 
 php:
- - 7.1
+ - 7.2
 
 env:
  matrix:
   - DB=pgsql MOODLE_BRANCH=master
+  - DB=mysqli MOODLE_BRANCH=MOODLE_38_STABLE
   - DB=mysqli MOODLE_BRANCH=MOODLE_37_STABLE
   - DB=pgsql MOODLE_BRANCH=MOODLE_36_STABLE
   - DB=pgsql MOODLE_BRANCH=MOODLE_35_STABLE
