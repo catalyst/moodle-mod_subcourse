@@ -255,6 +255,7 @@ function subcourse_scale_used_anywhere($scaleid) {
 function mod_subcourse_cm_info_view(cm_info $cm) {
     global $CFG, $USER, $DB;
     require_once($CFG->libdir.'/gradelib.php');
+    require_once($CFG->dirroot.'/completion/classes/progress.php');
 
     $html = '';
 
