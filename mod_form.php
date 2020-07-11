@@ -108,7 +108,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
             $includekeepref = true;
         }
 
-        $options = array();
+        $options = array(get_string('none'));
 
         if (empty($mycourses)) {
             if (empty($includekeepref)) {
@@ -127,21 +127,15 @@ class mod_subcourse_mod_form extends moodleform_mod {
                 $catlist = coursecat::make_categories_list('', 0, ' / ');
             }
             foreach ($mycourses as $mycourse) {
-                if (empty($options[$catlist[$mycourse->category]])) {
-                    $options[$catlist[$mycourse->category]] = array();
-                }
-                $courselabel = $mycourse->fullname.' ('.$mycourse->shortname.')';
-                $options[$catlist[$mycourse->category]][$mycourse->id] = $courselabel;
+                $courselabel = $catlist[$mycourse->category] . ' / ' . $mycourse->fullname.' ('.$mycourse->shortname.')';
+                $options[$mycourse->id] = $courselabel;
                 if (empty($mycourse->visible)) {
                     $hiddenlabel = ' '.get_string('hiddencourse', 'subcourse');
-                    $options[$catlist[$mycourse->category]][$mycourse->id] .= $hiddenlabel;
+                    $options[$mycourse->id] .= $hiddenlabel;
                 }
             }
-            if (!empty($includenoref)) {
-                $options['---'] = array(0 => get_string('none'));
-            }
 
-            $mform->addElement('selectgroups', 'refcourse', get_string('refcourselabel', 'subcourse'), $options);
+            $mform->addElement('autocomplete', 'refcourse', get_string('refcourselabel', 'subcourse'), $options);
 
             if (!empty($includekeepref)) {
                 $mform->disabledIf('refcourse', 'refcoursecurrent', 'checked');
