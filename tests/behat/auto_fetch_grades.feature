@@ -13,15 +13,15 @@ Feature: Grades are fetched automatically from the referenced course
       | student2      | Student   | 2         | student2@example.com |
     And the following "courses" exist:
       | fullname      | shortname | category  |
-      | MasterCourse  | M         | 0         |
-      | SlaveCourse   | S         | 0         |
+      | MainCourse    | M         | 0         |
+      | RefCourse     | R         | 0         |
     And the following "course enrolments" exist:
       | user          | course    | role              |
       | teacher1      | M         | editingteacher    |
       | student1      | M         | student           |
-      | teacher1      | S         | editingteacher    |
-      | student1      | S         | student           |
-      | student2      | S         | student           |
+      | teacher1      | R         | editingteacher    |
+      | student1      | R         | student           |
+      | student2      | R         | student           |
     And I log in as "admin"
     #
     # We use Mean of grades in this test to be able to override the maximum course grade.
@@ -33,10 +33,10 @@ Feature: Grades are fetched automatically from the referenced course
     # Set grades in the referenced course.
     #
     And I log in as "teacher1"
-    And I am on "SlaveCourse" course homepage
+    And I am on "RefCourse" course homepage
     And I navigate to "Setup > Gradebook setup" in the course gradebook
-    And I click on "Edit" "link" in the "SlaveCourse" "table_row"
-    And I click on "Edit settings" "link" in the "SlaveCourse" "table_row"
+    And I click on "Edit" "link" in the "RefCourse" "table_row"
+    And I click on "Edit settings" "link" in the "RefCourse" "table_row"
     And I set the following fields to these values:
       | Aggregation   | Mean of grades  |
       | Maximum grade | 1000            |
@@ -55,11 +55,11 @@ Feature: Grades are fetched automatically from the referenced course
     #
     # Create the subcourse instance.
     #
-    And I am on "MasterCourse" course homepage
+    And I am on "MainCourse" course homepage
     And I turn editing mode on
     And I add a "Subcourse" to section "1" and I fill the form with:
       | Subcourse name                    | Unit course 1       |
-      | Fetch grades from                 | SlaveCourse (S)     |
+      | Fetch grades from                 | RefCourse (R)       |
       | Redirect to the referenced course | 0                   |
     And I turn editing mode off
     And I follow "Unit course 1"
@@ -80,13 +80,13 @@ Feature: Grades are fetched automatically from the referenced course
     #
     # Changing grades in the referenced course has instant effect.
     #
-    And I am on "SlaveCourse" course homepage
+    And I am on "RefCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     And I turn editing mode on
     And I give the grade "150" to the user "Student 1" for the grade item "Manual item 1"
     And I press "Save changes"
     And I turn editing mode off
-    And I am on "MasterCourse" course homepage
+    And I am on "MainCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     And I should not see "Student 2"
     And I navigate to "View > User report" in the course gradebook
@@ -100,7 +100,7 @@ Feature: Grades are fetched automatically from the referenced course
     And the following "course enrolments" exist:
       | user          | course    | role              |
       | student2      | M         | student           |
-    And I am on "MasterCourse" course homepage
+    And I am on "MainCourse" course homepage
     And I navigate to "View > User report" in the course gradebook
     And I set the field "Select all or one user" to "Student 2"
     And the following should exist in the "user-grade" table:

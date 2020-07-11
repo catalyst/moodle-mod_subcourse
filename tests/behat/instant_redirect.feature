@@ -11,56 +11,60 @@ Feature: Clicking the subcourse instance in the course outline may or may not re
       | student1      | Student   | 1         | student1@example.com |
     And the following "courses" exist:
       | fullname      | shortname | category  |
-      | MasterCourse  | M         | 0         |
-      | SlaveCourse   | S         | 0         |
+      | MainCourse    | M         | 0         |
+      | RefCourse     | R         | 0         |
     And the following "course enrolments" exist:
       | user          | course    | role              |
       | teacher1      | M         | editingteacher    |
       | student1      | M         | student           |
-      | teacher1      | S         | editingteacher    |
-      | student1      | S         | student           |
+      | teacher1      | R         | editingteacher    |
+      | student1      | R         | student           |
     And I log in as "teacher1"
-    And I am on "MasterCourse" course homepage
+    And I am on "MainCourse" course homepage
     And I turn editing mode on
 
+  @javascript
   Scenario: Student has to click the link to the referenced course manually
     And I add a "Subcourse" to section "1" and I fill the form with:
       | Subcourse name                    | Unit course 1       |
-      | Fetch grades from                 | SlaveCourse (S)     |
+      | Fetch grades from                 | RefCourse (R)       |
       | Redirect to the referenced course | 0                   |
     And I log out
     When I log in as "student1"
-    And I am on "MasterCourse" course homepage
+    And I am on "MainCourse" course homepage
     And I follow "Unit course 1"
-    Then I should see "Go to SlaveCourse"
-    And I follow "SlaveCourse"
-    And I should see "SlaveCourse" in the "page-header" "region"
+    Then I should see "Go to RefCourse"
+    And I follow "RefCourse"
+    And I should see "RefCourse" in the "page-header" "region"
 
+  @javascript
   Scenario: Student is instantly redirected to the referenced course
     And I add a "Subcourse" to section "1" and I fill the form with:
       | Subcourse name                    | Unit course 1       |
-      | Fetch grades from                 | SlaveCourse (S)     |
+      | Fetch grades from                 | RefCourse (R)       |
       | Redirect to the referenced course | 1                   |
     And I log out
     When I log in as "student1"
-    And I am on "MasterCourse" course homepage
+    And I am on "MainCourse" course homepage
     And I follow "Unit course 1"
-    Then I should see "SlaveCourse" in the "page-header" "region"
+    Then I should see "RefCourse" in the "page-header" "region"
 
+  @javascript
   Scenario: Teacher is not redirected instantly even if that is enabled
     And I add a "Subcourse" to section "1" and I fill the form with:
       | Subcourse name                    | Unit course 1       |
-      | Fetch grades from                 | SlaveCourse (S)     |
+      | Fetch grades from                 | RefCourse (R)       |
       | Redirect to the referenced course | 1                   |
     And I follow "Unit course 1"
-    Then I should see "Go to SlaveCourse"
-    And I follow "SlaveCourse"
-    And I should see "SlaveCourse" in the "page-header" "region"
+    Then I should see "Go to RefCourse"
+    And I follow "RefCourse"
+    And I should see "RefCourse" in the "page-header" "region"
 
+  @javascript
   Scenario: Teacher is redirected instantly if unable to fetch grades manually
     And I add a "Subcourse" to section "1" and I fill the form with:
       | Subcourse name                    | Unit course 1       |
-      | Fetch grades from                 | SlaveCourse (S)     |
+      | Fetch grades from                 | RefCourse (R)       |
       | Redirect to the referenced course | 1                   |
       | ID number                         | subcourse1          |
     And the following "permission overrides" exist:
@@ -68,5 +72,5 @@ Feature: Clicking the subcourse instance in the course outline may or may not re
       | mod/subcourse:fetchgrades     | Prevent     | teacher         | Activity module | subcourse1  |
       | mod/subcourse:fetchgrades     | Prevent     | editingteacher  | Activity module | subcourse1  |
     And I follow "Unit course 1"
-    And I follow "SlaveCourse"
-    Then I should see "SlaveCourse" in the "page-header" "region"
+    And I follow "RefCourse"
+    Then I should see "RefCourse" in the "page-header" "region"
