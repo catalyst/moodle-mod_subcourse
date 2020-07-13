@@ -32,15 +32,24 @@ $string['currentprogress'] = 'Progress: {$a}%';
 $string['errfetch'] = 'Unable to fetch grades: error code {$a}';
 $string['errlocalremotescale'] = 'Unable to fetch grades: the remote final grade item uses local scale.';
 $string['eventgradesfetched'] = 'Grades fetched';
+$string['fetchgradesmode'] = 'Fetch grades as';
+$string['fetchgradesmode0'] = 'Real values';
+$string['fetchgradesmode1'] = 'Percentual values';
+$string['fetchgradesmode_help'] = 'Depending on the gradebook setup in the referenced course, the raw value and the percentual value of the final course grade may not always match the values shown in this subcourse activity. This setting determines which of the values should match.
+
+* Real values - the real value of the final grade in the referenced is fetched as an activity grade in this subcourse. If there are some excluded grades in the referenced course, then the percentual final grade calculated in the referenced course may not match the percentage in the subcourse activity.
+* Percentual values - the final grade received in the referenced course is recalculated so that the percentage displayed in the referenced course matches the percentage displayed in this subcourse activity. If there are some excluded grades in the referenced course, the actual real grade value may not match.';
 $string['fetchnow'] = 'Fetch grades now';
 $string['gotorefcourse'] = 'Go to {$a}';
 $string['gotorefcoursegrader'] = 'All grades in {$a}';
 $string['gotorefcoursemygrades'] = 'My grades in {$a}';
+$string['gradesfetching'] = 'Grades fetching';
 $string['hiddencourse'] = '*hidden*';
 $string['instantredirect'] = 'Redirect to the referenced course';
 $string['instantredirect_help'] = 'If enabled, users will be redirected to the referenced course when attempting to view the subcourse module page. Does not affect users with the permission to fetch grades manually.';
 $string['lastfetchnever'] = 'The grades have not been fetched yet';
 $string['lastfetchtime'] = 'Last fetch: {$a}';
+$string['linkcontrol'] = 'Subcourse activity link';
 $string['modulename'] = 'Subcourse';
 $string['modulename_help'] = 'The module provides very simple yet useful functionality. When added into a course, it behaves as a graded activity. The grade for each student is taken from a final grade in another course. Combined with metacourses, this allows course designers to organize courses into separate units.';
 $string['modulenameplural'] = 'Subcourses';
@@ -52,7 +61,7 @@ $string['privacy:metadata'] = 'Subcourse does not store any personal data';
 $string['refcourse'] = 'Referenced course';
 $string['refcourse_help'] = 'The referenced course is the one the grade of the activity is taken from. Students should be enroled into the referenced course.
 
-You need to be a teacher in the course to have it listed here. You may want to ask your site administrator to set up this subcourse for you to fetch grades from other courses.';
+You need to be a teacher in the course to have it listed here. You may nned to ask your site administrator to set up this activity for you to fetch grades from other courses.';
 $string['refcoursecurrent'] = 'Keep current reference';
 $string['refcourselabel'] = 'Fetch grades from';
 $string['refcoursenull'] = 'No referenced course configured';
