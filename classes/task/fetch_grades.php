@@ -72,7 +72,7 @@ class fetch_grades extends \core\task\scheduled_task {
             mtrace("Subcourse {$subcourse->id}: fetching grades from course {$subcourse->refcourse} ".
                "to course {$subcourse->course} ... ", "");
             $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse,
-                null, dalse, false, [], $subcourse->fetchpercentage);
+                null, false, false, [], $subcourse->fetchpercentage);
 
             if ($result == GRADE_UPDATE_OK) {
                 $updatedids[] = $subcourse->id;
