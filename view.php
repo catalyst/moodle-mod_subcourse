@@ -61,7 +61,8 @@ if ($fetchnow and $refcourse) {
     $event->add_record_snapshot('course', $course);
     $event->add_record_snapshot('subcourse', $subcourse);
     $event->trigger();
-    $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse);
+    $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse,
+        null, false, false, [], $subcourse->fetchpercentage);
     if ($result == GRADE_UPDATE_OK) {
         subcourse_update_timefetched($subcourse->id);
         redirect(new moodle_url('/mod/subcourse/view.php', array('id' => $cm->id)));

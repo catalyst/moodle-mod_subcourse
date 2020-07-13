@@ -50,11 +50,11 @@ class observers {
         $courseid = $event->courseid;
         $userid = $event->relateduserid;
 
-        $subcourses = $DB->get_records('subcourse', array('refcourse' => $courseid));
+        $subcourses = $DB->get_records('subcourse', ['refcourse' => $courseid], '', 'id, course, refcourse, fetchpercentage');
 
         foreach ($subcourses as $subcourse) {
             $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse,
-                null, false, false, $userid);
+                null, false, false, $userid, $subcourse->fetchpercentage);
         }
     }
 
@@ -73,11 +73,11 @@ class observers {
         $courseid = $event->courseid;
         $userid = $event->relateduserid;
 
-        $subcourses = $DB->get_records('subcourse', array('course' => $courseid));
+        $subcourses = $DB->get_records('subcourse', ['course' => $courseid], '', 'id, course, refcourse, fetchpercentage');
 
         foreach ($subcourses as $subcourse) {
             $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse,
-                null, false, false, $userid);
+                null, false, false, $userid, $subcourse->fetchpercentage);
         }
     }
 

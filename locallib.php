@@ -172,10 +172,11 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
  * @param bool $gradeitemonly If true, fetch only grade item info without grades
  * @param bool $reset Reset grades in gradebook
  * @param int|array $userids If fetching grades, limit only to this user(s), defaults to all.
+ * @param bool $fetchpercentage Re-calculate the grade value so that the displayed percentage matches the original.
  * @return int GRADE_UPDATE_OK etc
  */
 function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemname = null,
-        $gradeitemonly = false, $reset = false, $userids = []) {
+        $gradeitemonly = false, $reset = false, $userids = [], $fetchpercentage = null) {
     global $DB;
 
     if (empty($refcourseid)) {
@@ -186,9 +187,14 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
         return GRADE_UPDATE_FAILED;
     }
 
+    if (!$gradeitemonly && $fetchpercentage === null) {
+        debugging('Performance: The caller should provide the fetchpercentage value to avoid an extra DB call.', DEBUG_DEVELOPER);
+        $fetchpercentage = $DB->get_field('subcourse', 'fetchpercentage', ['id' => $subcourseid]);
+    }
+
     $fetchedfields = subcourse_get_fetched_item_fields();
 
-    $refgrades = subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly, $userids);
+    $refgrades = subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly, $userids, $fetchpercentage);
 
     if (!empty($refgrades->localremotescale)) {
         // Unable to fetch remote grades - local scale is used in the remote course.
