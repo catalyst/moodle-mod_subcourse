@@ -1,4 +1,4 @@
-@mod @mod_subcourse @wip
+@mod @mod_subcourse
 Feature: Grades can be fetched either a real values or as percentages
   In order to have the same grade in the referenced course and in the target meta course
   As a teacher
