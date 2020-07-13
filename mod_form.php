@@ -142,6 +142,16 @@ class mod_subcourse_mod_form extends moodleform_mod {
             }
         }
 
+        $mform->addElement('header', 'section-gradesfetching', get_string('gradesfetching', 'subcourse'));
+
+        $mform->addElement('select', 'fetchpercentage', get_string('fetchgradesmode', 'subcourse'), [
+            0 => get_string('fetchgradesmode0', 'subcourse'),
+            1 => get_string('fetchgradesmode1', 'subcourse'),
+        ]);
+        $mform->addHelpButton('fetchpercentage', 'fetchgradesmode', 'subcourse');
+
+        $mform->addElement('header', 'section-subcourselink', get_string('linkcontrol', 'subcourse'));
+
         $mform->addElement('checkbox', 'instantredirect', get_string('instantredirect', 'subcourse'));
         $mform->addHelpButton('instantredirect', 'instantredirect', 'subcourse');
 

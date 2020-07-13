@@ -78,9 +78,10 @@ function subcourse_available_courses($userid = null) {
  * @param int $refcourseid ID of referenced course
  * @param bool $gradeitemonly If true, fetch only grade item info without grades
  * @param int|array $userids If fetching grades, limit only to this user(s), defaults to all.
+ * @param bool $fetchpercentage Re-calculate the grade value so that the displayed percentage matches the original.
  * @return stdClass containing grades array and gradeitem info
  */
-function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = false, $userids = []) {
+function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = false, $userids = [], $fetchpercentage = false) {
 
     if (empty($refcourseid)) {
         throw new coding_exception('Empty referenced course id');
@@ -126,13 +127,34 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
             if ($userids && !in_array($user->id, $userids)) {
                 continue;
             }
+
             $grade = new grade_grade(array('itemid' => $refgradeitem->id, 'userid' => $user->id));
-            $grade->grade_item =& $refgradeitem;
+
             $return->grades[$user->id] = new stdClass();
             $return->grades[$user->id]->userid = $user->id;
-            $return->grades[$user->id]->rawgrade = $grade->finalgrade;
             $return->grades[$user->id]->feedback = $grade->feedback;
             $return->grades[$user->id]->feedbackformat = $grade->feedbackformat;
+
+            if ($grade->finalgrade === null) {
+                // No grade set yet.
+                $return->grades[$user->id]->rawgrade = null;
+
+            } else if (empty($fetchpercentage)) {
+                // Fetch the raw value of the final grade in the referenced course.
+                $return->grades[$user->id]->rawgrade = $grade->finalgrade;
+
+            } else {
+                // Re-calculate the value so that the displayed percentage matches.
+                // This may make difference when there are excluded grades in the referenced course.
+                if ($grade->rawgrademax > 0) {
+                    $ratio = ($grade->finalgrade - $grade->rawgrademin) / ($grade->rawgrademax - $grade->rawgrademin);
+                    $fakevalue = $return->grademin + $ratio * ($return->grademax - $return->grademin);
+                    $return->grades[$user->id]->rawgrade = grade_floatval($fakevalue);
+
+                } else {
+                    $return->grades[$user->id]->rawgrade = 0;
+                }
+            }
         }
     }
 
@@ -150,10 +172,11 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
  * @param bool $gradeitemonly If true, fetch only grade item info without grades
  * @param bool $reset Reset grades in gradebook
  * @param int|array $userids If fetching grades, limit only to this user(s), defaults to all.
+ * @param bool $fetchpercentage Re-calculate the grade value so that the displayed percentage matches the original.
  * @return int GRADE_UPDATE_OK etc
  */
 function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemname = null,
-        $gradeitemonly = false, $reset = false, $userids = []) {
+        $gradeitemonly = false, $reset = false, $userids = [], $fetchpercentage = null) {
     global $DB;
 
     if (empty($refcourseid)) {
@@ -164,9 +187,14 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
         return GRADE_UPDATE_FAILED;
     }
 
+    if (!$gradeitemonly && $fetchpercentage === null) {
+        debugging('Performance: The caller should provide the fetchpercentage value to avoid an extra DB call.', DEBUG_DEVELOPER);
+        $fetchpercentage = $DB->get_field('subcourse', 'fetchpercentage', ['id' => $subcourseid]);
+    }
+
     $fetchedfields = subcourse_get_fetched_item_fields();
 
-    $refgrades = subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly, $userids);
+    $refgrades = subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly, $userids, $fetchpercentage);
 
     if (!empty($refgrades->localremotescale)) {
         // Unable to fetch remote grades - local scale is used in the remote course.

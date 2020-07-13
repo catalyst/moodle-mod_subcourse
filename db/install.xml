@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="mod/subcourse/db" VERSION="20181216" COMMENT="XMLDB file for Moodle mod/subcourse"
+<XMLDB PATH="mod/subcourse/db" VERSION="20200711" COMMENT="XMLDB file for Moodle mod/subcourse"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
@@ -18,6 +18,7 @@
         <FIELD NAME="instantredirect" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Should the student be instantly redirected to the course page when viewing a subcourse module?"/>
         <FIELD NAME="completioncourse" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Should the activity be marked as completed when the referenced course is completed."/>
         <FIELD NAME="blankwindow" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Should the referenced course be open in a new window?"/>
+        <FIELD NAME="fetchpercentage" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="When fetching the grades, should the raw value be recalculated so that the percentage grade matches the once in the referenced course."/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

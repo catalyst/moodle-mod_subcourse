@@ -124,7 +124,8 @@ function subcourse_update_instance(stdClass $subcourse) {
 
     if (!empty($subcourse->refcourse)) {
         if (has_capability('mod/subcourse:fetchgrades', context_module::instance($cmid))) {
-            subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse, $subcourse->name);
+            subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse, $subcourse->name,
+                false, false, [], $subcourse->fetchpercentage);
             subcourse_update_timefetched($subcourse->id);
         }
     }
