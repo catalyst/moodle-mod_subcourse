@@ -1,3 +1,15 @@
+### 8.0.0 ###
+
+* Referenced course selector uses the autocomplete form widget (issue #34).
+* Referenced course final grades can now be fetched either as real values (existing
+  and default behaviour) or as percentual values (new optional behaviour). This allows
+  teacher to keep the percentage displayed in the referenced course matching with the
+  grade in the subcourse activity even if there are excluded grades (issue #29).
+* If the grades are hidden in the referenced course, they are now correctly marked as
+  hidden in subcourse activity, too. This supports both hidden grade item (i.e. whole
+  columns in the gradebook) and individual grades (issue #28).
+* Supported and tested on Moodle 3.8 and 3.9. Likely to work on lower versions, too.
+
 ### 7.2.0 ###
 
 * Links to the referenced course can open in a new window/tab (issue #27).
