@@ -67,7 +67,7 @@ function subcourse_available_courses($userid = null) {
  *
  * Returned structure is
  *  object(
- *      ->grades = array[userid] of object(->userid ->rawgrade ->feedback ->feedbackformat)
+ *      ->grades = array[userid] of object(->userid ->rawgrade ->feedback ->feedbackformat ->hidden)
  *      ->grademax
  *      ->grademin
  *      ->itemname
@@ -134,6 +134,7 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
             $return->grades[$user->id]->userid = $user->id;
             $return->grades[$user->id]->feedback = $grade->feedback;
             $return->grades[$user->id]->feedbackformat = $grade->feedbackformat;
+            $return->grades[$user->id]->hidden = $grade->hidden;
 
             if ($grade->finalgrade === null) {
                 // No grade set yet.
@@ -219,7 +220,30 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
         $grades = null;
     }
 
-    return grade_update('mod/subcourse', $courseid, 'mod', 'subcourse', $subcourseid, 0, $grades, $params);
+    $result = grade_update('mod/subcourse', $courseid, 'mod', 'subcourse', $subcourseid, 0, $grades, $params);
+
+    // The {@link grade_update()} does not change the grade hidden state so we need to perform it manually now.
+    if (!$gradeitemonly && $result == GRADE_UPDATE_OK) {
+        $gi = grade_item::fetch([
+            'source' => 'mod/subcourse',
+            'courseid' => $courseid,
+            'itemtype' => 'mod',
+            'itemmodule' => 'subcourse',
+            'iteminstance' => $subcourseid,
+            'itemnumber' => 0
+        ]);
+
+        $gs = grade_grade::fetch_all(['itemid' => $gi->id]);
+
+        foreach ($gs as $g) {
+            if ($refgrades->grades[$g->userid]->hidden != $g->hidden) {
+                $g->grade_item = $gi;
+                $g->set_hidden($refgrades->grades[$g->userid]->hidden);
+            }
+        }
+    }
+
+    return $result;
 }
 
 /**
