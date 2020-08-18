@@ -1,39 +1,31 @@
 language: php
 
-os: linux
-dist: xenial
-
 addons:
-  firefox: "47.0.1"
+  postgresql: "9.5"
 
 services:
   - mysql
   - postgresql
+  - docker
 
 cache:
   directories:
     - $HOME/.composer/cache
     - $HOME/.npm
-    - $HOME/.nvm
 
-php:
- - 7.3
-
-env:
- matrix:
-  - DB=pgsql MOODLE_BRANCH=master
-  - DB=pgsql MOODLE_BRANCH=MOODLE_39_STABLE
-  - DB=mysqli MOODLE_BRANCH=MOODLE_38_STABLE
+jobs:
+  include:
+    - php: 7.4
+      env: MOODLE_BRANCH=master DB=pgsql
+    - php: 7.3
+      env: MOODLE_BRANCH=MOODLE_39_STABLE DB=mysqli
+    - php: 7.2
+      env: MOODLE_BRANCH=MOODLE_38_STABLE DB=pgsql
 
 before_install:
   - phpenv config-rm xdebug.ini
-  - if [ -z $NODE ]; then
-      export NODE=14;
-    fi
-  - nvm install $NODE
-  - nvm use $NODE
   - cd ../..
-  - composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^2
+  - composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci ^3
   - export PATH="$(cd ci/bin; pwd):$(cd ci/vendor/bin; pwd):$PATH"
 
 install:
