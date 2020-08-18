@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Provides {@link \mod_subcourse\task\check_completed_refcourses} class
+ * Provides {@see \mod_subcourse\task\check_completed_refcourses} class
  *
  * @package     mod_subcourse
  * @category    task

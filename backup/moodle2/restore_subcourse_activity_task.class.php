@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Provides {@link restore_subcourse_activity_task} class.
+ * Provides {@see restore_subcourse_activity_task} class.
  *
  * @package     mod_subcourse
  * @category    backup
@@ -78,9 +78,9 @@ class restore_subcourse_activity_task extends restore_activity_task {
 
     /**
      * Define the restore log rules that will be applied
-     * by the {@link restore_logs_processor} when restoring
+     * by the {@see restore_logs_processor} when restoring
      * subcourse logs. It must return one array
-     * of {@link restore_log_rule} objects
+     * of {@see restore_log_rule} objects
      */
     static public function define_restore_log_rules() {
         $rules = array();
@@ -95,9 +95,9 @@ class restore_subcourse_activity_task extends restore_activity_task {
 
     /**
      * Define the restore log rules that will be applied
-     * by the {@link restore_logs_processor} when restoring
+     * by the {@see restore_logs_processor} when restoring
      * course logs. It must return one array
-     * of {@link restore_log_rule} objects
+     * of {@see restore_log_rule} objects
      *
      * Note this rules are applied when restoring course logs
      * by the restore final task, but are defined here at

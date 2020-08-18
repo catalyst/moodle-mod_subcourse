@@ -349,7 +349,7 @@ function mod_subcourse_core_calendar_provide_event_action(calendar_event $event,
  * "extra" information that may be needed when printing
  * this activity in a course listing.
  *
- * See {@link get_array_of_activities()} in course/lib.php
+ * See {@see get_array_of_activities()} in course/lib.php
  *
  * @param object $coursemodule
  * @return cached_cm_info info

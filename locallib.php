@@ -38,7 +38,7 @@ require_once($CFG->libdir.'/gradelib.php');
  * @return array list of course records
  */
 function subcourse_available_courses($userid = null) {
-    global $COURSE, $USER, $DB;
+    global $COURSE, $USER;
 
     $courses = array();
 
@@ -222,7 +222,7 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
 
     $result = grade_update('mod/subcourse', $courseid, 'mod', 'subcourse', $subcourseid, 0, $grades, $params);
 
-    // The {@link grade_update()} does not change the grade hidden state so we need to perform it manually now.
+    // The {@see grade_update()} does not change the grade hidden state so we need to perform it manually now.
     if (!$gradeitemonly && $result == GRADE_UPDATE_OK) {
         $gi = grade_item::fetch([
             'source' => 'mod/subcourse',

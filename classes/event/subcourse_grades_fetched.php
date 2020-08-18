@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Provides the {@link mod_subcourse\event\subcourse_grades_fetched} class.
+ * Provides the {@see mod_subcourse\event\subcourse_grades_fetched} class.
  *
  * @package     mod_subcourse
  * @category    event

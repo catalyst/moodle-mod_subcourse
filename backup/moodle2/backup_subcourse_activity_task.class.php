@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Provides {@link backup_subcourse_activity_task} class.
+ * Provides {@see backup_subcourse_activity_task} class.
  *
  * @package     mod_subcourse
  * @category    backup

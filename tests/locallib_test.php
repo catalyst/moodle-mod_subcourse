@@ -18,7 +18,7 @@
  * Provides {@see mod_subcourse_locallib_testcase} class.
  *
  * @package     mod_subcourse
- * @category    phpunit
+ * @category    test
  * @copyright   2020 David Mudrák <david@moodle.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -30,6 +30,9 @@ require_once($CFG->dirroot . '/mod/subcourse/locallib.php');
 
 /**
  * Unit tests for the functions in the locallib.php file.
+ *
+ * @copyright 2020 David Mudrák <david@moodle.com>
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mod_subcourse_locallib_testcase extends advanced_testcase {
 

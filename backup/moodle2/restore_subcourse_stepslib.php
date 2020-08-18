@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Provides {@link restore_subcourse_activity_structure_step} class
+ * Provides {@see restore_subcourse_activity_structure_step} class
  *
  * @package     mod_subcourse
  * @category    backup

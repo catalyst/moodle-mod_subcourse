@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Provides the {@link mod_subcourse\task\fetch_grades} class.
+ * Provides the {@see mod_subcourse\task\fetch_grades} class.
  *
  * @package     mod_subcourse
  * @category    task

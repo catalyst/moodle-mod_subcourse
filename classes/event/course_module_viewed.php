@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Provides the {@link mod_subcourse\event\course_module_viewed} class.
+ * Provides the {@see mod_subcourse\event\course_module_viewed} class.
  *
  * @package     mod_subcourse
  * @category    event
