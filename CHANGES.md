@@ -1,3 +1,8 @@
+### 8.0.1 ###
+
+* Fixed issue #38 causing the grades fetch fail and throw error in certain cases. This
+  is a regression of the hidden grades support introduced in 8.0.0 (issue #28).
+
 ### 8.0.0 ###
 
 * Referenced course selector uses the autocomplete form widget (issue #34).
