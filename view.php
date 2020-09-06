@@ -73,14 +73,7 @@ if ($fetchnow and $refcourse) {
     }
 }
 
-$event = \mod_subcourse\event\course_module_viewed::create(array(
-    'objectid' => $subcourse->id,
-    'context' => $context,
-));
-$event->add_record_snapshot('course_modules', $cm);
-$event->add_record_snapshot('course', $course);
-$event->add_record_snapshot('subcourse', $subcourse);
-$event->trigger();
+subcourse_set_module_viewed($subcourse, $context, $course, $cm);
 
 if ($refcourse and !empty($subcourse->instantredirect)) {
     if (!has_capability('mod/subcourse:fetchgrades', $context)) {

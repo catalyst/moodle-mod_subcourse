@@ -331,3 +331,30 @@ function subcourse_get_current_grade(stdClass $subcourse, int $userid): ?string 
 
     return $strgrade;
 }
+
+/**
+ * Mark the course module as viewed by the user.
+ *
+ * @param object $subcourse Subcourse record.
+ * @param context $context Course module context.
+ * @param object $course Course record.
+ * @param cm_info|object $cm Course module info.
+ */
+function subcourse_set_module_viewed(stdClass $subcourse, context $context, stdClass $course, $cm) {
+    global $CFG;
+    require_once($CFG->libdir . '/completionlib.php');
+
+    $completion = new completion_info($course);
+    $completion->set_module_viewed($cm);
+
+    $event = \mod_subcourse\event\course_module_viewed::create([
+        'objectid' => $subcourse->id,
+        'context' => $context,
+    ]);
+
+    $event->add_record_snapshot('course_modules', $cm);
+    $event->add_record_snapshot('course', $course);
+    $event->add_record_snapshot('subcourse', $subcourse);
+
+    $event->trigger();
+}

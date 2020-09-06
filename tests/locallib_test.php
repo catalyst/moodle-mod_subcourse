@@ -97,4 +97,27 @@ class mod_subcourse_locallib_testcase extends advanced_testcase {
         $metagrades = grade_get_grades($metacourse->id, 'mod', 'subcourse', $subcourse->id, [$student1->id, $student2->id]);
         $this->assertEquals(80, $metagrades->items[0]->grades[$student1->id]->grade);
     }
+
+    /**
+     * Test that calling {see subcourse_set_module_viewed()} does not raise errors.
+     */
+    public function test_subcourse_set_module_viewed() {
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $generator = $this->getDataGenerator();
+
+        $metacourse = $generator->create_course();
+        $student = $generator->create_user();
+        $subcourse = $generator->create_module('subcourse', [
+            'course' => $metacourse->id,
+        ]);
+        $generator->enrol_user($student->id, $metacourse->id, 'student');
+
+        list($course, $cm) = get_course_and_cm_from_instance($subcourse->id, 'subcourse');
+        $context = context_module::instance($cm->id);
+
+        subcourse_set_module_viewed($subcourse, $context, $course, $cm);
+    }
 }
