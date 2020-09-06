@@ -308,3 +308,53 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
 function subcourse_get_fetched_item_fields() {
     return array('gradetype', 'grademax', 'grademin', 'scaleid', 'hidden');
 }
+
+/**
+ * Return if the user has a grade for the activity and the string representation of the grade.
+ *
+ * @param stdClass $subcourse Subcourse activity record with id and course properties set
+ * @param int $userid User id to get the grade for
+ * @return string $strgrade
+ */
+function subcourse_get_current_grade(stdClass $subcourse, int $userid): ?string {
+
+    $currentgrade = grade_get_grades($subcourse->course, 'mod', 'subcourse', $subcourse->id, $userid);
+    $strgrade = null;
+
+    if (!empty($currentgrade->items[0]->grades)) {
+        $currentgrade = reset($currentgrade->items[0]->grades);
+
+        if (isset($currentgrade->grade) && !($currentgrade->hidden)) {
+            $strgrade = $currentgrade->str_grade;
+        }
+    }
+
+    return $strgrade;
+}
+
+/**
+ * Mark the course module as viewed by the user.
+ *
+ * @param stdClass $subcourse Subcourse record.
+ * @param context $context Course module context.
+ * @param stdClass $course Course record.
+ * @param cm_info|object $cm Course module info.
+ */
+function subcourse_set_module_viewed(stdClass $subcourse, context $context, stdClass $course, $cm) {
+    global $CFG;
+    require_once($CFG->libdir . '/completionlib.php');
+
+    $completion = new completion_info($course);
+    $completion->set_module_viewed($cm);
+
+    $event = \mod_subcourse\event\course_module_viewed::create([
+        'objectid' => $subcourse->id,
+        'context' => $context,
+    ]);
+
+    $event->add_record_snapshot('course_modules', $cm);
+    $event->add_record_snapshot('course', $course);
+    $event->add_record_snapshot('subcourse', $subcourse);
+
+    $event->trigger();
+}

@@ -68,6 +68,7 @@ $string['refcoursenull'] = 'No referenced course configured';
 $string['subcourse:addinstance'] = 'Add a new subcourse';
 $string['subcourse:begraded'] = 'Receive grade from the referenced course';
 $string['subcourse:fetchgrades'] = 'Fetch grades manually from the referenced course';
+$string['subcourse:view'] = 'View subcourse activity';
 $string['subcoursename'] = 'Subcourse name';
 $string['taskcheckcompletedrefcourses'] = 'Check referenced courses completion';
 $string['taskfetchgrades'] = 'Fetch subcourse grades';

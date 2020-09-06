@@ -1,5 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
+// This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,17 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Plugin meta-data
+ * Defines the external functions and services provided by the plugin.
  *
  * @package     mod_subcourse
- * @copyright   2008 David Mudrak <david@moodle.com>
+ * @category    external
+ * @copyright   2020 David Mudrák <david@moodle.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'mod_subcourse';
-$plugin->release = '8.0.1';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->version = 2020090601;
-$plugin->requires = 2017051500;
+$functions = [
+    'mod_subcourse_view_subcourse' => [
+        'classname' => 'mod_subcourse\external\view_subcourse',
+        'methodname' => 'execute',
+        'description' => 'Trigger the course module viewed event and update the module completion status.',
+        'type' => 'write',
+        'capabilities' => 'mod/subcourse:view',
+        'services' => [MOODLE_OFFICIAL_MOBILE_SERVICE],
+    ],
+];

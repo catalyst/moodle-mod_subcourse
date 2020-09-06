@@ -34,9 +34,11 @@ $cm = get_coursemodule_from_id('subcourse', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 $subcourse = $DB->get_record('subcourse', array('id' => $cm->instance), '*', MUST_EXIST);
 
-require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 $coursecontext = context_course::instance($course->id);
+
+require_login($course, true, $cm);
+require_capability('mod/subcourse:view', $context);
 
 $PAGE->set_url(new moodle_url('/mod/subcourse/view.php', array('id' => $cm->id)));
 $PAGE->set_title($subcourse->name);
@@ -71,14 +73,7 @@ if ($fetchnow and $refcourse) {
     }
 }
 
-$event = \mod_subcourse\event\course_module_viewed::create(array(
-    'objectid' => $subcourse->id,
-    'context' => $context,
-));
-$event->add_record_snapshot('course_modules', $cm);
-$event->add_record_snapshot('course', $course);
-$event->add_record_snapshot('subcourse', $subcourse);
-$event->trigger();
+subcourse_set_module_viewed($subcourse, $context, $course, $cm);
 
 if ($refcourse and !empty($subcourse->instantredirect)) {
     if (!has_capability('mod/subcourse:fetchgrades', $context)) {
@@ -109,21 +104,14 @@ if ($refcourse) {
         echo html_writer::end_div();
     }
 
-    $currentgrade = grade_get_grades($subcourse->course, 'mod', 'subcourse', $subcourse->id, $USER->id);
-    $hasgrade = false;
+    [$hasgrade, $strgrade] = subcourse_get_current_grade($subcourse, $USER->id);
 
-    if (!empty($currentgrade->items[0]->grades)) {
-        $currentgrade = reset($currentgrade->items[0]->grades);
-
-        if (isset($currentgrade->grade) && !($currentgrade->hidden)) {
-            $hasgrade = true;
-            $strgrade = $currentgrade->str_grade;
-            echo html_writer::start_div('col-md-6 span6');
-            echo html_writer::start_div('subcourseinfo subcourseinfo-grade');
-            echo html_writer::div(get_string('currentgrade', 'subcourse', $strgrade), 'infotext');
-            echo html_writer::end_div();
-            echo html_writer::end_div();
-        }
+    if ($hasgrade) {
+        echo html_writer::start_div('col-md-6 span6');
+        echo html_writer::start_div('subcourseinfo subcourseinfo-grade');
+        echo html_writer::div(get_string('currentgrade', 'subcourse', $strgrade), 'infotext');
+        echo html_writer::end_div();
+        echo html_writer::end_div();
     }
 
     echo html_writer::end_div();

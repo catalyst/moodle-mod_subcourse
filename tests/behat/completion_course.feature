@@ -28,6 +28,7 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | Fetch grades from                 | RefCourse (R)                                     |
       | Redirect to the referenced course | 0                                                 |
       | Completion tracking               | Show activity as complete when conditions are met |
+      | Require view                      | 0                                                 |
       | Require course completed          | 1                                                 |
       | id_completionexpected_enabled     | 1                                                 |
     # Add the block to a the referenced course to allow students to manually complete it
