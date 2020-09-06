@@ -312,7 +312,7 @@ function subcourse_get_fetched_item_fields() {
 /**
  * Return if the user has a grade for the activity and the string representation of the grade.
  *
- * @param object $subcourse Subcourse activity record with id and course properties set
+ * @param stdClass $subcourse Subcourse activity record with id and course properties set
  * @param int $userid User id to get the grade for
  * @return string $strgrade
  */
@@ -335,9 +335,9 @@ function subcourse_get_current_grade(stdClass $subcourse, int $userid): ?string 
 /**
  * Mark the course module as viewed by the user.
  *
- * @param object $subcourse Subcourse record.
+ * @param stdClass $subcourse Subcourse record.
  * @param context $context Course module context.
- * @param object $course Course record.
+ * @param stdClass $course Course record.
  * @param cm_info|object $cm Course module info.
  */
 function subcourse_set_module_viewed(stdClass $subcourse, context $context, stdClass $course, $cm) {

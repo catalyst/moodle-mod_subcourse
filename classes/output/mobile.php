@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Provides {@see \mod_subcourse\output\mobile} class.
+ *
+ * @copyright   2020 David Mudrák <david@moodle.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_subcourse\output;
 
 defined('MOODLE_INTERNAL') || die();
@@ -23,6 +30,8 @@ require_once($CFG->dirroot . '/mod/subcourse/locallib.php');
 /**
  * Controls the display of the plugin in the Mobile App.
  *
+ * @package   mod_subcourse
+ * @category  output
  * @copyright 2020 David Mudrák <david@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

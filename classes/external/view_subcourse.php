@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Provides {@see \mod_subcourse\external\view_subcourse} class.
+ *
+ * @copyright   2020 David Mudrák <david@moodle.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_subcourse\external;
 
 defined('MOODLE_INTERNAL') || die();
@@ -30,6 +37,8 @@ use external_warnings;
 /**
  * Implements the mod_subcourse_view_subcourse external function.
  *
+ * @package   mod_subcourse
+ * @category  external
  * @copyright 2020 David Mudrák <david@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */

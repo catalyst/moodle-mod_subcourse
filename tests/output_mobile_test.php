@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Provides {@see mod_subcourse_output_mobile_testcase} class.
+ *
+ * @copyright   2020 David Mudrák <david@moodle.com>
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -22,6 +29,8 @@ require_once($CFG->libdir . '/externallib.php');
 /**
  * Unit tests for the methods provided by the {@see \mod_subcourse\output\mobile} class.
  *
+ * @package   mod_subcourse
+ * @category  test
  * @copyright 2020 David Mudrák <david@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
