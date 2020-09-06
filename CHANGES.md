@@ -1,3 +1,14 @@
+### 9.0.0 ###
+
+* Added support for the Moodle Mobile App. The app displays a simple screen with the
+  information about the progress in the referenced course, the current final grade
+  there and a button to go to the referenced course. Teacher specific features such as
+  fetching grades are out of mobile app support scope (issue #19).
+* Added standard subcourse:view allowing to fine control what can view the module
+  instances in the course.
+* Added ability to mark the Subcourse activity as completed automatically upon opening
+  by users - uses standard view tracking feature.
+
 ### 8.0.1 ###
 
 * Fixed issue #38 causing the grades fetch fail and throw error in certain cases. This
