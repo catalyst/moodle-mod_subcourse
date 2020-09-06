@@ -70,6 +70,9 @@ class mod_subcourse_locallib_testcase extends advanced_testcase {
             'refcourse' => $refcourse->id,
         ]);
 
+        $strgrade = subcourse_get_current_grade($subcourse, $student1->id);
+        $this->assertNull($strgrade);
+
         // Fetch all students' grades from the refcourse to the metacourse.
         subcourse_grades_update($metacourse->id, $subcourse->id, $refcourse->id, null, false, false, [], false);
 
@@ -77,6 +80,9 @@ class mod_subcourse_locallib_testcase extends advanced_testcase {
         $metagrades = grade_get_grades($metacourse->id, 'mod', 'subcourse', $subcourse->id, [$student1->id, $student2->id]);
         $this->assertEquals(90, $metagrades->items[0]->grades[$student1->id]->grade);
         $this->assertEquals(60, $metagrades->items[0]->grades[$student2->id]->grade);
+
+        $strgrade = subcourse_get_current_grade($subcourse, $student1->id);
+        $this->assertEquals('90.00', $strgrade);
 
         // Update the grades in the referenced course.
         $gi->update_final_grade($student1->id, 80, 'test');

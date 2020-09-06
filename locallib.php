@@ -308,3 +308,26 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
 function subcourse_get_fetched_item_fields() {
     return array('gradetype', 'grademax', 'grademin', 'scaleid', 'hidden');
 }
+
+/**
+ * Return if the user has a grade for the activity and the string representation of the grade.
+ *
+ * @param object $subcourse Subcourse activity record with id and course properties set
+ * @param int $userid User id to get the grade for
+ * @return string $strgrade
+ */
+function subcourse_get_current_grade(stdClass $subcourse, int $userid): ?string {
+
+    $currentgrade = grade_get_grades($subcourse->course, 'mod', 'subcourse', $subcourse->id, $userid);
+    $strgrade = null;
+
+    if (!empty($currentgrade->items[0]->grades)) {
+        $currentgrade = reset($currentgrade->items[0]->grades);
+
+        if (isset($currentgrade->grade) && !($currentgrade->hidden)) {
+            $strgrade = $currentgrade->str_grade;
+        }
+    }
+
+    return $strgrade;
+}

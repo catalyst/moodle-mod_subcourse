@@ -111,21 +111,14 @@ if ($refcourse) {
         echo html_writer::end_div();
     }
 
-    $currentgrade = grade_get_grades($subcourse->course, 'mod', 'subcourse', $subcourse->id, $USER->id);
-    $hasgrade = false;
+    [$hasgrade, $strgrade] = subcourse_get_current_grade($subcourse, $USER->id);
 
-    if (!empty($currentgrade->items[0]->grades)) {
-        $currentgrade = reset($currentgrade->items[0]->grades);
-
-        if (isset($currentgrade->grade) && !($currentgrade->hidden)) {
-            $hasgrade = true;
-            $strgrade = $currentgrade->str_grade;
-            echo html_writer::start_div('col-md-6 span6');
-            echo html_writer::start_div('subcourseinfo subcourseinfo-grade');
-            echo html_writer::div(get_string('currentgrade', 'subcourse', $strgrade), 'infotext');
-            echo html_writer::end_div();
-            echo html_writer::end_div();
-        }
+    if ($hasgrade) {
+        echo html_writer::start_div('col-md-6 span6');
+        echo html_writer::start_div('subcourseinfo subcourseinfo-grade');
+        echo html_writer::div(get_string('currentgrade', 'subcourse', $strgrade), 'infotext');
+        echo html_writer::end_div();
+        echo html_writer::end_div();
     }
 
     echo html_writer::end_div();
