@@ -28,6 +28,7 @@
     Context variables required for this template:
     * cmid - [int] Course module identifier.
     * subcourse - [object]
+    * subcourse.id - [int] Subcourse instance ID.
     * subcourse.intro - [string] Formatted activity description.
     * refcourse - [object]
     * refcourse.fullname - [string] Formatted referenced course name.
@@ -75,3 +76,9 @@
         <%/ refcourse %>
     </ion-list>
 </div>
+
+<span core-site-plugins-call-ws-on-load
+      name="mod_subcourse_view_subcourse"
+      [params]="{subcourseid: <% subcourse.id %>}"
+      [preSets]="{getFromCache: 0, saveToCache: 0}">
+</span>
