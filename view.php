@@ -34,9 +34,11 @@ $cm = get_coursemodule_from_id('subcourse', $id, 0, false, MUST_EXIST);
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 $subcourse = $DB->get_record('subcourse', array('id' => $cm->instance), '*', MUST_EXIST);
 
-require_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 $coursecontext = context_course::instance($course->id);
+
+require_login($course, true, $cm);
+require_capability('mod/subcourse:view', $context);
 
 $PAGE->set_url(new moodle_url('/mod/subcourse/view.php', array('id' => $cm->id)));
 $PAGE->set_title($subcourse->name);
