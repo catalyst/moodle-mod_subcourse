@@ -1,3 +1,7 @@
+### 9.0.1 ###
+
+* Added example JSON context to the ionic template to pass the mustache lint.
+
 ### 9.0.0 ###
 
 * Added support for the Moodle Mobile App. The app displays a simple screen with the
