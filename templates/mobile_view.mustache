@@ -33,11 +33,29 @@
     * refcourse - [object]
     * refcourse.fullname - [string] Formatted referenced course name.
     * refcourse.url - [string] Referenced course view URL.
-    * hasgrade - [bool] Is the progress value set (not null).
+    * hasprogress - [bool] Is the progress value set (not null).
     * progress - [float] Percentual value of the progress in the referenced course.
     * hasgrade - [bool] Is the currentgrade value set (not null).
     * currentgrade - [string] Textual representation of the final grade in the referenced course.
     * warning - [string] Warning to be displayed to the user.
+
+    Example context (json):
+    {
+        "cmid": 42,
+        "subcourse": {
+            "id": 24,
+            "intro": "<h3>Subcourse activity description</h3>"
+        },
+        "refcourse": {
+            "fullname": "Subcourse A.100",
+            "url": "https://my.school.edu/lms/course/view.php?id=43"
+        },
+        "hasprogress": true,
+        "progress": 100,
+        "hasgrade": true,
+        "currentgrade": "80.00",
+        "warning": ""
+    }
 }}
 
 {{=<% %>=}}
