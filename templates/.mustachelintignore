@@ -1,0 +1,2 @@
+# Exclude the Ionic templates from HTML validation.
+mobile_*.mustache
