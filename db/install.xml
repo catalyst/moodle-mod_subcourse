@@ -19,6 +19,8 @@
         <FIELD NAME="completioncourse" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Should the activity be marked as completed when the referenced course is completed."/>
         <FIELD NAME="blankwindow" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="Should the referenced course be open in a new window?"/>
         <FIELD NAME="fetchpercentage" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="0" SEQUENCE="false" COMMENT="When fetching the grades, should the raw value be recalculated so that the percentage grade matches the once in the referenced course."/>
+        <FIELD NAME="coursepageprintgrade" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Should display referenced course grade on the course page ?"/>
+        <FIELD NAME="coursepageprintprogress" TYPE="int" LENGTH="1" NOTNULL="true" DEFAULT="1" SEQUENCE="false" COMMENT="Should display referenced course progress on the course page ?"/>
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
