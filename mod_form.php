@@ -43,6 +43,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
         global $CFG, $DB, $COURSE;
 
         $mform = $this->_form;
+        $config = get_config('mod_subcourse');
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
@@ -157,6 +158,12 @@ class mod_subcourse_mod_form extends moodleform_mod {
 
         $mform->addElement('checkbox', 'blankwindow', get_string('blankwindow', 'subcourse'));
         $mform->addHelpButton('blankwindow', 'blankwindow', 'subcourse');
+
+        $mform->addElement('header', 'optionssection', get_string('appearance'));
+        $mform->addElement('checkbox', 'coursepageprintprogress', get_string('displayoption:coursepageprintprogress', 'subcourse'));
+        $mform->setDefault('coursepageprintprogress', $config->coursepageprintprogress);
+        $mform->addElement('checkbox', 'coursepageprintgrade', get_string('displayoption:coursepageprintgrade', 'subcourse'));
+        $mform->setDefault('coursepageprintgrade', $config->coursepageprintgrade);
 
         $this->standard_coursemodule_elements();
         $this->add_action_buttons();
