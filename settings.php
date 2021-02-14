@@ -29,7 +29,7 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading('subcoursemodeditdefaults', get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
 
     $settings->add(new admin_setting_configcheckbox('subcourse/coursepageprintprogress',
-        get_string('settings:coursepageprintprogress', 'subcourse'), get_string('settings:coursepageprintprogressdesc', 'subcourse'), 1));
+        get_string('settings:coursepageprintprogress', 'subcourse'), get_string('settings:coursepageprintprogress_desc', 'subcourse'), 1));
     $settings->add(new admin_setting_configcheckbox('subcourse/coursepageprintgrade',
-        get_string('settings:coursepageprintgrade', 'subcourse'), get_string('settings:coursepageprintgradedesc', 'subcourse'), 1));
+        get_string('settings:coursepageprintgrade', 'subcourse'), get_string('settings:coursepageprintgrade_desc', 'subcourse'), 1));
 }
