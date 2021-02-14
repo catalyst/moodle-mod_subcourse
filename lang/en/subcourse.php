@@ -61,7 +61,7 @@ $string['privacy:metadata'] = 'Subcourse does not store any personal data';
 $string['refcourse'] = 'Referenced course';
 $string['refcourse_help'] = 'The referenced course is the one the grade of the activity is taken from. Students should be enroled into the referenced course.
 
-You need to be a teacher in the course to have it listed here. You may nned to ask your site administrator to set up this activity for you to fetch grades from other courses.';
+You need to be a teacher in the course to have it listed here. You may need to ask your site administrator to set up this activity for you to fetch grades from other courses.';
 $string['refcoursecurrent'] = 'Keep current reference';
 $string['refcourselabel'] = 'Fetch grades from';
 $string['refcoursenull'] = 'No referenced course configured';
