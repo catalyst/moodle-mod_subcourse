@@ -78,6 +78,14 @@ function subcourse_add_instance(stdClass $subcourse) {
         $subcourse->blankwindow = 0;
     }
 
+    if (empty($subcourse->coursepageprintprogress)) {
+        $subcourse->coursepageprintprogress = 0;
+    }
+
+    if (empty($subcourse->coursepageprintgrade)) {
+        $subcourse->coursepageprintgrade = 0;
+    }
+
     $newid = $DB->insert_record("subcourse", $subcourse);
 
     if (!empty($subcourse->refcourse)) {
@@ -120,6 +128,14 @@ function subcourse_update_instance(stdClass $subcourse) {
 
     if (empty($subcourse->blankwindow)) {
         $subcourse->blankwindow = 0;
+    }
+
+    if (empty($subcourse->coursepageprintprogress)) {
+        $subcourse->coursepageprintprogress = 0;
+    }
+
+    if (empty($subcourse->coursepageprintgrade)) {
+        $subcourse->coursepageprintgrade = 0;
     }
 
     $DB->update_record('subcourse', $subcourse);
