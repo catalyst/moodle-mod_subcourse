@@ -95,7 +95,8 @@ function xmldb_subcourse_upgrade($oldversion=0) {
 
         upgrade_mod_savepoint(true, 2020071100, 'subcourse');
     }
-    if ($oldversion < 2020071100.01) {
+
+    if ($oldversion < 2021021400) {
         // Add the field 'coursepageprintgrade' to the table 'subcourse'.
         $table = new xmldb_table('subcourse');
         $field = new xmldb_field('coursepageprintgrade', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1', 'fetchpercentage');
@@ -111,9 +112,8 @@ function xmldb_subcourse_upgrade($oldversion=0) {
             $dbman->add_field($table, $field);
         }
 
-        upgrade_mod_savepoint(true, 2020071100.01, 'subcourse');
+        upgrade_mod_savepoint(true, 2021021400, 'subcourse');
     }
-
 
     return true;
 }
