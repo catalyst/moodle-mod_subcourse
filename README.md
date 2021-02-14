@@ -1,7 +1,7 @@
 Subcourse module for Moodle
 ===========================
 
-[![Build Status](https://travis-ci.org/mudrd8mz/moodle-mod_subcourse.svg?branch=master)](https://travis-ci.org/mudrd8mz/moodle-mod_subcourse)
+![Moodle Plugin CI](https://github.com/mudrd8mz/moodle-mod_subcourse/workflows/Moodle%20Plugin%20CI/badge.svg)
 
 This Moodle module provides very simple yet useful functionality. When added into a
 course, it behaves as a graded activity. The grade for each student is took from a
