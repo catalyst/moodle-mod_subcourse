@@ -43,7 +43,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
         global $CFG, $DB, $COURSE;
 
         $mform = $this->_form;
-        $config = get_config('subcourse');
+        $config = get_config('mod_subcourse');
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
 

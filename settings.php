@@ -28,8 +28,8 @@ defined('MOODLE_INTERNAL') || die;
 if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_heading('subcoursemodeditdefaults', get_string('modeditdefaults', 'admin'), get_string('condifmodeditdefaults', 'admin')));
 
-    $settings->add(new admin_setting_configcheckbox('subcourse/coursepageprintprogress',
-        get_string('settings:coursepageprintprogress', 'subcourse'), get_string('settings:coursepageprintprogress_desc', 'subcourse'), 1));
-    $settings->add(new admin_setting_configcheckbox('subcourse/coursepageprintgrade',
-        get_string('settings:coursepageprintgrade', 'subcourse'), get_string('settings:coursepageprintgrade_desc', 'subcourse'), 1));
+    $settings->add(new admin_setting_configcheckbox('mod_subcourse/coursepageprintprogress',
+        get_string('settings:coursepageprintprogress', 'mod_subcourse'), get_string('settings:coursepageprintprogress_desc', 'mod_subcourse'), 1));
+    $settings->add(new admin_setting_configcheckbox('mod_subcourse/coursepageprintgrade',
+        get_string('settings:coursepageprintgrade', 'mod_subcourse'), get_string('settings:coursepageprintgrade_desc', 'mod_subcourse'), 1));
 }

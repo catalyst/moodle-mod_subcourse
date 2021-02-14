@@ -273,7 +273,8 @@ function subcourse_scale_used_anywhere($scaleid) {
  */
 function mod_subcourse_cm_info_view(cm_info $cm) {
     global $CFG, $USER, $DB;
-    $config = get_config('subcourse');
+
+    $config = get_config('mod_subcourse');
     $displayoptions = $DB->get_record('subcourse', ['id' => $cm->instance], 'coursepageprintgrade, coursepageprintprogress');
 
     $html = '';
