@@ -1,3 +1,9 @@
+### 10.0.0 ###
+
+* Display of progress and grade in referenced course on the main course page can be
+  now configured (issue #32). Credit goes to Arnaud Trouvé (@ak4t0sh).
+* Supported Moodle versions 3.9 (LTS) and 3.10.
+
 ### 9.0.1 ###
 
 * Added example JSON context to the ionic template to pass the mustache lint.
