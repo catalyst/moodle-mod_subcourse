@@ -274,8 +274,16 @@ function subcourse_scale_used_anywhere($scaleid) {
 function mod_subcourse_cm_info_view(cm_info $cm) {
     global $CFG, $USER, $DB;
 
-    $config = get_config('mod_subcourse');
-    $displayoptions = $DB->get_record('subcourse', ['id' => $cm->instance], 'coursepageprintgrade, coursepageprintprogress');
+    if (isset($cm->customdata->coursepageprintgrade) && isset($cm->customdata->coursepageprintprogress)) {
+        $displayoptions = (object) [
+            'coursepageprintgrade' => $cm->customdata->coursepageprintgrade,
+            'coursepageprintprogress' => $cm->customdata->coursepageprintprogress,
+        ];
+
+    } else {
+        // This is unexpected - the customdata should be set in {@see subcourse_get_coursemodule_info()}.
+        $displayoptions = $DB->get_record('subcourse', ['id' => $cm->instance], 'coursepageprintgrade, coursepageprintprogress');
+    }
 
     $html = '';
 
@@ -299,8 +307,10 @@ function mod_subcourse_cm_info_view(cm_info $cm) {
 
     if ($displayoptions->coursepageprintgrade) {
         require_once($CFG->libdir.'/gradelib.php');
+
         $grades = grade_get_grades($cm->course, 'mod', 'subcourse', $cm->instance, $USER->id);
         $currentgrade = (empty($grades->items[0]->grades)) ? null : reset($grades->items[0]->grades);
+
         if (($currentgrade !== null) and isset($currentgrade->grade) and !($currentgrade->hidden)) {
             $strgrade = $currentgrade->str_grade;
             $html .= html_writer::tag('div', get_string('currentgrade', 'subcourse', $strgrade),
@@ -380,7 +390,7 @@ function subcourse_get_coursemodule_info($coursemodule) {
     global $CFG, $DB;
 
     $subcourse = $DB->get_record('subcourse', ['id' => $coursemodule->instance],
-        'id, name, intro, introformat, instantredirect, blankwindow');
+        'id, name, intro, introformat, instantredirect, blankwindow, coursepageprintgrade, coursepageprintprogress');
 
     if (!$subcourse) {
         return null;
@@ -388,6 +398,10 @@ function subcourse_get_coursemodule_info($coursemodule) {
 
     $info = new cached_cm_info();
     $info->name = $subcourse->name;
+    $info->customdata = (object) [
+        'coursepageprintgrade' => $subcourse->coursepageprintgrade,
+        'coursepageprintprogress' => $subcourse->coursepageprintprogress,
+    ];
 
     if ($subcourse->instantredirect && $subcourse->blankwindow) {
         $url = new moodle_url('/mod/subcourse/view.php', ['id' => $coursemodule->id, 'isblankwindow' => 1]);
