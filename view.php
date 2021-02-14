@@ -104,9 +104,9 @@ if ($refcourse) {
         echo html_writer::end_div();
     }
 
-    [$hasgrade, $strgrade] = subcourse_get_current_grade($subcourse, $USER->id);
+    $strgrade = subcourse_get_current_grade($subcourse, $USER->id);
 
-    if ($hasgrade) {
+    if ($strgrade !== null) {
         echo html_writer::start_div('col-md-6 span6');
         echo html_writer::start_div('subcourseinfo subcourseinfo-grade');
         echo html_writer::div(get_string('currentgrade', 'subcourse', $strgrade), 'infotext');
@@ -143,7 +143,7 @@ if ($refcourse) {
     }
 
     if (has_all_capabilities(['gradereport/user:view', 'moodle/grade:view'], $refcoursecontext)
-            && $refcourse->showgrades && $hasgrade) {
+            && $refcourse->showgrades && ($strgrade !== null)) {
         echo html_writer::link(
             new moodle_url('/grade/report/user/index.php', ['id' => $refcourse->id]),
             get_string('gotorefcoursemygrades', 'subcourse', format_string($refcourse->fullname)),
