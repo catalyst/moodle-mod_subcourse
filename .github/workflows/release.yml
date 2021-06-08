@@ -1,0 +1,15 @@
+name: Release in the Plugins directory
+
+on:
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Create ZIP package
+        uses: montudor/action-zip@v0.1.0
+        with:
+          args: zip -X -r release.zip . -x *.git* ISSUE_TEMPLATE.md PULL_REQUEST_TEMPLATE.md *.dist composer.*
