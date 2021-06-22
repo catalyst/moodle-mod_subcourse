@@ -47,6 +47,7 @@ class mobile {
         global $OUTPUT, $USER, $DB;
 
         $args = (object) $args;
+        $versionname = $args->appversioncode >= 3950 ? 'latest' : 'ionic3';
         $cm = get_coursemodule_from_id('subcourse', $args->cmid);
         $context = \context_module::instance($cm->id);
 
@@ -97,7 +98,7 @@ class mobile {
             'templates' => [
                 [
                     'id' => 'main',
-                    'html' => $OUTPUT->render_from_template('mod_subcourse/mobile_view', $data),
+                    'html' => $OUTPUT->render_from_template("mod_subcourse/mobile_view_$versionname", $data),
                 ],
             ],
             'javascript' => '',

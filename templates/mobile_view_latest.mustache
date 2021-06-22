@@ -1,0 +1,107 @@
+{{!
+    This file is part of Moodle - https://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_subcourse/mobile_view
+
+    Render the main view for the mobile app.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * cmid - [int] Course module identifier.
+    * subcourse - [object]
+    * subcourse.id - [int] Subcourse instance ID.
+    * subcourse.intro - [string] Formatted activity description.
+    * refcourse - [object]
+    * refcourse.fullname - [string] Formatted referenced course name.
+    * refcourse.url - [string] Referenced course view URL.
+    * hasprogress - [bool] Is the progress value set (not null).
+    * progress - [float] Percentual value of the progress in the referenced course.
+    * hasgrade - [bool] Is the currentgrade value set (not null).
+    * currentgrade - [string] Textual representation of the final grade in the referenced course.
+    * warning - [string] Warning to be displayed to the user.
+
+    Example context (json):
+    {
+        "cmid": 42,
+        "subcourse": {
+            "id": 24,
+            "intro": "<h3>Subcourse activity description</h3>"
+        },
+        "refcourse": {
+            "fullname": "Subcourse A.100",
+            "url": "https://my.school.edu/lms/course/view.php?id=43"
+        },
+        "hasprogress": true,
+        "progress": 100,
+        "hasgrade": true,
+        "currentgrade": "80.00",
+        "warning": ""
+    }
+}}
+
+{{=<% %>=}}
+<div>
+    <core-course-module-description
+        description="<% subcourse.intro %>"
+        component="mod_subcourse"
+        componentId="<% cmid %>">
+    </core-course-module-description>
+
+    <%# warning %>
+    <ion-card class="ion-text-wrap core-warning-card">
+        <ion-item>
+            <ion-label class="ion-text-wrap">
+                <ion-icon slot="start" name="fas-exclamation-triangle" color="warning" aria-hidden="true"></ion-icon>
+                <% warning %>
+            </ion-label>
+        </ion-item>
+    </ion-card>
+    <%/ warning %>
+
+    <ion-list>
+        <%# hasprogress %>
+        <ion-item>
+            <ion-label>
+                <core-progress-bar [progress]="<% progress %>"></core-progress-bar>
+            </ion-label>
+        </ion-item>
+        <%/ hasprogress %>
+
+        <%# hasgrade %>
+        <ion-item>
+            <ion-label>{{ 'plugin.mod_subcourse.currentgrade' | translate: {$a: '<% currentgrade %>'} }}</ion-label>
+        </ion-item>
+        <%/ hasgrade %>
+
+        <%# refcourse %>
+        <ion-button expand="block" class="ion-margin" core-link capture="true" href="<% refcourse.url %>">
+            {{ 'plugin.mod_subcourse.gotorefcourse' | translate: {$a: '<% refcourse.fullname %>'} }}
+        </ion-button>
+        <%/ refcourse %>
+    </ion-list>
+</div>
+
+<span core-site-plugins-call-ws-on-load
+      name="mod_subcourse_view_subcourse"
+      [params]="{subcourseid: <% subcourse.id %>}"
+      [preSets]="{getFromCache: 0, saveToCache: 0}">
+</span>
