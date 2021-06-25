@@ -1,3 +1,8 @@
+### Next version ###
+
+* Ionic 5 support added to make the plugin compatible with the Moodle App version
+  3.9.5. Credit goes to Dani Palou (@dpalou).
+
 ### 10.0.0 ###
 
 * Display of progress and grade in referenced course on the main course page can be
