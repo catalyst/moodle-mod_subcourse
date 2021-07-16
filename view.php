@@ -90,7 +90,7 @@ if ($refcourse) {
     $percentage = \core_completion\progress::get_course_progress_percentage($refcourse);
 
     echo html_writer::start_div('container-fluid');
-    echo html_writer::start_div('row-fluid');
+    echo html_writer::start_div('row');
 
     if ($percentage !== null) {
         $percentage = floor($percentage);
@@ -116,7 +116,7 @@ if ($refcourse) {
 
     echo html_writer::end_div();
 
-    echo html_writer::start_div('row-fluid');
+    echo html_writer::start_div('row');
     echo html_writer::start_div('col-md-12 span12');
     echo html_writer::start_div('actionbuttons');
 
