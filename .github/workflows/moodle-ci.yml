@@ -8,7 +8,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:9.6
+        image: postgres:10
         env:
           POSTGRES_USER: 'postgres'
           POSTGRES_HOST_AUTH_METHOD: 'trust'
@@ -16,7 +16,7 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
       mariadb:
-        image: mariadb:10
+        image: mariadb:10.5
         env:
           MYSQL_USER: 'root'
           MYSQL_ALLOW_EMPTY_PASSWORD: "true"
@@ -29,11 +29,14 @@ jobs:
       matrix:
         include:
           - php: '7.4'
-            moodle-branch: 'MOODLE_310_STABLE'
+            moodle-branch: 'MOODLE_311_STABLE'
             database: pgsql
+          - php: '7.4'
+            moodle-branch: 'MOODLE_310_STABLE'
+            database: mariadb
           - php: '7.3'
             moodle-branch: 'MOODLE_39_STABLE'
-            database: mariadb
+            database: pgsql
 
     steps:
       - name: Check out repository code
@@ -45,6 +48,8 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
+          extensions: ${{ matrix.extensions }}
+          ini-values: max_input_vars=5000
           coverage: none
 
       - name: Initialise moodle-plugin-ci
@@ -108,8 +113,8 @@ jobs:
         if: ${{ always() }}
         run: |
           cd moodle
-          vendor/bin/phpunit --fail-on-risky --disallow-test-output -v admin/tool/dataprivacy/tests/metadata_registry_test.php
-          vendor/bin/phpunit --fail-on-risky --disallow-test-output -v privacy/tests/provider_test.php
+          vendor/bin/phpunit --fail-on-risky --disallow-test-output -v --filter tool_dataprivacy_metadata_registry_testcase
+          vendor/bin/phpunit --fail-on-risky --disallow-test-output -v --filter provider_testcas
 
       - name: Behat features
         if: ${{ always() }}
