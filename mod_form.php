@@ -56,11 +56,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
-        if ($CFG->branch >= 29) {
-            $this->standard_intro_elements();
-        } else {
-            $this->add_intro_editor();
-        }
+        $this->standard_intro_elements();
 
         $mform->addElement('header', 'section-refcourse', get_string('refcourse', 'subcourse'));
         $mform->setExpanded('section-refcourse');
@@ -121,12 +117,8 @@ class mod_subcourse_mod_form extends moodleform_mod {
             }
 
         } else {
-            if ($CFG->branch >= 36) {
-                $catlist = core_course_category::make_categories_list('', 0, ' / ');
-            } else {
-                require_once($CFG->libdir.'/coursecatlib.php');
-                $catlist = coursecat::make_categories_list('', 0, ' / ');
-            }
+            $catlist = core_course_category::make_categories_list('', 0, ' / ');
+
             foreach ($mycourses as $mycourse) {
                 $courselabel = $catlist[$mycourse->category] . ' / ' . $mycourse->fullname.' ('.$mycourse->shortname.')';
                 $options[$mycourse->id] = $courselabel;
