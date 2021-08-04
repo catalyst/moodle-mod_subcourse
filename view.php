@@ -88,35 +88,15 @@ echo $OUTPUT->box(format_module_intro('subcourse', $subcourse, $cm->id));
 
 if ($refcourse) {
     $percentage = \core_completion\progress::get_course_progress_percentage($refcourse);
-
-    echo html_writer::start_div('row');
-
-    if ($percentage !== null) {
-        $percentage = floor($percentage);
-        echo html_writer::start_div('col-md-6');
-        echo html_writer::start_div('subcourseinfo subcourseinfo-progress');
-        echo html_writer::div(get_string('currentprogress', 'subcourse', $percentage), 'infotext');
-        echo html_writer::start_div('subcourse-progress-bar');
-        echo html_writer::div('', '', ['style' => 'width: '.$percentage.'%']);
-        echo html_writer::end_div();
-        echo html_writer::end_div();
-        echo html_writer::end_div();
-    }
-
     $strgrade = subcourse_get_current_grade($subcourse, $USER->id);
 
-    if ($strgrade !== null) {
-        echo html_writer::start_div('col-md-6');
-        echo html_writer::start_div('subcourseinfo subcourseinfo-grade');
-        echo html_writer::div(get_string('currentgrade', 'subcourse', $strgrade), 'infotext');
-        echo html_writer::end_div();
-        echo html_writer::end_div();
-    }
+    echo $OUTPUT->render_from_template('mod_subcourse/subcourseinfo', [
+        'haspercentage' => ($percentage !== null),
+        'hasstrgrade' => ($strgrade !== null),
+        'percentage' => floor($percentage),
+        'strgrade' => $strgrade,
+    ]);
 
-    echo html_writer::end_div();
-
-    echo html_writer::start_div('row');
-    echo html_writer::start_div('col-md-12');
     echo html_writer::start_div('actionbuttons');
 
     if ($subcourse->blankwindow && !$isblankwindow) {
@@ -166,8 +146,7 @@ if ($refcourse) {
         echo html_writer::tag('small', $fetchinfo, ['class' => 'dimmed_text']);
     }
 
-    echo html_writer::end_div();
-    echo html_writer::end_div();
+    // End of div.actionbuttons.
     echo html_writer::end_div();
 
 } else {
