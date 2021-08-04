@@ -89,12 +89,11 @@ echo $OUTPUT->box(format_module_intro('subcourse', $subcourse, $cm->id));
 if ($refcourse) {
     $percentage = \core_completion\progress::get_course_progress_percentage($refcourse);
 
-    echo html_writer::start_div('container-fluid');
     echo html_writer::start_div('row');
 
     if ($percentage !== null) {
         $percentage = floor($percentage);
-        echo html_writer::start_div('col-md-6 span6');
+        echo html_writer::start_div('col-md-6');
         echo html_writer::start_div('subcourseinfo subcourseinfo-progress');
         echo html_writer::div(get_string('currentprogress', 'subcourse', $percentage), 'infotext');
         echo html_writer::start_div('subcourse-progress-bar');
@@ -107,7 +106,7 @@ if ($refcourse) {
     $strgrade = subcourse_get_current_grade($subcourse, $USER->id);
 
     if ($strgrade !== null) {
-        echo html_writer::start_div('col-md-6 span6');
+        echo html_writer::start_div('col-md-6');
         echo html_writer::start_div('subcourseinfo subcourseinfo-grade');
         echo html_writer::div(get_string('currentgrade', 'subcourse', $strgrade), 'infotext');
         echo html_writer::end_div();
@@ -117,7 +116,7 @@ if ($refcourse) {
     echo html_writer::end_div();
 
     echo html_writer::start_div('row');
-    echo html_writer::start_div('col-md-12 span12');
+    echo html_writer::start_div('col-md-12');
     echo html_writer::start_div('actionbuttons');
 
     if ($subcourse->blankwindow && !$isblankwindow) {
@@ -169,8 +168,6 @@ if ($refcourse) {
 
     echo html_writer::end_div();
     echo html_writer::end_div();
-    echo html_writer::end_div();
-
     echo html_writer::end_div();
 
 } else {
