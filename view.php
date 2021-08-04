@@ -54,22 +54,27 @@ if (empty($subcourse->refcourse)) {
 if ($fetchnow and $refcourse) {
     require_sesskey();
     require_capability('mod/subcourse:fetchgrades', $context);
+
     $event = \mod_subcourse\event\subcourse_grades_fetched::create([
         'objectid' => $subcourse->id,
         'context' => $context,
         'other' => ['refcourse' => $refcourse->id]
     ]);
+
     $event->add_record_snapshot('course_modules', $cm);
     $event->add_record_snapshot('course', $course);
     $event->add_record_snapshot('subcourse', $subcourse);
     $event->trigger();
+
     $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse,
         null, false, false, [], $subcourse->fetchpercentage);
+
     if ($result == GRADE_UPDATE_OK) {
         subcourse_update_timefetched($subcourse->id);
         redirect(new moodle_url('/mod/subcourse/view.php', ['id' => $cm->id]));
+
     } else {
-        print_error('errfetch', 'subcourse', $CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id, $result);
+        throw new moodle_exception('errfetch', 'subcourse', $CFG->wwwroot . '/mod/subcourse/view.php?id=' . $cm->id, $result);
     }
 }
 
