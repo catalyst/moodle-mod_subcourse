@@ -40,7 +40,7 @@ require_once($CFG->libdir.'/gradelib.php');
 function subcourse_available_courses($userid = null) {
     global $COURSE, $USER;
 
-    $courses = array();
+    $courses = [];
 
     if (empty($userid)) {
         $userid = $USER->id;
@@ -50,7 +50,7 @@ function subcourse_available_courses($userid = null) {
     $mycourses = get_user_capability_course('moodle/grade:viewall', $userid, true, $fields, 'sortorder');
 
     if ($mycourses) {
-        $ignorecourses = array($COURSE->id, SITEID);
+        $ignorecourses = [$COURSE->id, SITEID];
         foreach ($mycourses as $mycourse) {
             if (in_array($mycourse->id, $ignorecourses)) {
                 continue;
@@ -90,7 +90,7 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
     $fetchedfields = subcourse_get_fetched_item_fields();
 
     $return = new stdClass();
-    $return->grades = array();
+    $return->grades = [];
 
     $refgradeitem = grade_item::fetch_course_item($refcourseid);
 
@@ -114,7 +114,7 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
         // Get grades.
 
         if (!is_array($userids)) {
-            $userids = array($userids);
+            $userids = [$userids];
         }
 
         $cm = get_coursemodule_from_instance("subcourse", $subcourseid);
@@ -128,7 +128,7 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
                 continue;
             }
 
-            $grade = new grade_grade(array('itemid' => $refgradeitem->id, 'userid' => $user->id));
+            $grade = new grade_grade(['itemid' => $refgradeitem->id, 'userid' => $user->id]);
 
             $return->grades[$user->id] = new stdClass();
             $return->grades[$user->id]->userid = $user->id;
@@ -184,7 +184,7 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
         return GRADE_UPDATE_FAILED;
     }
 
-    if (!$DB->record_exists('course', array('id' => $refcourseid))) {
+    if (!$DB->record_exists('course', ['id' => $refcourseid])) {
         return GRADE_UPDATE_FAILED;
     }
 
@@ -202,7 +202,7 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
         return GRADE_UPDATE_FAILED;
     }
 
-    $params = array();
+    $params = [];
 
     foreach ($fetchedfields as $property) {
         if (isset($refgrades->$property)) {
@@ -261,7 +261,7 @@ function subcourse_is_global_scale($scaleid) {
         throw new moodle_exception('errnonnumeric', 'subcourse');
     }
 
-    if (!$DB->get_record('scale', array('id' => $scaleid, 'courseid' => 0), 'id')) {
+    if (!$DB->get_record('scale', ['id' => $scaleid, 'courseid' => 0], 'id')) {
         // No such scale with courseid 0.
         return false;
     } else {
@@ -284,7 +284,7 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
         return false;
     }
     if (is_numeric($subcourseids)) {
-        $subcourseids = array($subcourseids);
+        $subcourseids = [$subcourseids];
     }
     if (!is_array($subcourseids)) {
         return false;
@@ -306,7 +306,7 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
  * @return array
  */
 function subcourse_get_fetched_item_fields() {
-    return array('gradetype', 'grademax', 'grademin', 'scaleid', 'hidden');
+    return ['gradetype', 'grademax', 'grademin', 'scaleid', 'hidden'];
 }
 
 /**

@@ -60,7 +60,7 @@ class fetch_grades extends \core\task\scheduled_task {
             return;
         }
 
-        $updatedids = array();
+        $updatedids = [];
 
         foreach ($subcourses as $subcourse) {
 

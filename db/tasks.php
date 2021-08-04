@@ -25,8 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$tasks = array(
-    array(
+$tasks = [
+    [
         'classname' => '\mod_subcourse\task\fetch_grades',
         'blocking' => 0,
         'minute' => 'R',
@@ -34,8 +34,8 @@ $tasks = array(
         'day' => '*',
         'dayofweek' => '1-5',
         'month' => '*'
-    ),
-    array(
+    ],
+    [
         'classname' => '\mod_subcourse\task\check_completed_refcourses',
         'blocking' => 0,
         'minute' => 'R',
@@ -43,5 +43,5 @@ $tasks = array(
         'day' => '*',
         'dayofweek' => '1-5',
         'month' => '*'
-    ),
-);
+    ],
+];

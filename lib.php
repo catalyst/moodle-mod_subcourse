@@ -166,15 +166,15 @@ function subcourse_delete_instance($id) {
     require_once($CFG->libdir.'/gradelib.php');
 
     // Check the instance exists.
-    if (!$subcourse = $DB->get_record("subcourse", array("id" => $id))) {
+    if (!$subcourse = $DB->get_record("subcourse", ["id" => $id])) {
         return false;
     }
 
     // Remove the instance record.
-    $DB->delete_records("subcourse", array("id" => $subcourse->id));
+    $DB->delete_records("subcourse", ["id" => $subcourse->id]);
 
     // Clean up the gradebook items.
-    grade_update('mod/subcourse', $subcourse->course, 'mod', 'subcourse', $subcourse->id, 0, null, array('deleted' => true));
+    grade_update('mod/subcourse', $subcourse->course, 'mod', 'subcourse', $subcourse->id, 0, null, ['deleted' => true]);
 
     return true;
 }

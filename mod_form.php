@@ -47,7 +47,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
-        $mform->addElement('text', 'name', get_string('subcoursename', 'subcourse'), array('size' => '64'));
+        $mform->addElement('text', 'name', get_string('subcoursename', 'subcourse'), ['size' => '64']);
         if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
         } else {
@@ -80,7 +80,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
                 $includenoref = true;
 
             } else {
-                $currentrefcoursename = $DB->get_field('course', 'fullname', array('id' => $currentrefcourseid), IGNORE_MISSING);
+                $currentrefcoursename = $DB->get_field('course', 'fullname', ['id' => $currentrefcourseid], IGNORE_MISSING);
             }
 
             if ($currentrefcoursename === false) {
@@ -109,11 +109,11 @@ class mod_subcourse_mod_form extends moodleform_mod {
             $includekeepref = true;
         }
 
-        $options = array(get_string('none'));
+        $options = [get_string('none')];
 
         if (empty($mycourses)) {
             if (empty($includekeepref)) {
-                $options = array(0 => get_string('nocoursesavailable', 'subcourse'));
+                $options = [0 => get_string('nocoursesavailable', 'subcourse')];
                 $mform->addElement('select', 'refcourse', get_string('refcourselabel', 'subcourse'), $options);
             } else {
                 $mform->addElement('hidden', 'refcourse', 0);

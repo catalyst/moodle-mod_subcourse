@@ -24,17 +24,17 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$observers = array(
-    array(
+$observers = [
+    [
         'eventname' => '\core\event\user_graded',
-        'callback'  => '\mod_subcourse\observers::user_graded',
-    ),
-    array(
+        'callback' => '\mod_subcourse\observers::user_graded',
+    ],
+    [
         'eventname' => '\core\event\role_assigned',
-        'callback'  => '\mod_subcourse\observers::role_assigned',
-    ),
-    array(
+        'callback' => '\mod_subcourse\observers::role_assigned',
+    ],
+    [
         'eventname' => '\core\event\course_completed',
         'callback' => '\mod_subcourse\observers::course_completed',
-    ),
-);
+    ],
+];

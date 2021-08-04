@@ -27,19 +27,19 @@ require_once(dirname(__FILE__).'/lib.php');
 
 $id = required_param('id', PARAM_INT);
 
-$course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
 
 require_course_login($course);
 
-$PAGE->set_url(new moodle_url('/mod/subcourse/index.php', array('id' => $id)));
+$PAGE->set_url(new moodle_url('/mod/subcourse/index.php', ['id' => $id]));
 $PAGE->set_title($course->fullname);
 $PAGE->set_heading($course->shortname);
 $PAGE->set_pagelayout('incourse');
 $PAGE->navbar->add(get_string('modulenameplural', 'subcourse'));
 
-$event = \mod_subcourse\event\course_module_instance_list_viewed::create(array(
+$event = \mod_subcourse\event\course_module_instance_list_viewed::create([
     'context' => context_course::instance($course->id)
-));
+]);
 $event->add_record_snapshot('course', $course);
 $event->trigger();
 
@@ -47,7 +47,7 @@ echo $OUTPUT->header();
 
 if (!$subcourses = get_all_instances_in_course('subcourse', $course)) {
     echo $OUTPUT->heading(get_string('nosubcourses', 'subcourse'), 2);
-    echo $OUTPUT->continue_button(new moodle_url('/course/view.php', array('id' => $course->id)));
+    echo $OUTPUT->continue_button(new moodle_url('/course/view.php', ['id' => $course->id]));
     echo $OUTPUT->footer();
     die();
 }
@@ -71,17 +71,17 @@ if ($usesections) {
 }
 
 foreach ($subcourses as $subcourse) {
-    $attributes = array();
+    $attributes = [];
     if (empty($subcourse->visible)) {
         $attributes['class'] = 'dimmed';
     }
     $link = html_writer::link(new moodle_url('/mod/subcourse/view.php',
-        array('id' => $subcourse->coursemodule)), format_string($subcourse->name), $attributes);
+        ['id' => $subcourse->coursemodule]), format_string($subcourse->name), $attributes);
     $description = format_module_intro('subcourse', $subcourse, $subcourse->coursemodule);
     if ($usesections) {
-        $table->data[] = array(get_section_name($course, $subcourse->section), $link, $description);
+        $table->data[] = [get_section_name($course, $subcourse->section), $link, $description];
     } else {
-        $table->data[] = array($link, $description);
+        $table->data[] = [$link, $description];
     }
 }
 

@@ -38,13 +38,13 @@ class backup_subcourse_activity_structure_step extends backup_activity_structure
      */
     protected function define_structure() {
 
-        $subcourse = new backup_nested_element('subcourse', array('id'), array(
+        $subcourse = new backup_nested_element('subcourse', ['id'], [
             'name', 'intro', 'introformat', 'timecreated', 'timemodified', 'timefetched',
             'refcourse', 'instantredirect', 'completioncourse', 'blankwindow', 'fetchpercentage',
             'coursepageprintgrade', 'coursepageprintprogress'
-        ));
+        ]);
 
-        $subcourse->set_source_table('subcourse', array('id' => backup::VAR_ACTIVITYID));
+        $subcourse->set_source_table('subcourse', ['id' => backup::VAR_ACTIVITYID]);
 
         return $this->prepare_activity_structure($subcourse);
     }

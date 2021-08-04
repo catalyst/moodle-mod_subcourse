@@ -31,8 +31,8 @@ $fetchnow = optional_param('fetchnow', 0, PARAM_INT);
 $isblankwindow = optional_param('isblankwindow', false, PARAM_BOOL);
 
 $cm = get_coursemodule_from_id('subcourse', $id, 0, false, MUST_EXIST);
-$course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-$subcourse = $DB->get_record('subcourse', array('id' => $cm->instance), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $cm->course], '*', MUST_EXIST);
+$subcourse = $DB->get_record('subcourse', ['id' => $cm->instance], '*', MUST_EXIST);
 
 $context = context_module::instance($cm->id);
 $coursecontext = context_course::instance($course->id);
@@ -40,7 +40,7 @@ $coursecontext = context_course::instance($course->id);
 require_login($course, true, $cm);
 require_capability('mod/subcourse:view', $context);
 
-$PAGE->set_url(new moodle_url('/mod/subcourse/view.php', array('id' => $cm->id)));
+$PAGE->set_url(new moodle_url('/mod/subcourse/view.php', ['id' => $cm->id]));
 $PAGE->set_title($subcourse->name);
 $PAGE->set_heading($course->fullname);
 
@@ -48,17 +48,17 @@ if (empty($subcourse->refcourse)) {
     $refcourse = false;
 
 } else {
-    $refcourse = $DB->get_record('course', array('id' => $subcourse->refcourse), '*', IGNORE_MISSING);
+    $refcourse = $DB->get_record('course', ['id' => $subcourse->refcourse], '*', IGNORE_MISSING);
 }
 
 if ($fetchnow and $refcourse) {
     require_sesskey();
     require_capability('mod/subcourse:fetchgrades', $context);
-    $event = \mod_subcourse\event\subcourse_grades_fetched::create(array(
+    $event = \mod_subcourse\event\subcourse_grades_fetched::create([
         'objectid' => $subcourse->id,
         'context' => $context,
-        'other' => array('refcourse' => $refcourse->id)
-    ));
+        'other' => ['refcourse' => $refcourse->id]
+    ]);
     $event->add_record_snapshot('course_modules', $cm);
     $event->add_record_snapshot('course', $course);
     $event->add_record_snapshot('subcourse', $subcourse);
@@ -67,7 +67,7 @@ if ($fetchnow and $refcourse) {
         null, false, false, [], $subcourse->fetchpercentage);
     if ($result == GRADE_UPDATE_OK) {
         subcourse_update_timefetched($subcourse->id);
-        redirect(new moodle_url('/mod/subcourse/view.php', array('id' => $cm->id)));
+        redirect(new moodle_url('/mod/subcourse/view.php', ['id' => $cm->id]));
     } else {
         print_error('errfetch', 'subcourse', $CFG->wwwroot.'/mod/subcourse/view.php?id='.$cm->id, $result);
     }
@@ -77,7 +77,7 @@ subcourse_set_module_viewed($subcourse, $context, $course, $cm);
 
 if ($refcourse and !empty($subcourse->instantredirect)) {
     if (!has_capability('mod/subcourse:fetchgrades', $context)) {
-        redirect(new moodle_url('/course/view.php', array('id' => $refcourse->id)));
+        redirect(new moodle_url('/course/view.php', ['id' => $refcourse->id]));
     }
 }
 

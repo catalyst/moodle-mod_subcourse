@@ -69,7 +69,7 @@ class subcourse_grades_fetched extends \core\event\base {
      * @return moodle_url
      */
     public function get_url() {
-        return new \moodle_url('/mod/subcourse/view.php', array('id' => $this->contextinstanceid));
+        return new \moodle_url('/mod/subcourse/view.php', ['id' => $this->contextinstanceid]);
     }
 
     /**
@@ -78,7 +78,7 @@ class subcourse_grades_fetched extends \core\event\base {
      * @return array
      */
     public function get_legacy_logdata() {
-        return array($this->courseid, $this->objecttable, 'fetch',
-            'view.php?id='.$this->contextinstanceid, $this->other['refcourse'], $this->contextinstanceid);
+        return [$this->courseid, $this->objecttable, 'fetch',
+            'view.php?id='.$this->contextinstanceid, $this->other['refcourse'], $this->contextinstanceid];
     }
 }

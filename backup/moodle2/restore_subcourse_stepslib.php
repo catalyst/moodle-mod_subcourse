@@ -40,7 +40,7 @@ class restore_subcourse_activity_structure_step extends restore_activity_structu
      */
     protected function define_structure() {
 
-        $paths = array();
+        $paths = [];
 
         $paths[] = new restore_path_element('subcourse', '/activity/subcourse');
 
@@ -60,7 +60,7 @@ class restore_subcourse_activity_structure_step extends restore_activity_structu
 
         $data->timefetched = 0;
 
-        if (!$this->task->is_samesite() or !$DB->record_exists('course', array('id' => $data->refcourse))) {
+        if (!$this->task->is_samesite() or !$DB->record_exists('course', ['id' => $data->refcourse])) {
             $data->refcourse = 0;
         }
 
