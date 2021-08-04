@@ -71,12 +71,24 @@ class mod_subcourse_output_mobile_testcase extends advanced_testcase {
         // Get the data for the student using the Mobile App.
         $this->setUser($student);
 
-        $mainview = \mod_subcourse\output\mobile::main_view([
+        // Ionic5 compatible view for the app version 3.9.5.
+        $mainview3950 = \mod_subcourse\output\mobile::main_view([
             'cmid' => $subcourse->cmid,
             'courseid' => $metacourse->id,
+            'appversioncode' => 3950,
         ]);
 
-        $this->assertEquals('main', $mainview['templates'][0]['id']);
-        $this->assertContains('plugin.mod_subcourse.currentgrade', $mainview['templates'][0]['html']);
+        $this->assertEquals('main', $mainview3950['templates'][0]['id']);
+        $this->assertStringContainsString('plugin.mod_subcourse.currentgrade', $mainview3950['templates'][0]['html']);
+
+        // Ionic3 compatible view for the app version 3.9.4.
+        $mainview3940 = \mod_subcourse\output\mobile::main_view([
+            'cmid' => $subcourse->cmid,
+            'courseid' => $metacourse->id,
+            'appversioncode' => 3940,
+        ]);
+
+        $this->assertEquals('main', $mainview3940['templates'][0]['id']);
+        $this->assertStringContainsString('plugin.mod_subcourse.currentgrade', $mainview3940['templates'][0]['html']);
     }
 }
