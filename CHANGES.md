@@ -1,7 +1,8 @@
-### 10.0.1 ###
+### 10.1.0 ###
 
 * Ionic 5 support added to make the plugin compatible with the Moodle App version
   3.9.5. Credit goes to Dani Palou (@dpalou).
+* Removed legacy Bootstrap 2 classes. Credit goes to Daniel Escobar (@Daryhez).
 * Coding style cleanups and improvements.
 
 ### 10.0.0 ###
