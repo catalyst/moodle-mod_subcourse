@@ -98,7 +98,7 @@ if ($refcourse) {
     echo $OUTPUT->render_from_template('mod_subcourse/subcourseinfo', [
         'haspercentage' => ($percentage !== null),
         'hasstrgrade' => ($strgrade !== null),
-        'percentage' => floor($percentage),
+        'percentage' => floor((float)$percentage),
         'strgrade' => $strgrade,
     ]);
 
