@@ -120,7 +120,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
             $catlist = core_course_category::make_categories_list('', 0, ' / ');
 
             foreach ($mycourses as $mycourse) {
-                $courselabel = $catlist[$mycourse->category] . ' / ' . $mycourse->fullname.' ('.$mycourse->shortname.')';
+                $courselabel = $catlist[$mycourse->categoryid] . ' / ' . $mycourse->fullname.' ('.$mycourse->shortname.')';
                 $options[$mycourse->id] = $courselabel;
                 if (empty($mycourse->visible)) {
                     $hiddenlabel = ' '.get_string('hiddencourse', 'subcourse');

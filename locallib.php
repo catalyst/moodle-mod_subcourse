@@ -25,6 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir.'/gradelib.php');
+require_once($CFG->dirroot . '/course/externallib.php');
 
 /**
  * Returns the list of courses the grades can be taken from
@@ -46,16 +47,19 @@ function subcourse_available_courses($userid = null) {
         $userid = $USER->id;
     }
 
-    $fields = 'fullname,shortname,idnumber,category,visible,sortorder';
-    $mycourses = get_user_capability_course('moodle/grade:viewall', $userid, true, $fields, 'sortorder');
+    $mycourses = \core_course_external::search_courses(
+        'search', '', 0, 0,
+        ['moodle/grade:viewall'],
+        get_config('mod_subcourse', 'limittoenrolled')
+    )['courses'];
 
     if ($mycourses) {
         $ignorecourses = [$COURSE->id, SITEID];
         foreach ($mycourses as $mycourse) {
-            if (in_array($mycourse->id, $ignorecourses)) {
+            if (in_array($mycourse['id'], $ignorecourses)) {
                 continue;
             }
-            $courses[] = $mycourse;
+            $courses[] = (object)$mycourse;
         }
     }
 
@@ -235,11 +239,13 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
 
         $gs = grade_grade::fetch_all(['itemid' => $gi->id]);
 
-        foreach ($gs as $g) {
-            if (isset($refgrades->grades[$g->userid])) {
-                if ($refgrades->grades[$g->userid]->hidden != $g->hidden) {
-                    $g->grade_item = $gi;
-                    $g->set_hidden($refgrades->grades[$g->userid]->hidden);
+        if ($gs) {
+            foreach ($gs as $g) {
+                if (isset($refgrades->grades[$g->userid])) {
+                    if ($refgrades->grades[$g->userid]->hidden != $g->hidden) {
+                        $g->grade_item = $gi;
+                        $g->set_hidden($refgrades->grades[$g->userid]->hidden);
+                    }
                 }
             }
         }
