@@ -32,6 +32,13 @@ defined('MOODLE_INTERNAL') || die();
  * @return mixed true if the feature is supported, null if unknown
  */
 function subcourse_supports($feature) {
+
+    if (defined('FEATURE_MOD_PURPOSE')) {
+        if ($feature === FEATURE_MOD_PURPOSE) {
+            return MOD_PURPOSE_CONTENT;
+        }
+    }
+
     switch($feature) {
         case FEATURE_GRADE_HAS_GRADE:
             return true;
