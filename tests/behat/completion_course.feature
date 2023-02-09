@@ -19,9 +19,9 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | student1      | M         | student           |
       | teacher1      | R         | editingteacher    |
       | student1      | R         | student           |
-    And I log in as "teacher1"
+    And I enable "selfcompletion" "block" plugin
     # Create the subcourse instance.
-    And I am on "MainCourse" course homepage
+    When I am on the "MainCourse" course page logged in as "teacher1"
     And I turn editing mode on
     And I add a "Subcourse" to section "1" and I fill the form with:
       | Subcourse name                    | Unit course 1                                     |
@@ -32,7 +32,7 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | Require course completed          | 1                                                 |
       | id_completionexpected_enabled     | 1                                                 |
     # Add the block to a the referenced course to allow students to manually complete it
-    And I am on "RefCourse" course homepage
+    And I am on "RefCourse" course homepage with editing mode on
     And I add the "Self completion" block
     And I navigate to "Course completion" in current page administration
     And I expand all fieldsets
@@ -48,8 +48,7 @@ Feature: Completing the referenced course can lead to completing the subcourse a
 
   @javascript
   Scenario: Completing the referenced course leads to completing the subcourse
-    Given I log in as "student1"
-    And I am on "RefCourse" course homepage
+    Given I am on the "RefCourse" course page logged in as "student1"
     And I follow "Complete course"
     And I should see "Confirm self completion"
     And I press "Yes"
@@ -57,7 +56,7 @@ Feature: Completing the referenced course can lead to completing the subcourse a
     And I wait "1" seconds
     When I run the scheduled task "core\task\completion_regular_task"
     And I am on "MainCourse" course homepage
-    Then "//img[contains(@alt, 'Completed: Unit course 1')]" "xpath_element" should exist in the "li.modtype_subcourse" "css_element"
+    Then the "Complete the activity" completion condition of "Unit course 1" is displayed as "done"
     And I log out
     And I log in as "teacher1"
     And I am on "MainCourse" course homepage

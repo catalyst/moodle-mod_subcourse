@@ -22,8 +22,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Returns the information if the module supports a feature
  *
@@ -318,7 +316,7 @@ function mod_subcourse_cm_info_view(cm_info $cm) {
         $grades = grade_get_grades($cm->course, 'mod', 'subcourse', $cm->instance, $USER->id);
         $currentgrade = (empty($grades->items[0]->grades)) ? null : reset($grades->items[0]->grades);
 
-        if (($currentgrade !== null) and isset($currentgrade->grade) and !($currentgrade->hidden)) {
+        if (($currentgrade !== null) && isset($currentgrade->grade) && !($currentgrade->hidden)) {
             $strgrade = $currentgrade->str_grade;
             $html .= html_writer::tag('div', get_string('currentgrade', 'subcourse', $strgrade),
                 ['class' => 'contentafterlink']);

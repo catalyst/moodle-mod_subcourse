@@ -24,13 +24,13 @@ Feature: Progress and grade in referenced course can be displayed on the course 
     #
     And I log in as "teacher1"
     And I am on "RefCourse" course homepage
-    And I navigate to "Edit settings" in current page administration
+    And I navigate to "Settings" in current page administration
     And I set the following fields to these values:
       | Enable completion tracking 	| Yes |
     And I press "Save and display"
     And I turn editing mode on
-    And I add a "Label" to section "1" and I fill the form with:
-      | Label text   | Just a simple module to activate progress tracking |
+    And I add a "Text and media area" to section "1" and I fill the form with:
+      | Text   | Just a simple module to activate progress tracking |
     And I turn editing mode off
     And I navigate to "Setup > Gradebook setup" in the course gradebook
     And I press "Add grade item"
@@ -56,14 +56,14 @@ Feature: Progress and grade in referenced course can be displayed on the course 
       | Display grade from referenced course on course page     | 1                   |
     And I turn editing mode off
     And I am on "MainCourse" course homepage
-    And I follow "Unit course 1"
+    And I am on the "Unit course 1" "subcourse activity" page logged in as teacher1
     And I follow "Fetch grades now"
     And I log out
     When I log in as "student1"
     And I am on "MainCourse" course homepage
-    Then I should see "Progress:" in the "Unit course 1" "list_item"
-    And I should see "Current grade:" in the "Unit course 1" "list_item"
-    And I follow "Unit course 1"
+    Then I should see "Progress:" in the "[data-activityname='Unit course 1']" "css_element"
+    And I should see "Current grade:" in the "[data-activityname='Unit course 1']" "css_element"
+    And I am on the "Unit course 1" "subcourse activity" page logged in as student1
     And I should see "Progress:" in the ".subcourseinfo-progress" "css_element"
     And I should see "Current grade:" in the ".subcourseinfo-grade" "css_element"
 
@@ -79,13 +79,13 @@ Feature: Progress and grade in referenced course can be displayed on the course 
       | Display grade from referenced course on course page     | 0                   |
     And I turn editing mode off
     And I am on "MainCourse" course homepage
-    And I follow "Unit course 1"
+    And I am on the "Unit course 1" "subcourse activity" page logged in as teacher1
     And I follow "Fetch grades now"
     And I log out
     When I log in as "student1"
     And I am on "MainCourse" course homepage
-    Then I should not see "Progress:" in the "Unit course 1" "list_item"
-    And I should not see "Current grade:" in the "Unit course 1" "list_item"
-    And I follow "Unit course 1"
+    Then I should not see "Progress:" in the "[data-activityname='Unit course 1']" "css_element"
+    And I should not see "Current grade:" in the "[data-activityname='Unit course 1']" "css_element"
+    And I am on the "Unit course 1" "subcourse activity" page logged in as student1
     And I should see "Progress:" in the ".subcourseinfo-progress" "css_element"
     And I should see "Current grade:" in the ".subcourseinfo-grade" "css_element"

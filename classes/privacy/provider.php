@@ -25,8 +25,6 @@
 
 namespace mod_subcourse\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Privacy API implementation for the Subcourse plugin.
  *

@@ -23,8 +23,6 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Structure step to restore one subcourse activity
  *
@@ -60,7 +58,7 @@ class restore_subcourse_activity_structure_step extends restore_activity_structu
 
         $data->timefetched = 0;
 
-        if (!$this->task->is_samesite() or !$DB->record_exists('course', ['id' => $data->refcourse])) {
+        if (!$this->task->is_samesite() || !$DB->record_exists('course', ['id' => $data->refcourse])) {
             $data->refcourse = 0;
         }
 

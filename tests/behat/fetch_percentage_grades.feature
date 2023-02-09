@@ -57,7 +57,11 @@ Feature: Grades can be fetched either a real values or as percentages
     And I press "Save changes"
     And I navigate to "Setup > Course grade settings" in the course gradebook
     And I set the field "Grade display type" to "Real (percentage)"
+    #
+    # Set also Grader report preferences to
+    #
     And I press "Save changes"
+    And I am on the "RefCourse" course page logged in as "teacher1"
     And I navigate to "View > Grader report" in the course gradebook
     And I turn editing mode on
     #
@@ -89,16 +93,19 @@ Feature: Grades can be fetched either a real values or as percentages
     #
     # Explicitly exclude a grade from Student 3.
     #
-    And I follow "Single view for Student 3"
-    And I set the following fields to these values:
-      | Exclude for Manual item 3   | 1 |
+    And I navigate to "View > Single view" in the course gradebook
+    And I click on "Users" "link" in the ".page-toggler" "css_element"
+    And I click on "Student 3" in the "user" search widget
+    And I turn editing mode on
+    And I set the field "Exclude for Manual item 3" to "1"
     And I press "Save"
     And I should see "Grades were set for 1 item"
-    And I press "Continue"
+    And I press "Save"
     #
     # Check the grades in the referenced course.
     #
     And I navigate to "View > Grader report" in the course gradebook
+    And I turn editing mode off
     And the following should exist in the "user-grades" table:
       | Email address         | -7-               |
       | student1@example.com  | 20.00 (66.67 %)   |
@@ -109,7 +116,7 @@ Feature: Grades can be fetched either a real values or as percentages
 
   @javascript
   Scenario: Grades are fetched as real values by default
-    Given I am on "MainCourse" course homepage
+    Given I am on the "MainCourse" course page logged in as "teacher1"
     And I turn editing mode on
     And I add a "Subcourse" to section "1" and I fill the form with:
       | Subcourse name                    | Unit course 1       |
@@ -125,8 +132,9 @@ Feature: Grades can be fetched either a real values or as percentages
       | Grade display type  | Real (percentage) |
     And I press "Save changes"
     And I am on "MainCourse" course homepage
-    And I follow "Unit course 1"
+    And I am on the "Unit course 1" "subcourse activity" page logged in as teacher1
     When I follow "Fetch grades now"
+    And I am on "MainCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
       | Email address         | -4-               |
@@ -138,7 +146,7 @@ Feature: Grades can be fetched either a real values or as percentages
 
   @javascript
   Scenario: Grades can be fetched as percentual values
-    Given I am on "MainCourse" course homepage
+    Given I am on the "MainCourse" course page logged in as "teacher1"
     And I turn editing mode on
     And I add a "Subcourse" to section "1" and I fill the form with:
       | Subcourse name                    | Unit course 1       |
@@ -155,8 +163,9 @@ Feature: Grades can be fetched either a real values or as percentages
       | Grade display type  | Real (percentage) |
     And I press "Save changes"
     And I am on "MainCourse" course homepage
-    And I follow "Unit course 1"
+    And I am on the "Unit course 1" "subcourse activity" page logged in as teacher1
     When I follow "Fetch grades now"
+    And I am on the "MainCourse" course page logged in as "teacher1"
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
       | Email address         | -4-               |
