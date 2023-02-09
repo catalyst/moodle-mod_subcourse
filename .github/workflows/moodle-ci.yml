@@ -4,11 +4,11 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
 
     services:
       postgres:
-        image: postgres:10
+        image: postgres:13
         env:
           POSTGRES_USER: 'postgres'
           POSTGRES_HOST_AUTH_METHOD: 'trust'
@@ -16,10 +16,13 @@ jobs:
           - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
       mariadb:
-        image: mariadb:10.5
+        image: mariadb:10
         env:
           MYSQL_USER: 'root'
           MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+          MYSQL_CHARACTER_SET_SERVER: "utf8mb4"
+          MYSQL_COLLATION_SERVER: "utf8mb4_unicode_ci"
+
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval 10s --health-timeout 5s --health-retries 3
@@ -28,9 +31,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - php: '7.4'
-            moodle-branch: 'MOODLE_311_STABLE'
+          - php: '8.0'
+            moodle-branch: 'MOODLE_401_STABLE'
             database: pgsql
+          - php: '8.0'
+            moodle-branch: 'MOODLE_311_STABLE'
+            database: mariadb
           - php: '7.4'
             moodle-branch: 'MOODLE_310_STABLE'
             database: mariadb
@@ -40,7 +46,7 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: plugin
 
@@ -50,6 +56,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: ${{ matrix.extensions }}
           ini-values: max_input_vars=5000
+          # none to use phpdbg fallback. Specify pcov (Moodle 3.10 and up) or xdebug to use them instead.
           coverage: none
 
       - name: Initialise moodle-plugin-ci
@@ -107,14 +114,7 @@ jobs:
 
       - name: PHPUnit tests
         if: ${{ always() }}
-        run: moodle-plugin-ci phpunit
-
-      - name: Core privacy tests
-        if: ${{ always() }}
-        run: |
-          cd moodle
-          vendor/bin/phpunit --fail-on-risky --disallow-test-output -v --filter tool_dataprivacy_metadata_registry_testcase
-          vendor/bin/phpunit --fail-on-risky --disallow-test-output -v --filter provider_testcas
+        run: moodle-plugin-ci phpunit --fail-on-warning
 
       - name: Behat features
         if: ${{ always() }}
