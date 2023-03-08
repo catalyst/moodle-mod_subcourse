@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-include('deprecatedlib.php');
+require_once(__DIR__ . '/deprecatedlib.php');
 
 /**
  * Returns the information if the module supports a feature
