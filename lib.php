@@ -420,3 +420,53 @@ function subcourse_get_coursemodule_info($coursemodule) {
 
     return $info;
 }
+
+
+/**
+ * Create or update the grade item for given subcourse
+ *
+ * @category grade
+ * @param object $subcourse object
+ * @param mixed $grades optional array/object of grade(s); 'reset' means reset grades in gradebook
+ * @return int 0 if ok, error code otherwise
+ */
+function subcourse_grade_item_update($subcourse, $grades = null) {
+    global $CFG;
+    require_once($CFG->dirroot . '/mod/subcourse/locallib.php');
+
+    $reset = false;
+    if ($grades === 'reset') {
+        $reset = true;
+    }
+    $gradeitemonly = true;
+    if (!empty($grades)) {
+        $gradeitemonly = false;
+    }
+    return subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse,
+        $subcourse->name, $gradeitemonly, $reset);
+}
+
+/**
+ * Update activity grades.
+ *
+ * @param stdClass $subcourse subcourse record
+ * @param int $userid specific user only, 0 means all
+ * @param bool $nullifnone - not used
+ */
+function subcourse_update_grades($subcourse, $userid=0, $nullifnone=true) {
+    global $CFG;
+    require_once($CFG->dirroot . '/mod/subcourse/locallib.php');
+    require_once($CFG->libdir.'/gradelib.php');
+
+    $refgrades = subcourse_fetch_refgrades($subcourse->id, $subcourse->refcourse, false, $userid, false);
+
+    if ($refgrades && $refgrades->grades) {
+        if (!empty($refgrades->localremotescale)) {
+            // Unable to fetch remote grades - local scale is used in the remote course.
+            return GRADE_UPDATE_FAILED;
+        }
+        return subcourse_grade_item_update($subcourse, $refgrades->grades);
+    } else {
+        return subcourse_grade_item_update($subcourse);
+    }
+}
