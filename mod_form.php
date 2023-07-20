@@ -117,18 +117,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
             }
 
         } else {
-            $catlist = core_course_category::make_categories_list('', 0, ' / ');
-
-            foreach ($mycourses as $mycourse) {
-                $courselabel = $catlist[$mycourse->category] . ' / ' . $mycourse->fullname.' ('.$mycourse->shortname.')';
-                $options[$mycourse->id] = $courselabel;
-                if (empty($mycourse->visible)) {
-                    $hiddenlabel = ' '.get_string('hiddencourse', 'subcourse');
-                    $options[$mycourse->id] .= $hiddenlabel;
-                }
-            }
-
-            $mform->addElement('autocomplete', 'refcourse', get_string('refcourselabel', 'subcourse'), $options);
+            $mform->addElement('course', 'refcourse', get_string('refcourselabel', 'subcourse'), ['limittoenrolled' => 1]);
 
             if (!empty($includekeepref)) {
                 $mform->disabledIf('refcourse', 'refcoursecurrent', 'checked');
