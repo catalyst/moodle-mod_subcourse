@@ -1,13 +1,24 @@
 Subcourse module for Moodle
 ===========================
 
-![Moodle Plugin CI](https://github.com/mudrd8mz/moodle-mod_subcourse/workflows/Moodle%20Plugin%20CI/badge.svg)
+![Moodle Plugin CI](https://github.com/catalyst/moodle-mod_subcourse/workflows/Moodle%20Plugin%20CI/badge.svg)
 
 This Moodle module provides very simple yet useful functionality. When added into a
 course, it behaves as a graded activity. The grade for each student is took from a
 final grade in another course. Combined with
 [metacourses](http://docs.moodle.org/en/Course_meta_link), this allows course
 designers to effectively organise courses into separate units.
+
+
+Branches
+------------
+The git branches here support the following versions.
+
+| Moodle version        | Branch            |
+|-----------------------|-------------------|
+| Mooodle 3.9 to 4.0    | MOODLE_39_STABLE  |
+| Moodle 4.1 and higher | MOODLE_401_STABLE |
+
 
 Installation
 ------------
@@ -33,12 +44,12 @@ Usage
 Author
 ------
 
-The module has been written and is currently maintained by David Mudrák <david@moodle.com>
+The module was originally written by David Mudrák <david@moodle.com> and is now maintained by Catalyst IT.
 
 Useful links
 ------------
 
-* [Bug tracker](https://github.com/mudrd8mz/moodle-mod_subcourse/issues)
+* [Bug tracker](https://github.com/catalyst/moodle-mod_subcourse/issues)
 
 License
 -------
