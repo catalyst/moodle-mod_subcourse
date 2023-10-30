@@ -235,11 +235,13 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
 
         $gs = grade_grade::fetch_all(['itemid' => $gi->id]);
 
-        foreach ($gs as $g) {
-            if (isset($refgrades->grades[$g->userid])) {
-                if ($refgrades->grades[$g->userid]->hidden != $g->hidden) {
-                    $g->grade_item = $gi;
-                    $g->set_hidden($refgrades->grades[$g->userid]->hidden);
+        if (!empty($gs)) {
+            foreach ($gs as $g) {
+                if (isset($refgrades->grades[$g->userid])) {
+                    if ($refgrades->grades[$g->userid]->hidden != $g->hidden) {
+                        $g->grade_item = $gi;
+                        $g->set_hidden($refgrades->grades[$g->userid]->hidden);
+                    }
                 }
             }
         }
