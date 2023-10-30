@@ -88,9 +88,6 @@ if ($refcourse && !empty($subcourse->instantredirect)) {
 
 echo $OUTPUT->header();
 
-echo $OUTPUT->heading(format_string($subcourse->name));
-echo $OUTPUT->box(format_module_intro('subcourse', $subcourse, $cm->id));
-
 if ($refcourse) {
     $percentage = \core_completion\progress::get_course_progress_percentage($refcourse);
     $strgrade = subcourse_get_current_grade($subcourse, $USER->id);
