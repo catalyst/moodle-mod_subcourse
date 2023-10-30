@@ -51,7 +51,7 @@ if (empty($subcourse->refcourse)) {
     $refcourse = $DB->get_record('course', ['id' => $subcourse->refcourse], '*', IGNORE_MISSING);
 }
 
-if ($fetchnow and $refcourse) {
+if ($fetchnow && $refcourse) {
     require_sesskey();
     require_capability('mod/subcourse:fetchgrades', $context);
 
@@ -80,7 +80,7 @@ if ($fetchnow and $refcourse) {
 
 subcourse_set_module_viewed($subcourse, $context, $course, $cm);
 
-if ($refcourse and !empty($subcourse->instantredirect)) {
+if ($refcourse && !empty($subcourse->instantredirect)) {
     if (!has_capability('mod/subcourse:fetchgrades', $context)) {
         redirect(new moodle_url('/course/view.php', ['id' => $refcourse->id]));
     }

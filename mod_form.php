@@ -95,7 +95,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
             }
         }
 
-        if (!empty($currentrefcourseid) and !$currentrefcourseavailable) {
+        if (!empty($currentrefcourseid) && !$currentrefcourseavailable) {
             // Currently referring to a course that is not available for us.
             // E.g. the admin has set up this Subcourse for the teacher or the teacher lost his role in the referred course etc.
             // Give them a chance to just keep such a reference.

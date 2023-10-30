@@ -21,6 +21,8 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace mod_subcourse;
+
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -34,10 +36,12 @@ require_once($CFG->libdir . '/externallib.php');
  * @copyright 2020 David Mudrák <david@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_subcourse_output_mobile_testcase extends advanced_testcase {
+class output_mobile_test extends \advanced_testcase {
 
     /**
      * Test the return value of the main_view() method.
+     *
+     * @covers ::main_view
      */
     public function test_main_view() {
 
@@ -54,7 +58,7 @@ class mod_subcourse_output_mobile_testcase extends advanced_testcase {
         $generator->enrol_user($student->id, $refcourse->id, 'student');
 
         // Give some grades in the referenced course.
-        $gi = new grade_item($generator->create_grade_item(['courseid' => $refcourse->id]), false);
+        $gi = new \grade_item($generator->create_grade_item(['courseid' => $refcourse->id]), false);
         $gi->update_final_grade($student->id, 90, 'test');
         $gi->force_regrading();
         grade_regrade_final_grades($refcourse->id);

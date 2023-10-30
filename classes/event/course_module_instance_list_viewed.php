@@ -25,8 +25,6 @@
 
 namespace mod_subcourse\event;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Represents the "course module instance list viewed" event.
  *

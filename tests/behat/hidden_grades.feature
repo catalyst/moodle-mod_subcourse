@@ -55,8 +55,9 @@ Feature: Course final grades hidden in the referenced course are hidden in the t
       | Redirect to the referenced course | 0                   |
     And I turn editing mode off
     And I am on "MainCourse" course homepage
-    And I follow "Unit course 1"
+    And I am on the "Unit course 1" "subcourse activity" page logged in as teacher1
     When I follow "Fetch grades now"
+    And I am on "MainCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
       | Email address         | -4-   |
@@ -97,8 +98,9 @@ Feature: Course final grades hidden in the referenced course are hidden in the t
       | Redirect to the referenced course | 0                   |
     And I turn editing mode off
     And I am on "MainCourse" course homepage
-    And I follow "Unit course 1"
+    And I am on the "Unit course 1" "subcourse activity" page logged in as teacher1
     When I follow "Fetch grades now"
+    And I am on "MainCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
       | Email address         | -4-   |

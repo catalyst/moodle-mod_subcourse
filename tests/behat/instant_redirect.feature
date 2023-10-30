@@ -55,7 +55,7 @@ Feature: Clicking the subcourse instance in the course outline may or may not re
       | Subcourse name                    | Unit course 1       |
       | Fetch grades from                 | RefCourse (R)       |
       | Redirect to the referenced course | 1                   |
-    And I follow "Unit course 1"
+    And I am on the "Unit course 1" "subcourse activity" page logged in as teacher1
     Then I should see "Go to RefCourse"
     And I follow "RefCourse"
     And I should see "RefCourse" in the "page-header" "region"
@@ -71,6 +71,7 @@ Feature: Clicking the subcourse instance in the course outline may or may not re
       | capability                    | permission  | role            | contextlevel    | reference   |
       | mod/subcourse:fetchgrades     | Prevent     | teacher         | Activity module | subcourse1  |
       | mod/subcourse:fetchgrades     | Prevent     | editingteacher  | Activity module | subcourse1  |
-    And I follow "Unit course 1"
-    And I follow "RefCourse"
+    And I am on "MainCourse" course homepage
+    And I am on the "Unit course 1" "subcourse activity" page logged in as teacher1
+    And I am on "RefCourse" course homepage
     Then I should see "RefCourse" in the "page-header" "region"

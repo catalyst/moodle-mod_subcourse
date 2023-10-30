@@ -62,7 +62,7 @@ Feature: Grades are fetched automatically from the referenced course
       | Fetch grades from                 | RefCourse (R)       |
       | Redirect to the referenced course | 0                   |
     And I turn editing mode off
-    And I follow "Unit course 1"
+    And I am on the "Unit course 1" "subcourse activity" page logged in as teacher1
     #
     # Upon creation, no grades are fetched yet.
     #
@@ -72,8 +72,9 @@ Feature: Grades are fetched automatically from the referenced course
     #
     # After fetching, the grades are copied.
     #
+    And I am on "MainCourse" course homepage
     And I navigate to "View > User report" in the course gradebook
-    And I set the field "Select all or one user" to "Student 1"
+    And I click on "Student 1" in the "user" search widget
     And the following should exist in the "user-grade" table:
       | Grade item    | Grade | Range   |
       | Unit course 1 | 500   | 0–1000  |
@@ -89,8 +90,9 @@ Feature: Grades are fetched automatically from the referenced course
     And I am on "MainCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     And I should not see "Student 2"
+    And I am on "MainCourse" course homepage
     And I navigate to "View > User report" in the course gradebook
-    And I set the field "Select all or one user" to "Student 1"
+    And I click on "Student 1" in the "user" search widget
     And the following should exist in the "user-grade" table:
       | Grade item    | Grade | Range   |
       | Unit course 1 | 750   | 0–1000  |
@@ -102,7 +104,7 @@ Feature: Grades are fetched automatically from the referenced course
       | student2      | M         | student           |
     And I am on "MainCourse" course homepage
     And I navigate to "View > User report" in the course gradebook
-    And I set the field "Select all or one user" to "Student 2"
+    And I click on "Student 2" in the "user" search widget
     And the following should exist in the "user-grade" table:
       | Grade item    | Grade | Range   |
       | Unit course 1 | 250   | 0–1000  |
