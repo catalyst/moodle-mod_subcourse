@@ -69,14 +69,4 @@ class subcourse_grades_fetched extends \core\event\base {
     public function get_url() {
         return new \moodle_url('/mod/subcourse/view.php', ['id' => $this->contextinstanceid]);
     }
-
-    /**
-     * Return the event data for the legacy log store.
-     *
-     * @return array
-     */
-    public function get_legacy_logdata() {
-        return [$this->courseid, $this->objecttable, 'fetch',
-            'view.php?id='.$this->contextinstanceid, $this->other['refcourse'], $this->contextinstanceid];
-    }
 }
