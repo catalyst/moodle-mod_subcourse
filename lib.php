@@ -329,37 +329,6 @@ function mod_subcourse_cm_info_view(cm_info $cm) {
 }
 
 /**
- * Obtains the automatic completion state for this subcourse.
- *
- * @param object $course Course
- * @param object $cm Course-module
- * @param int $userid User ID
- * @param bool $type Type of comparison (or/and; can be used as return value if no conditions)
- * @return bool True if completed, false if not, $type if conditions not set.
- */
-function subcourse_get_completion_state($course, $cm, $userid, $type) {
-    global $CFG, $DB;
-    require_once($CFG->dirroot.'/completion/completion_completion.php');
-
-    $subcourse = $DB->get_record('subcourse', ['id' => $cm->instance], 'id,refcourse,completioncourse', MUST_EXIST);
-
-    if (empty($subcourse->completioncourse)) {
-        // The rule not enabled, return early.
-        return $type;
-    }
-
-    if (empty($subcourse->refcourse)) {
-        // Misconfigured subcourse instance, behave as if was not enabled.
-        return $type;
-    }
-
-    // Check if the referenced course is completed.
-    $coursecompletion = new completion_completion(['userid' => $userid, 'course' => $subcourse->refcourse]);
-
-    return $coursecompletion->is_complete();
-}
-
-/**
  * Return the action associated with the given calendar event, or null if there is none.
  *
  * This is used by block_myoverview in order to display the event appropriately. If null is returned then the event
