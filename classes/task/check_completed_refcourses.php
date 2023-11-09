@@ -111,7 +111,7 @@ class check_completed_refcourses extends \core\task\scheduled_task {
                 $coursecompletion = new completion_completion(['userid' => $userid, 'course' => $subcourse->refcourse]);
                 if ($coursecompletion->is_complete()) {
                     // Notify the subcourse to check the completion status.
-                    mtrace(" - user {$userid}: completed - notifying subcourse");
+                    mtrace(" - user {$userid}: has completed referenced course, checking subcourse completion");
                     $completion->update_state($cm, COMPLETION_COMPLETE, $userid);
                 }
             }
