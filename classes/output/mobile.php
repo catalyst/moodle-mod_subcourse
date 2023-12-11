@@ -26,7 +26,6 @@ namespace mod_subcourse\output;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/subcourse/locallib.php');
-require_once($CFG->libdir . '/externallib.php');
 
 /**
  * Controls the display of the plugin in the Mobile App.
@@ -72,7 +71,7 @@ class mobile {
         }
 
         if ($refcourse) {
-            $refcourse->fullname = \external_format_string($refcourse->fullname, $context);
+            $refcourse->fullname = \core_external\util::format_string($refcourse->fullname, $context);
             $refcourse->url = new \moodle_url('/course/view.php', ['id' => $refcourse->id]);
             $progress = \core_completion\progress::get_course_progress_percentage($refcourse);
         }
@@ -80,8 +79,8 @@ class mobile {
         $currentgrade = subcourse_get_current_grade($subcourse, $USER->id);
 
         // Pre-format some of the texts for the mobile app.
-        $subcourse->name = \external_format_string($subcourse->name, $context);
-        [$subcourse->intro, $subcourse->introformat] = external_format_text($subcourse->intro, $subcourse->introformat, $context,
+        $subcourse->name = \core_external\util::format_string($subcourse->name, $context);
+        [$subcourse->intro, $subcourse->introformat] = \core_external\util::format_text($subcourse->intro, $subcourse->introformat, $context,
             'mod_subcourse', 'intro');
 
         $data = [
