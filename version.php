@@ -26,7 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_subcourse';
 $plugin->release = 2023122200;
-$plugin->version = 2023103000;
+$plugin->version = 2023122200;
 $plugin->maturity = MATURITY_STABLE;
 $plugin->requires = 2023042400; // Requires 4.2
 $plugin->supported = [402, 403];
