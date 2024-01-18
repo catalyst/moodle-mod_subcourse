@@ -93,7 +93,7 @@
         <%/ hasgrade %>
 
         <%# refcourse %>
-        <ion-button expand="block" class="ion-margin" core-link capture="true" href="<% refcourse.url %>">
+        <ion-button expand="block" class="ion-margin ion-text-wrap" core-link capture="true" href="<% refcourse.url %>">
             {{ 'plugin.mod_subcourse.gotorefcourse' | translate: {$a: '<% refcourse.fullname %>'} }}
         </ion-button>
         <%/ refcourse %>
