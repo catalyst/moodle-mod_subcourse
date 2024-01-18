@@ -87,7 +87,7 @@
 
         <%# refcourse %>
         <ion-item>
-            <button ion-button core-link capture="true" href="<% refcourse.url %>">
+            <button ion-button core-link class="ion-text-wrap" capture="true" href="<% refcourse.url %>">
                 {{ 'plugin.mod_subcourse.gotorefcourse' | translate: {$a: '<% refcourse.fullname %>'} }}
             </button>
         </ion-item>
