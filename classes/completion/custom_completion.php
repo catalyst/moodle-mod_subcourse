@@ -43,18 +43,18 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
         if (empty($subcourse->completioncourse)) {
             // The rule not enabled, return early.
-            return $type;
+            return COMPLETION_INCOMPLETE;
         }
 
         if (empty($subcourse->refcourse)) {
             // Misconfigured subcourse instance, behave as if was not enabled.
-            return $type;
+            return COMPLETION_INCOMPLETE;
         }
 
         // Check if the referenced course is completed.
         $coursecompletion = new \completion_completion(['userid' => $this->userid, 'course' => $subcourse->refcourse]);
 
-        return $coursecompletion->is_complete();
+        return $coursecompletion->is_complete()? COMPLETION_COMPLETE : COMPLETION_INCOMPLETE;
     }
 
     /**
@@ -78,6 +78,11 @@ class custom_completion extends \core_completion\activity_custom_completion {
      * @return array
      */
     public function get_sort_order(): array {
-        return ['completioncourse'];
+        return [
+            'completionview',
+            'completionusegrade',
+            'completionpassgrade',
+            'completioncourse'
+        ];
     }
 }
