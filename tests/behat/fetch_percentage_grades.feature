@@ -107,12 +107,12 @@ Feature: Grades can be fetched either a real values or as percentages
     And I navigate to "View > Grader report" in the course gradebook
     And I turn editing mode off
     And the following should exist in the "user-grades" table:
-      | Email address         | -7-               |
-      | student1@example.com  | 20.00 (66.67 %)   |
-      | student2@example.com  | 20.00 (100.00 %)  |
-      | student3@example.com  | 15.00 (75.00 %)   |
-      | student4@example.com  | 0.00 (0.00 %)     |
-      | student5@example.com  | -                 |
+      | -1-       | -3-                   | -7-               |
+      | Student 1 | student1@example.com  | 20.00 (66.67 %)   |
+      | Student 2 | student2@example.com  | 20.00 (100.00 %)  |
+      | Student 3 | student3@example.com  | 15.00 (75.00 %)   |
+      | Student 4 | student4@example.com  | 0.00 (0.00 %)     |
+      | Student 5 | student5@example.com  | -                 |
 
   @javascript
   Scenario: Grades are fetched as real values by default
@@ -137,12 +137,12 @@ Feature: Grades can be fetched either a real values or as percentages
     And I am on "MainCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
-      | Email address         | -4-               |
-      | student1@example.com  | 20.00 (66.67 %)   |
-      | student2@example.com  | 20.00 (66.67 %)   |
-      | student3@example.com  | 15.00 (50.00 %)   |
-      | student4@example.com  | 0.00 (0.00 %)     |
-      | student5@example.com  | -                 |
+      | -1-       | -3-                   | -4-               |
+      | Student 1 | student1@example.com  | 20.00 (66.67 %)   |
+      | Student 2 | student2@example.com  | 20.00 (66.67 %)   |
+      | Student 3 | student3@example.com  | 15.00 (50.00 %)   |
+      | Student 4 | student4@example.com  | 0.00 (0.00 %)     |
+      | Student 5 | student5@example.com  | -                 |
 
   @javascript
   Scenario: Grades can be fetched as percentual values
@@ -168,9 +168,9 @@ Feature: Grades can be fetched either a real values or as percentages
     And I am on the "MainCourse" course page logged in as "teacher1"
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
-      | Email address         | -4-               |
-      | student1@example.com  | 20.00 (66.67 %)   |
-      | student2@example.com  | 30.00 (100.00 %)  |
-      | student3@example.com  | 22.50 (75.00 %)   |
-      | student4@example.com  | 0.00 (0.00 %)     |
-      | student5@example.com  | -                 |
+      | -1-       | -3-                   | -4-               |
+      | Student 1 | student1@example.com  | 20.00 (66.67 %)   |
+      | Student 2 | student2@example.com  | 30.00 (100.00 %)  |
+      | Student 3 | student3@example.com  | 22.50 (75.00 %)   |
+      | Student 4 | student4@example.com  | 0.00 (0.00 %)     |
+      | Student 5 | student5@example.com  | -                 |

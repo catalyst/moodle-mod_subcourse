@@ -60,9 +60,9 @@ Feature: Course final grades hidden in the referenced course are hidden in the t
     And I am on "MainCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
-      | Email address         | -4-   |
-      | student1@example.com  | 5.00  |
-      | student2@example.com  | 8.00  |
+      | -1-       | -3-                   | -4-   |
+      | Student 1 | student1@example.com  | 5.00  |
+      | Student 2 | student2@example.com  | 8.00  |
     And I log out
     #
     # Student 1 should not see the grade in the referenced course.
@@ -103,9 +103,9 @@ Feature: Course final grades hidden in the referenced course are hidden in the t
     And I am on "MainCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
-      | Email address         | -4-   |
-      | student1@example.com  | 5.00  |
-      | student2@example.com  | 8.00  |
+      | -1-       | -3-                   | -4-   |
+      | Student 1 | student1@example.com  | 5.00  |
+      | Student 2 | student2@example.com  | 8.00  |
     And I log out
     #
     # Student 1 should not see the grade in the referenced course.

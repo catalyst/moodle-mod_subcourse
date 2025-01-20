@@ -54,7 +54,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
         // Check if the referenced course is completed.
         $coursecompletion = new \completion_completion(['userid' => $this->userid, 'course' => $subcourse->refcourse]);
 
-        return $coursecompletion->is_complete();
+        return $coursecompletion->is_complete() ? COMPLETION_COMPLETE : COMPLETION_INCOMPLETE;
     }
 
     /**
@@ -78,6 +78,10 @@ class custom_completion extends \core_completion\activity_custom_completion {
      * @return array
      */
     public function get_sort_order(): array {
-        return ['completioncourse'];
+        return [
+            'completionview',
+            'completionusegrade',
+            'completioncourse',
+        ];
     }
 }

@@ -56,7 +56,7 @@ Feature: Completing the referenced course can lead to completing the subcourse a
     And I wait "1" seconds
     When I run the scheduled task "core\task\completion_regular_task"
     And I am on "MainCourse" course homepage
-    Then the "Complete the activity" completion condition of "Unit course 1" is displayed as "done"
+    Then the "Require course completed" completion condition of "Unit course 1" is displayed as "done"
     And I log out
     And I log in as "teacher1"
     And I am on "MainCourse" course homepage
