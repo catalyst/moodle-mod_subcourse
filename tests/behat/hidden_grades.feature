@@ -28,21 +28,18 @@ Feature: Course final grades hidden in the referenced course are hidden in the t
     And I log in as "teacher1"
     And I am on "RefCourse" course homepage
     And I navigate to "Setup > Gradebook setup" in the course gradebook
-    And I press "Add grade item"
-    And I set the following fields to these values:
-      | Item name     | Manual item 1   |
-      | Maximum grade | 10              |
-    And I press "Save changes"
+    And the following "grade items" exist:
+      | itemname      | grademax | course |
+      | Manual item 1 | 10       | R      |
     And I navigate to "View > Grader report" in the course gradebook
     And I turn editing mode on
     And I give the grade "5" to the user "Student 1" for the grade item "Manual item 1"
     And I give the grade "8" to the user "Student 2" for the grade item "Manual item 1"
     And I press "Save"
-    And I follow "Change to aggregates only"
-    And I click on "Edit grade" "link" in the "Student 1" "table_row"
-    And I set the following fields to these values:
-      | Hidden  | 1 |
-    And I press "Save changes"
+    And I click on grade item menu "RefCourse" of type "course" on "grader" page
+    And I choose "Show totals only" in the open action menu
+    And I click on "Course total" "core_grades > grade_actions" in the "Student 1" "table_row"
+    And I choose "Hide" in the open action menu
     And I turn editing mode off
 
   @javascript
@@ -60,9 +57,9 @@ Feature: Course final grades hidden in the referenced course are hidden in the t
     And I am on "MainCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
-      | Email address         | -4-   |
-      | student1@example.com  | 5.00  |
-      | student2@example.com  | 8.00  |
+      | -1-       | -2-                   | -3-   |
+      | Student 1 | student1@example.com  | 5.00  |
+      | Student 2 | student2@example.com  | 8.00  |
     And I log out
     #
     # Student 1 should not see the grade in the referenced course.
@@ -88,7 +85,7 @@ Feature: Course final grades hidden in the referenced course are hidden in the t
   Scenario: If the whole course final grade item is hidden, the associated subcourse activity grade item is marked as hidden, too.
     Given I am on "RefCourse" course homepage
     And I navigate to "Setup > Gradebook setup" in the course gradebook
-    And I set the following settings for grade item "RefCourse":
+    And I set the following settings for grade item "RefCourse" of type "course" on "setup" page:
       | Hidden          | 1 |
     And I am on "MainCourse" course homepage
     And I turn editing mode on
@@ -103,9 +100,9 @@ Feature: Course final grades hidden in the referenced course are hidden in the t
     And I am on "MainCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
-      | Email address         | -4-   |
-      | student1@example.com  | 5.00  |
-      | student2@example.com  | 8.00  |
+      | -1-       | -2-                   | -3-   |
+      | Student 1 | student1@example.com  | 5.00  |
+      | Student 2 | student2@example.com  | 8.00  |
     And I log out
     #
     # Student 1 should not see the grade in the referenced course.

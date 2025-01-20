@@ -31,13 +31,12 @@ Feature: Progress and grade in referenced course can be displayed on the course 
     And I turn editing mode on
     And I add a "Text and media area" to section "1" and I fill the form with:
       | Text   | Just a simple module to activate progress tracking |
+      | Students must manually mark the activity as done | 1 |
     And I turn editing mode off
     And I navigate to "Setup > Gradebook setup" in the course gradebook
-    And I press "Add grade item"
-    And I set the following fields to these values:
-      | Item name     | Manual item 1   |
-      | Maximum grade | 10              |
-    And I press "Save changes"
+    And the following "grade items" exist:
+      | itemname      | grademax | course |
+      | Manual item 1 | 10       | R      |
     And I navigate to "View > Grader report" in the course gradebook
     And I turn editing mode on
     And I give the grade "5" to the user "Student 1" for the grade item "Manual item 1"

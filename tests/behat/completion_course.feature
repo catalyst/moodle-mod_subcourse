@@ -27,8 +27,8 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | Subcourse name                    | Unit course 1                                     |
       | Fetch grades from                 | RefCourse (R)                                     |
       | Redirect to the referenced course | 0                                                 |
-      | Completion tracking               | Show activity as complete when conditions are met |
-      | Require view                      | 0                                                 |
+      | Add requirements                  | 1                                                 |
+      | View the activity                 | 0                                                 |
       | Require course completed          | 1                                                 |
       | id_completionexpected_enabled     | 1                                                 |
     # Add the block to a the referenced course to allow students to manually complete it
@@ -56,9 +56,8 @@ Feature: Completing the referenced course can lead to completing the subcourse a
     And I wait "1" seconds
     When I run the scheduled task "core\task\completion_regular_task"
     And I am on "MainCourse" course homepage
-    Then the "Complete the activity" completion condition of "Unit course 1" is displayed as "done"
+    Then the "Require course completed" completion condition of "Unit course 1" is displayed as "done"
     And I log out
     And I log in as "teacher1"
     And I am on "MainCourse" course homepage
-    And I navigate to "Reports > Activity completion" in current page administration
-    And "//img[contains(@title, 'Unit course 1') and contains(@title, 'Completed')]" "xpath_element" should exist in the "Student 1" "table_row"
+    And "Student 1" user has completed "Unit course 1" activity

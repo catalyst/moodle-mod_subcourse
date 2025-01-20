@@ -37,24 +37,14 @@ Feature: Grades can be fetched either a real values or as percentages
     And I log in as "teacher1"
     And I am on "RefCourse" course homepage
     And I navigate to "Setup > Gradebook setup" in the course gradebook
-    And I set the following settings for grade item "RefCourse":
+    And I set the following settings for grade item "RefCourse" of type "course" on "setup" page:
       | Aggregation           | Natural |
       | Exclude empty grades  | 1       |
-    And I press "Add grade item"
-    And I set the following fields to these values:
-      | Item name     | Manual item 1   |
-      | Maximum grade | 10              |
-    And I press "Save changes"
-    And I press "Add grade item"
-    And I set the following fields to these values:
-      | Item name     | Manual item 2   |
-      | Maximum grade | 10              |
-    And I press "Save changes"
-    And I press "Add grade item"
-    And I set the following fields to these values:
-      | Item name     | Manual item 3   |
-      | Maximum grade | 10              |
-    And I press "Save changes"
+    And the following "grade items" exist:
+      | itemname      | grademax | course |
+      | Manual item 1 | 10       | R      |
+      | Manual item 2 | 10       | R      |
+      | Manual item 3 | 10       | R      |
     And I navigate to "Setup > Course grade settings" in the course gradebook
     And I set the field "Grade display type" to "Real (percentage)"
     #
@@ -107,12 +97,12 @@ Feature: Grades can be fetched either a real values or as percentages
     And I navigate to "View > Grader report" in the course gradebook
     And I turn editing mode off
     And the following should exist in the "user-grades" table:
-      | Email address         | -7-               |
-      | student1@example.com  | 20.00 (66.67 %)   |
-      | student2@example.com  | 20.00 (100.00 %)  |
-      | student3@example.com  | 15.00 (75.00 %)   |
-      | student4@example.com  | 0.00 (0.00 %)     |
-      | student5@example.com  | -                 |
+      | -1-       | -2-                   | -6-               |
+      | Student 1 | student1@example.com  | 20.00 (66.67 %)   |
+      | Student 2 | student2@example.com  | 20.00 (100.00 %)  |
+      | Student 3 | student3@example.com  | 15.00 (75.00 %)   |
+      | Student 4 | student4@example.com  | 0.00 (0.00 %)     |
+      | Student 5 | student5@example.com  | -                 |
 
   @javascript
   Scenario: Grades are fetched as real values by default
@@ -125,9 +115,9 @@ Feature: Grades can be fetched either a real values or as percentages
     And I turn editing mode off
     And I am on "MainCourse" course homepage
     And I navigate to "Setup > Gradebook setup" in the course gradebook
-    And I click on "Edit" "link" in the "Unit course 1" "table_row"
-    And I click on "Edit settings" "link" in the "Unit course 1" "table_row"
-    And I click on "Show more..." "link"
+    And I click on grade item menu "Unit course 1" of type "gradeitem" on "setup" page
+    And I choose "Edit grade item" in the open action menu
+    And I click on "Show more..." "link" in the "Edit grade item" "dialogue"
     And I set the following fields to these values:
       | Grade display type  | Real (percentage) |
     And I press "Save changes"
@@ -137,12 +127,12 @@ Feature: Grades can be fetched either a real values or as percentages
     And I am on "MainCourse" course homepage
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
-      | Email address         | -4-               |
-      | student1@example.com  | 20.00 (66.67 %)   |
-      | student2@example.com  | 20.00 (66.67 %)   |
-      | student3@example.com  | 15.00 (50.00 %)   |
-      | student4@example.com  | 0.00 (0.00 %)     |
-      | student5@example.com  | -                 |
+      | -1-       | -2-                   | -3-               |
+      | Student 1 | student1@example.com  | 20.00 (66.67 %)   |
+      | Student 2 | student2@example.com  | 20.00 (66.67 %)   |
+      | Student 3 | student3@example.com  | 15.00 (50.00 %)   |
+      | Student 4 | student4@example.com  | 0.00 (0.00 %)     |
+      | Student 5 | student5@example.com  | -                 |
 
   @javascript
   Scenario: Grades can be fetched as percentual values
@@ -156,9 +146,9 @@ Feature: Grades can be fetched either a real values or as percentages
     And I turn editing mode off
     And I am on "MainCourse" course homepage
     And I navigate to "Setup > Gradebook setup" in the course gradebook
-    And I click on "Edit" "link" in the "Unit course 1" "table_row"
-    And I click on "Edit settings" "link" in the "Unit course 1" "table_row"
-    And I click on "Show more..." "link"
+    And I click on grade item menu "Unit course 1" of type "gradeitem" on "setup" page
+    And I choose "Edit grade item" in the open action menu
+    And I click on "Show more..." "link" in the "Edit grade item" "dialogue"
     And I set the following fields to these values:
       | Grade display type  | Real (percentage) |
     And I press "Save changes"
@@ -168,9 +158,9 @@ Feature: Grades can be fetched either a real values or as percentages
     And I am on the "MainCourse" course page logged in as "teacher1"
     And I navigate to "View > Grader report" in the course gradebook
     Then the following should exist in the "user-grades" table:
-      | Email address         | -4-               |
-      | student1@example.com  | 20.00 (66.67 %)   |
-      | student2@example.com  | 30.00 (100.00 %)  |
-      | student3@example.com  | 22.50 (75.00 %)   |
-      | student4@example.com  | 0.00 (0.00 %)     |
-      | student5@example.com  | -                 |
+      | -1-       | -2-                   | -3-               |
+      | Student 1 | student1@example.com  | 20.00 (66.67 %)   |
+      | Student 2 | student2@example.com  | 30.00 (100.00 %)  |
+      | Student 3 | student3@example.com  | 22.50 (75.00 %)   |
+      | Student 4 | student4@example.com  | 0.00 (0.00 %)     |
+      | Student 5 | student5@example.com  | -                 |
