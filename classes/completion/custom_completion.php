@@ -43,12 +43,12 @@ class custom_completion extends \core_completion\activity_custom_completion {
 
         if (empty($subcourse->completioncourse)) {
             // The rule not enabled, return early.
-            return $type;
+            return COMPLETION_UNKNOWN;
         }
 
         if (empty($subcourse->refcourse)) {
             // Misconfigured subcourse instance, behave as if was not enabled.
-            return $type;
+            return COMPLETION_INCOMPLETE;
         }
 
         // Check if the referenced course is completed.
