@@ -27,7 +27,7 @@ namespace mod_subcourse\task;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/subcourse/locallib.php');
+require_once($CFG->dirroot . '/mod/subcourse/locallib.php');
 
 /**
  * Fetches remote grades into all subcourse instances
@@ -36,7 +36,6 @@ require_once($CFG->dirroot.'/mod/subcourse/locallib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class fetch_grades extends \core\task\scheduled_task {
-
     /**
      * Returns a descriptive name for this task shown to admins
      *
@@ -63,23 +62,29 @@ class fetch_grades extends \core\task\scheduled_task {
         $updatedids = [];
 
         foreach ($subcourses as $subcourse) {
-
             if (empty($subcourse->refcourse)) {
                 mtrace("Subcourse {$subcourse->id}: no referenced course configured ... skipped");
                 continue;
             }
 
-            mtrace("Subcourse {$subcourse->id}: fetching grades from course {$subcourse->refcourse} ".
+            mtrace("Subcourse {$subcourse->id}: fetching grades from course {$subcourse->refcourse} " .
                "to course {$subcourse->course} ... ", "");
-            $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse,
-                null, false, false, [], $subcourse->fetchpercentage);
+            $result = subcourse_grades_update(
+                $subcourse->course,
+                $subcourse->id,
+                $subcourse->refcourse,
+                null,
+                false,
+                false,
+                [],
+                $subcourse->fetchpercentage
+            );
 
             if ($result == GRADE_UPDATE_OK) {
                 $updatedids[] = $subcourse->id;
                 mtrace("ok");
-
             } else {
-                mtrace("failed with error code ".$result);
+                mtrace("failed with error code " . $result);
             }
         }
 

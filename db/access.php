@@ -44,7 +44,7 @@ $capabilities = [
         'contextlevel' => CONTEXT_COURSE,
         'archetypes' => [
             'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
+            'manager' => CAP_ALLOW,
         ],
         'clonepermissionsfrom' => 'moodle/course:manageactivities',
     ],
@@ -53,8 +53,8 @@ $capabilities = [
         'captype' => 'write',
         'contextlevel' => CONTEXT_MODULE,
         'legacy' => [
-            'student' => CAP_ALLOW
-        ]
+            'student' => CAP_ALLOW,
+        ],
     ],
 
     'mod/subcourse:fetchgrades' => [
@@ -63,6 +63,6 @@ $capabilities = [
         'legacy' => [
             'teacher' => CAP_ALLOW,
             'editingteacher' => CAP_ALLOW,
-        ]
+        ],
     ],
 ];

@@ -31,7 +31,7 @@ use context_course;
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/subcourse/locallib.php');
+require_once($CFG->dirroot . '/mod/subcourse/locallib.php');
 
 /**
  * Makes sure that all subcourse instances are marked as completed when they should be.
@@ -44,7 +44,6 @@ require_once($CFG->dirroot.'/mod/subcourse/locallib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class check_completed_refcourses extends \core\task\scheduled_task {
-
     /**
      * Returns a descriptive name for this task shown to admins
      *
@@ -61,8 +60,8 @@ class check_completed_refcourses extends \core\task\scheduled_task {
      */
     public function execute() {
         global $CFG, $DB;
-        require_once($CFG->dirroot.'/lib/completionlib.php');
-        require_once($CFG->dirroot.'/completion/completion_completion.php');
+        require_once($CFG->dirroot . '/lib/completionlib.php');
+        require_once($CFG->dirroot . '/completion/completion_completion.php');
 
         if (!completion_info::is_enabled_for_site()) {
             mtrace("Completion tracking not enabled on this site");
@@ -94,7 +93,7 @@ class check_completed_refcourses extends \core\task\scheduled_task {
                     $course->id => (object)[
                         'course' => $course,
                         'participants' => get_enrolled_users($coursecontext, 'mod/subcourse:begraded', 0, "u.id"),
-                    ]
+                    ],
                 ];
             }
 
@@ -116,7 +115,7 @@ class check_completed_refcourses extends \core\task\scheduled_task {
                 }
             }
 
-            mtrace(" ... checked ".count($cache[$subcourse->course]->participants)." users");
+            mtrace(" ... checked " . count($cache[$subcourse->course]->participants) . " users");
         }
 
         $rs->close();

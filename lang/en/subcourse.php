@@ -23,10 +23,16 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+// phpcs:disable moodle.Files.LangFilesOrdering.UnexpectedComment
+// phpcs:disable moodle.Files.LangFilesOrdering.IncorrectOrder
+
 defined('MOODLE_INTERNAL') || die();
 
 $string['blankwindow'] = 'Open in a new window';
 $string['blankwindow_help'] = 'When selected, the link will open the referenced course in a new browser window.';
+$string['completioncourse'] = 'Require course completed';
+$string['completioncourse_help'] = 'If enabled, the activity is considered complete when a student completes the referenced course.';
+$string['completioncourse_text'] = 'Student must complete the referenced course to complete this activity.';
 $string['currentgrade'] = 'Current grade: {$a}';
 $string['currentprogress'] = 'Progress: {$a}%';
 $string['displayoption:coursepageprintgrade'] = 'Display grade from referenced course on course page';
@@ -69,10 +75,10 @@ $string['refcourselabel'] = 'Fetch grades from';
 $string['refcoursenull'] = 'No referenced course configured';
 $string['settings:coursepageprintgrade'] = 'Grade on course page';
 $string['settings:coursepageprintgrade_desc'] = 'Display grade from referenced course on course page.';
-$string['settings:displayhiddencourses'] = 'Display hidden courses';
-$string['settings:displayhiddencourses_desc'] = 'Allow hidden courses to be selected when editing a subcourse.';
 $string['settings:coursepageprintprogress'] = 'Progress on course page';
 $string['settings:coursepageprintprogress_desc'] = 'Display progress from referenced course on course page.';
+$string['settings:displayhiddencourses'] = 'Display hidden courses';
+$string['settings:displayhiddencourses_desc'] = 'Allow hidden courses to be selected when editing a subcourse.';
 $string['subcourse:addinstance'] = 'Add a new subcourse';
 $string['subcourse:begraded'] = 'Receive grade from the referenced course';
 $string['subcourse:fetchgrades'] = 'Fetch grades manually from the referenced course';
@@ -80,9 +86,6 @@ $string['subcourse:view'] = 'View subcourse activity';
 $string['subcoursename'] = 'Subcourse name';
 $string['taskcheckcompletedrefcourses'] = 'Check referenced courses completion';
 $string['taskfetchgrades'] = 'Fetch subcourse grades';
-$string['completioncourse'] = 'Require course completed';
-$string['completioncourse_help'] = 'If enabled, the activity is considered complete when a student completes the referenced course.';
-$string['completioncourse_text'] = 'Student must complete the referenced course to complete this activity.';
 
 // Deprecated and no longer used.
 $string['gotocoursename'] = 'Go to the course <a href="{$a->href}">{$a->name}</a>';

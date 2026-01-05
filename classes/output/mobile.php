@@ -17,6 +17,7 @@
 /**
  * Provides {@see \mod_subcourse\output\mobile} class.
  *
+ * @package     mod_subcourse
  * @copyright   2020 David Mudrák <david@moodle.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -36,7 +37,6 @@ require_once($CFG->dirroot . '/mod/subcourse/locallib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mobile {
-
     /**
      * Return the data for the CoreCourseModuleDelegate delegate.
      *
@@ -64,7 +64,6 @@ class mobile {
             if (has_capability('mod/subcourse:fetchgrades', $context)) {
                 $warning = get_string('refcoursenull', 'subcourse');
             }
-
         } else {
             $refcourse = $DB->get_record('course', ['id' => $subcourse->refcourse], 'id, fullname', IGNORE_MISSING);
         }
@@ -79,8 +78,13 @@ class mobile {
 
         // Pre-format some of the texts for the mobile app.
         $subcourse->name = \core_external\util::format_string($subcourse->name, $context);
-        [$subcourse->intro, $subcourse->introformat] = \core_external\util::format_text($subcourse->intro, $subcourse->introformat,
-                                                                                        $context, 'mod_subcourse', 'intro');
+        [$subcourse->intro, $subcourse->introformat] = \core_external\util::format_text(
+            $subcourse->intro,
+            $subcourse->introformat,
+            $context,
+            'mod_subcourse',
+            'intro'
+        );
 
         $data = [
             'cmid' => $cm->id,

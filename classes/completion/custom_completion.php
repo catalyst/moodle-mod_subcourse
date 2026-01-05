@@ -35,7 +35,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
      */
     public function get_state(string $rule): int {
         global $CFG, $DB;
-        require_once($CFG->dirroot.'/completion/completion_completion.php');
+        require_once($CFG->dirroot . '/completion/completion_completion.php');
 
         $this->validate_rule($rule);
 

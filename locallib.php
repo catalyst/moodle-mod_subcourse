@@ -24,7 +24,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir.'/gradelib.php');
+require_once($CFG->libdir . '/gradelib.php');
 
 /**
  * Returns the list of courses the grades can be taken from
@@ -55,6 +55,7 @@ function subcourse_available_courses($userid = null) {
             if (in_array($mycourse->id, $ignorecourses)) {
                 continue;
             }
+
             $courses[] = $mycourse;
         }
     }
@@ -120,8 +121,18 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
         $cm = get_coursemodule_from_instance("subcourse", $subcourseid);
         $context = context_module::instance($cm->id);
 
-        $users = get_users_by_capability($context, 'mod/subcourse:begraded', 'u.id,u.lastname',
-                                         'u.lastname', '', '', '', '', false, true);
+        $users = get_users_by_capability(
+            $context,
+            'mod/subcourse:begraded',
+            'u.id,u.lastname',
+            'u.lastname',
+            '',
+            '',
+            '',
+            '',
+            false,
+            true
+        );
 
         foreach ($users as $user) {
             if ($userids && !in_array($user->id, $userids)) {
@@ -139,11 +150,9 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
             if ($grade->finalgrade === null) {
                 // No grade set yet.
                 $return->grades[$user->id]->rawgrade = null;
-
             } else if (empty($fetchpercentage)) {
                 // Fetch the raw value of the final grade in the referenced course.
                 $return->grades[$user->id]->rawgrade = $grade->finalgrade;
-
             } else {
                 // Re-calculate the value so that the displayed percentage matches.
                 // This may make difference when there are excluded grades in the referenced course.
@@ -151,7 +160,6 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
                     $ratio = ($grade->finalgrade - $grade->rawgrademin) / ($grade->rawgrademax - $grade->rawgrademin);
                     $fakevalue = $return->grademin + $ratio * ($return->grademax - $return->grademin);
                     $return->grades[$user->id]->rawgrade = grade_floatval($fakevalue);
-
                 } else {
                     $return->grades[$user->id]->rawgrade = 0;
                 }
@@ -176,8 +184,16 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
  * @param bool $fetchpercentage Re-calculate the grade value so that the displayed percentage matches the original.
  * @return int GRADE_UPDATE_OK etc
  */
-function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemname = null,
-        $gradeitemonly = false, $reset = false, $userids = [], $fetchpercentage = null) {
+function subcourse_grades_update(
+    $courseid,
+    $subcourseid,
+    $refcourseid,
+    $itemname = null,
+    $gradeitemonly = false,
+    $reset = false,
+    $userids = [],
+    $fetchpercentage = null
+) {
     global $DB;
 
     if (empty($refcourseid)) {
@@ -209,6 +225,7 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
             $params[$property] = $refgrades->$property;
         }
     }
+
     if (!empty($itemname)) {
         $params['itemname'] = $itemname;
     }
@@ -230,7 +247,7 @@ function subcourse_grades_update($courseid, $subcourseid, $refcourseid, $itemnam
             'itemtype' => 'mod',
             'itemmodule' => 'subcourse',
             'iteminstance' => $subcourseid,
-            'itemnumber' => 0
+            'itemnumber' => 0,
         ]);
 
         $gs = grade_grade::fetch_all(['itemid' => $gi->id]);
@@ -285,19 +302,24 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
     if (empty($subcourseids)) {
         return false;
     }
+
     if (is_numeric($subcourseids)) {
         $subcourseids = [$subcourseids];
     }
+
     if (!is_array($subcourseids)) {
         return false;
     }
+
     if (is_null($time)) {
         $time = time();
     }
+
     if (!is_numeric($time)) {
         return false;
     }
-    list($sql, $params) = $DB->get_in_or_equal($subcourseids);
+
+    [$sql, $params] = $DB->get_in_or_equal($subcourseids);
     $DB->set_field_select('subcourse', 'timefetched', $time, "id $sql", $params);
 
     return true;

@@ -33,7 +33,7 @@ $tasks = [
         'hour' => '3',
         'day' => '*',
         'dayofweek' => '1-5',
-        'month' => '*'
+        'month' => '*',
     ],
     [
         'classname' => '\mod_subcourse\task\check_completed_refcourses',
@@ -42,6 +42,6 @@ $tasks = [
         'hour' => '4',
         'day' => '*',
         'dayofweek' => '1-5',
-        'month' => '*'
+        'month' => '*',
     ],
 ];

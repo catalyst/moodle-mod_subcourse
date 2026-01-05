@@ -29,7 +29,7 @@
  * @param int $oldversion the version we are upgrading from
  * @return bool true
  */
-function xmldb_subcourse_upgrade($oldversion=0) {
+function xmldb_subcourse_upgrade($oldversion = 0) {
     global $DB;
 
     $dbman = $DB->get_manager();
@@ -97,16 +97,32 @@ function xmldb_subcourse_upgrade($oldversion=0) {
     if ($oldversion < 2021021400) {
         // Add the field 'coursepageprintgrade' to the table 'subcourse'.
         $table = new xmldb_table('subcourse');
-        $field = new xmldb_field('coursepageprintgrade', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1',
-            'fetchpercentage');
+        $field = new xmldb_field(
+            'coursepageprintgrade',
+            XMLDB_TYPE_INTEGER,
+            '1',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '1',
+            'fetchpercentage'
+        );
 
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
 
         // Add the field 'coursepageprintprogress' to the table 'subcourse'.
-        $field = new xmldb_field('coursepageprintprogress', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '1',
-            'coursepageprintgrade');
+        $field = new xmldb_field(
+            'coursepageprintprogress',
+            XMLDB_TYPE_INTEGER,
+            '1',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '1',
+            'coursepageprintgrade'
+        );
 
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
