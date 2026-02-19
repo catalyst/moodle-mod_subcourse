@@ -25,5 +25,8 @@
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 
 $id = required_param('id', PARAM_INT);
-\core_courseformat\activityoverviewbase::redirect_to_overview_page($id, 'subcourse');
+$course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
 
+require_login($course);
+
+\core_courseformat\activityoverviewbase::redirect_to_overview_page($id, 'subcourse');

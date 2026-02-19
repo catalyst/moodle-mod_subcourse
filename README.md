@@ -1,7 +1,7 @@
 Subcourse module for Moodle
 ===========================
 
-![Moodle Plugin CI](https://github.com/catalyst/moodle-mod_subcourse/workflows/Moodle%20Plugin%20CI/badge.svg)
+[![ci](https://github.com/catalyst/moodle-mod_subcourse/actions/workflows/moodle-ci.yml/badge.svg)](https://github.com/catalyst/moodle-mod_subcourse/actions/workflows/moodle-ci.yml)
 
 This Moodle module provides very simple yet useful functionality. When added into a
 course, it behaves as a graded activity. The grade for each student is took from a
