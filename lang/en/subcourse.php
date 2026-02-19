@@ -59,7 +59,23 @@ $string['lastfetchnever'] = 'The grades have not been fetched yet';
 $string['lastfetchtime'] = 'Last fetch: {$a}';
 $string['linkcontrol'] = 'Subcourse activity link';
 $string['modulename'] = 'Subcourse';
-$string['modulename_help'] = 'The module provides very simple yet useful functionality. When added into a course, it behaves as a graded activity. The grade for each student is taken from a final grade in another course. Combined with metacourses, this allows course designers to organize courses into separate units.';
+$string['modulename_help'] = '
+###### Key features
+- Provides a link to another course
+- Represents the final grade obtained in another course
+- Automatically or manually fetches grades from the referenced course
+- Copies grade type and settings from the original grade item (cannot be changed)
+- Can be marked as completed when the referenced course is completed
+- Hides the subcourse grade if the original course grade is hidden
+
+###### Ways to use it
+- Aggregate grades from multiple courses into a single "meta-gradebook"
+- Organize courses into separate units while maintaining overall grading
+- Simplify grade tracking across related courses
+- Support metacourse structures for complex curricula
+- Provide a clear overview of student performance across courses
+';
+$string['modulename_summary'] = 'Helps organize courses into units and aggregate grades by referencing final grades from other courses.';
 $string['modulenameplural'] = 'Subcourses';
 $string['nocoursesavailable'] = 'No courses you could fetch grades from';
 $string['nosubcourses'] = 'There are no subcourses in this course';
