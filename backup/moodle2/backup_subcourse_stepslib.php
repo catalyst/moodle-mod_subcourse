@@ -30,16 +30,25 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_subcourse_activity_structure_step extends backup_activity_structure_step {
-
     /**
      * Defines the complete subcourse structure for backup
      */
     protected function define_structure() {
 
         $subcourse = new backup_nested_element('subcourse', ['id'], [
-            'name', 'intro', 'introformat', 'timecreated', 'timemodified', 'timefetched',
-            'refcourse', 'instantredirect', 'completioncourse', 'blankwindow', 'fetchpercentage',
-            'coursepageprintgrade', 'coursepageprintprogress'
+            'name',
+            'intro',
+            'introformat',
+            'timecreated',
+            'timemodified',
+            'timefetched',
+            'refcourse',
+            'instantredirect',
+            'completioncourse',
+            'blankwindow',
+            'fetchpercentage',
+            'coursepageprintgrade',
+            'coursepageprintprogress',
         ]);
 
         $subcourse->set_source_table('subcourse', ['id' => backup::VAR_ACTIVITYID]);

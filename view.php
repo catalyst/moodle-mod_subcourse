@@ -22,9 +22,9 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require(__DIR__.'/../../config.php');
-require_once($CFG->dirroot.'/mod/subcourse/locallib.php');
-require_once($CFG->libdir.'/gradelib.php');
+require(__DIR__ . '/../../config.php');
+require_once($CFG->dirroot . '/mod/subcourse/locallib.php');
+require_once($CFG->libdir . '/gradelib.php');
 
 $id = required_param('id', PARAM_INT);
 $fetchnow = optional_param('fetchnow', 0, PARAM_INT);
@@ -46,7 +46,6 @@ $PAGE->set_heading($course->fullname);
 
 if (empty($subcourse->refcourse)) {
     $refcourse = false;
-
 } else {
     $refcourse = $DB->get_record('course', ['id' => $subcourse->refcourse], '*', IGNORE_MISSING);
 }
@@ -58,7 +57,7 @@ if ($fetchnow && $refcourse) {
     $event = \mod_subcourse\event\subcourse_grades_fetched::create([
         'objectid' => $subcourse->id,
         'context' => $context,
-        'other' => ['refcourse' => $refcourse->id]
+        'other' => ['refcourse' => $refcourse->id],
     ]);
 
     $event->add_record_snapshot('course_modules', $cm);
@@ -66,13 +65,20 @@ if ($fetchnow && $refcourse) {
     $event->add_record_snapshot('subcourse', $subcourse);
     $event->trigger();
 
-    $result = subcourse_grades_update($subcourse->course, $subcourse->id, $subcourse->refcourse,
-        null, false, false, [], $subcourse->fetchpercentage);
+    $result = subcourse_grades_update(
+        $subcourse->course,
+        $subcourse->id,
+        $subcourse->refcourse,
+        null,
+        false,
+        false,
+        [],
+        $subcourse->fetchpercentage
+    );
 
     if ($result == GRADE_UPDATE_OK) {
         subcourse_update_timefetched($subcourse->id);
         redirect(new moodle_url('/mod/subcourse/view.php', ['id' => $cm->id]));
-
     } else {
         throw new moodle_exception('errfetch', 'subcourse', $CFG->wwwroot . '/mod/subcourse/view.php?id=' . $cm->id, $result);
     }
@@ -123,8 +129,13 @@ if ($refcourse) {
         );
     }
 
-    if (has_all_capabilities(['gradereport/user:view', 'moodle/grade:view'], $refcoursecontext)
-            && $refcourse->showgrades && ($strgrade !== null)) {
+    if (
+        has_all_capabilities(
+            ['gradereport/user:view', 'moodle/grade:view'],
+            $refcoursecontext
+        )
+        && $refcourse->showgrades && ($strgrade !== null)
+    ) {
         echo html_writer::link(
             new moodle_url('/grade/report/user/index.php', ['id' => $refcourse->id]),
             get_string('gotorefcoursemygrades', 'subcourse', format_string($refcourse->fullname)),
@@ -150,7 +161,6 @@ if ($refcourse) {
 
     // End of div.actionbuttons.
     echo html_writer::end_div();
-
 } else {
     if (has_capability('mod/subcourse:fetchgrades', $context)) {
         echo $OUTPUT->notification(get_string('refcoursenull', 'subcourse'));

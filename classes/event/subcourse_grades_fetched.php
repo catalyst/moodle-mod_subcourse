@@ -32,7 +32,6 @@ namespace mod_subcourse\event;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class subcourse_grades_fetched extends \core\event\base {
-
     /**
      * Initialize the event.
      */
@@ -57,7 +56,7 @@ class subcourse_grades_fetched extends \core\event\base {
      * @return string
      */
     public function get_description() {
-        return "The user with id '{$this->userid}' fetched grades from the course with id '{$this->other['refcourse']}' ".
+        return "The user with id '{$this->userid}' fetched grades from the course with id '{$this->other['refcourse']}' " .
                 "into the 'subcourse' activity with the course module id '{$this->contextinstanceid}'.";
     }
 

@@ -17,6 +17,7 @@
 /**
  * Provides {@see \mod_subcourse\external\view_subcourse} class.
  *
+ * @package     mod_subcourse
  * @copyright   2020 David Mudrák <david@moodle.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -43,7 +44,6 @@ use external_warnings;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class view_subcourse extends external_api {
-
     /**
      * Describes the parameters for view_subcourse.
      *
@@ -72,7 +72,7 @@ class view_subcourse extends external_api {
         $warnings = [];
 
         $subcourse = $DB->get_record('subcourse', ['id' => $params['subcourseid']], '*', MUST_EXIST);
-        list($course, $cm) = get_course_and_cm_from_instance($subcourse, 'subcourse');
+        [$course, $cm] = get_course_and_cm_from_instance($subcourse, 'subcourse');
         $context = \context_module::instance($cm->id);
 
         self::validate_context($context);
