@@ -24,10 +24,15 @@
 
 require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
 require_once(dirname(__FILE__) . '/lib.php');
+global $CFG;
 
 $id = required_param('id', PARAM_INT);
 
 $course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
+
+if ($CFG->version > 2025041400) {
+    \core_courseformat\activityoverviewbase::redirect_to_overview_page($id, 'subcourse');
+}
 
 require_course_login($course);
 
