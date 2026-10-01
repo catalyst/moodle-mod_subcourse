@@ -102,6 +102,75 @@ final class locallib_test extends \advanced_testcase {
     }
 
     /**
+     * Test that only requested users with the begraded capability have their grades fetched.
+     *
+     * @covers ::subcourse_fetch_refgrades
+     * @covers ::subcourse_get_gradeable_userids
+     */
+    public function test_subcourse_fetch_refgrades_requested_users(): void {
+        global $CFG;
+
+        $this->resetAfterTest();
+        $this->setAdminUser();
+
+        $generator = $this->getDataGenerator();
+
+        $metacourse = $generator->create_course();
+        $refcourse = $generator->create_course();
+
+        $student1 = $generator->create_user();
+        $student2 = $generator->create_user();
+        $teacher = $generator->create_user();
+        $nograde = $generator->create_user();
+
+        $generator->enrol_user($student1->id, $metacourse->id, 'student');
+        $generator->enrol_user($student1->id, $refcourse->id, 'student');
+        $generator->enrol_user($student2->id, $metacourse->id, 'student');
+        $generator->enrol_user($student2->id, $refcourse->id, 'student');
+        $generator->enrol_user($teacher->id, $metacourse->id, 'editingteacher');
+        $generator->enrol_user($teacher->id, $refcourse->id, 'student');
+        $generator->enrol_user($nograde->id, $metacourse->id, 'student');
+
+        $gi = new \grade_item($generator->create_grade_item(['courseid' => $refcourse->id]), false);
+        $gi->update_final_grade($student1->id, 90, 'test');
+        $gi->update_final_grade($student2->id, 60, 'test');
+        $gi->update_final_grade($teacher->id, 70, 'test');
+        $gi->force_regrading();
+        grade_regrade_final_grades($refcourse->id);
+
+        $subcourse = $generator->create_module('subcourse', [
+            'course' => $metacourse->id,
+            'refcourse' => $refcourse->id,
+        ]);
+
+        // A single user ID limits the result to that user only.
+        $refgrades = subcourse_fetch_refgrades($subcourse->id, $refcourse->id, false, $student1->id);
+        $this->assertEquals([$student1->id], array_keys($refgrades->grades));
+        $this->assertEquals(90, $refgrades->grades[$student1->id]->rawgrade);
+
+        // Users without the capability, the admin, the guest and invalid IDs are skipped.
+        $refgrades = subcourse_fetch_refgrades($subcourse->id, $refcourse->id, false, [
+            $student2->id,
+            $teacher->id,
+            $nograde->id,
+            get_admin()->id,
+            $CFG->siteguest,
+            0,
+            $student2->id,
+        ]);
+        $this->assertEqualsCanonicalizing([$student2->id, $nograde->id], array_keys($refgrades->grades));
+        $this->assertEquals(60, $refgrades->grades[$student2->id]->rawgrade);
+        $this->assertNull($refgrades->grades[$nograde->id]->rawgrade);
+
+        // Without user IDs all gradeable users are returned.
+        $refgrades = subcourse_fetch_refgrades($subcourse->id, $refcourse->id);
+        $this->assertEqualsCanonicalizing(
+            [$student1->id, $student2->id, $nograde->id],
+            array_keys($refgrades->grades),
+        );
+    }
+
+    /**
      * Test that calling {see subcourse_set_module_viewed()} does not raise errors.
      *
      * @covers ::subcourse_set_module_viewed

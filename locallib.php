@@ -121,53 +121,90 @@ function subcourse_fetch_refgrades($subcourseid, $refcourseid, $gradeitemonly = 
         $cm = get_coursemodule_from_instance("subcourse", $subcourseid);
         $context = context_module::instance($cm->id);
 
-        $users = get_users_by_capability(
-            $context,
-            'mod/subcourse:begraded',
-            'u.id,u.lastname',
-            'u.lastname',
-            '',
-            '',
-            '',
-            '',
-            false,
-            true
-        );
+        $gradeableuserids = subcourse_get_gradeable_userids($context, $userids);
 
-        foreach ($users as $user) {
-            if ($userids && !in_array($user->id, $userids)) {
-                continue;
-            }
+        if (empty($gradeableuserids)) {
+            return $return;
+        }
 
-            $grade = new grade_grade(['itemid' => $refgradeitem->id, 'userid' => $user->id]);
+        $grades = grade_grade::fetch_users_grades($refgradeitem, $gradeableuserids);
 
-            $return->grades[$user->id] = new stdClass();
-            $return->grades[$user->id]->userid = $user->id;
-            $return->grades[$user->id]->feedback = $grade->feedback;
-            $return->grades[$user->id]->feedbackformat = $grade->feedbackformat;
-            $return->grades[$user->id]->hidden = $grade->hidden;
+        foreach ($gradeableuserids as $userid) {
+            $grade = $grades[$userid];
+
+            $return->grades[$userid] = new stdClass();
+            $return->grades[$userid]->userid = $userid;
+            $return->grades[$userid]->feedback = $grade->feedback;
+            $return->grades[$userid]->feedbackformat = $grade->feedbackformat;
+            $return->grades[$userid]->hidden = $grade->hidden;
 
             if ($grade->finalgrade === null) {
                 // No grade set yet.
-                $return->grades[$user->id]->rawgrade = null;
+                $return->grades[$userid]->rawgrade = null;
             } else if (empty($fetchpercentage)) {
                 // Fetch the raw value of the final grade in the referenced course.
-                $return->grades[$user->id]->rawgrade = $grade->finalgrade;
+                $return->grades[$userid]->rawgrade = $grade->finalgrade;
             } else {
                 // Re-calculate the value so that the displayed percentage matches.
                 // This may make difference when there are excluded grades in the referenced course.
                 if ($grade->rawgrademax > 0) {
                     $ratio = ($grade->finalgrade - $grade->rawgrademin) / ($grade->rawgrademax - $grade->rawgrademin);
                     $fakevalue = $return->grademin + $ratio * ($return->grademax - $return->grademin);
-                    $return->grades[$user->id]->rawgrade = grade_floatval($fakevalue);
+                    $return->grades[$userid]->rawgrade = grade_floatval($fakevalue);
                 } else {
-                    $return->grades[$user->id]->rawgrade = 0;
+                    $return->grades[$userid]->rawgrade = 0;
                 }
             }
         }
     }
 
     return $return;
+}
+
+/**
+ * Returns the IDs of users who can be graded in the given subcourse context.
+ *
+ * When specific users are requested, each one is checked individually so that the whole
+ * course roster is not loaded. Otherwise all users with the capability are fetched in a
+ * single query. In both cases the admin override is ignored to match role-based lookups.
+ *
+ * @param context $context Subcourse module context
+ * @param array $userids Limit the check to these users, empty for all gradeable users
+ * @return int[] List of gradeable user IDs
+ */
+function subcourse_get_gradeable_userids(context $context, array $userids = []): array {
+    global $CFG, $DB;
+
+    $capability = 'mod/subcourse:begraded';
+
+    if (!empty($userids)) {
+        $gradeableuserids = [];
+
+        foreach (array_unique(array_map('intval', $userids)) as $userid) {
+            if ($userid <= 0 || $userid == $CFG->siteguest) {
+                continue;
+            }
+
+            if (has_capability($capability, $context, $userid, false)) {
+                $gradeableuserids[] = $userid;
+            }
+        }
+
+        return $gradeableuserids;
+    }
+
+    $capjoin = get_with_capability_join($context, $capability, 'u.id');
+
+    if ($capjoin->cannotmatchanyrows) {
+        return [];
+    }
+
+    $sql = "SELECT u.id
+              FROM {user} u
+                   {$capjoin->joins}
+             WHERE {$capjoin->wheres}";
+
+    return array_values(array_unique(array_map('intval', $DB->get_fieldset_sql($sql, $capjoin->params))));
 }
 
 /**
