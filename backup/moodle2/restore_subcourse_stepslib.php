@@ -57,7 +57,10 @@ class restore_subcourse_activity_structure_step extends restore_activity_structu
 
         $data->timefetched = 0;
 
-        if (!$this->task->is_samesite() || !$DB->record_exists('course', ['id' => $data->refcourse])) {
+        if (
+            !$this->task->is_samesite() || !$DB->record_exists('course', ['id' => $data->refcourse])
+            || !has_capability('moodle/grade:viewall', context_course::instance($data->refcourse), $this->task->get_userid())
+        ) {
             $data->refcourse = 0;
         }
 

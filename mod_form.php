@@ -195,4 +195,29 @@ class mod_subcourse_mod_form extends moodleform_mod {
         $completionfieldname = 'completioncourse' . $this->get_suffix();
         return (!empty($data[$completionfieldname]));
     }
+
+    /**
+     * Validate that the referenced course may be used by the current user.
+     *
+     * @param array $data submitted data
+     * @param array $files submitted files
+     * @return array errors
+     */
+    public function validation($data, $files) {
+        global $DB;
+        $errors = parent::validation($data, $files);
+
+        if (!empty($data['refcourse']) && empty($data['refcoursecurrent'])) {
+            if ($data['refcourse'] == $this->current->course || $data['refcourse'] == SITEID) {
+                $errors['refcourse'] = get_string('error');
+            } else if (
+                !$DB->record_exists('course', ['id' => $data['refcourse']])
+                || !has_capability('moodle/grade:viewall', context_course::instance($data['refcourse']))
+            ) {
+                $errors['refcourse'] = get_string('nocoursesavailable', 'subcourse');
+            }
+        }
+
+        return $errors;
+    }
 }
