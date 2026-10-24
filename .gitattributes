@@ -1,0 +1,6 @@
+/.github export-ignore
+/.gitattributes export-ignore
+/.gitignore export-ignore
+/ci export-ignore
+/moodle-preflight-report.md export-ignore
+/templates/.mustachelintignore export-ignore

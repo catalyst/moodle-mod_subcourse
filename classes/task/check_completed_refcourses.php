@@ -25,7 +25,6 @@
 
 namespace mod_subcourse\task;
 
-use completion_completion;
 use completion_info;
 use context_course;
 
@@ -61,7 +60,6 @@ class check_completed_refcourses extends \core\task\scheduled_task {
     public function execute() {
         global $CFG, $DB;
         require_once($CFG->dirroot . '/lib/completionlib.php');
-        require_once($CFG->dirroot . '/completion/completion_completion.php');
 
         if (!completion_info::is_enabled_for_site()) {
             mtrace("Completion tracking not enabled on this site");
@@ -106,16 +104,12 @@ class check_completed_refcourses extends \core\task\scheduled_task {
 
             mtrace("Subcourse {$subcourse->id}: checking refcourse {$subcourse->refcourse} completions ... ");
 
-            foreach (array_keys($cache[$subcourse->course]->participants) as $userid) {
-                $coursecompletion = new completion_completion(['userid' => $userid, 'course' => $subcourse->refcourse]);
-                if ($coursecompletion->is_complete()) {
-                    // Notify the subcourse to check the completion status.
-                    mtrace(" - user {$userid}: has completed referenced course, checking subcourse completion");
-                    $completion->update_state($cm, COMPLETION_COMPLETE, $userid);
-                }
-            }
+            $synced = \mod_subcourse\completion\refcourse_completion_sync::sync_users(
+                $subcourse,
+                array_keys($cache[$subcourse->course]->participants)
+            );
 
-            mtrace(" ... checked " . count($cache[$subcourse->course]->participants) . " users");
+            mtrace(" ... checked " . count($cache[$subcourse->course]->participants) . " users, synced {$synced}");
         }
 
         $rs->close();

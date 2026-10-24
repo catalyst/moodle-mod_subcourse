@@ -36,16 +36,31 @@ class custom_completion extends \core_completion\activity_custom_completion {
     public function get_state(string $rule): int {
         global $CFG, $DB;
         require_once($CFG->dirroot . '/completion/completion_completion.php');
+        require_once($CFG->libdir . '/gradelib.php');
 
         $this->validate_rule($rule);
 
-        $subcourse = $DB->get_record('subcourse', ['id' => $this->cm->instance], 'id,refcourse,completioncourse', MUST_EXIST);
+        $subcourse = $DB->get_record(
+            'subcourse',
+            ['id' => $this->cm->instance],
+            'id,refcourse,completioncourse,completionpassgradesubcourse',
+            MUST_EXIST
+        );
 
-        if (empty($subcourse->completioncourse)) {
-            // The rule not enabled, return early.
-            return COMPLETION_UNKNOWN;
+        if ($rule === 'completioncourse') {
+            return $this->get_refcourse_completion_state($subcourse);
         }
 
+        return $this->get_passgrade_completion_state();
+    }
+
+    /**
+     * Return completion state for referenced course completion.
+     *
+     * @param \stdClass $subcourse Subcourse record.
+     * @return int Completion state.
+     */
+    protected function get_refcourse_completion_state(\stdClass $subcourse): int {
         if (empty($subcourse->refcourse)) {
             // Misconfigured subcourse instance, behave as if was not enabled.
             return COMPLETION_INCOMPLETE;
@@ -58,11 +73,43 @@ class custom_completion extends \core_completion\activity_custom_completion {
     }
 
     /**
+     * Return strict completion state for Subcourse passing-grade completion.
+     *
+     * @return int Completion state.
+     */
+    protected function get_passgrade_completion_state(): int {
+        $gradeitem = \grade_item::fetch([
+            'source' => 'mod/subcourse',
+            'courseid' => $this->cm->course,
+            'itemtype' => 'mod',
+            'itemmodule' => 'subcourse',
+            'iteminstance' => $this->cm->instance,
+            'itemnumber' => 0,
+        ]);
+
+        $gradepass = $gradeitem ? (float)$gradeitem->gradepass : 0.0;
+        if (!$gradeitem || !grade_floats_different($gradepass, 0.0)) {
+            return COMPLETION_INCOMPLETE;
+        }
+
+        $grade = \grade_grade::fetch([
+            'itemid' => $gradeitem->id,
+            'userid' => $this->userid,
+        ]);
+
+        if (!$grade || $grade->finalgrade === null) {
+            return COMPLETION_INCOMPLETE;
+        }
+
+        return $grade->finalgrade >= $gradepass ? COMPLETION_COMPLETE : COMPLETION_COMPLETE_FAIL;
+    }
+
+    /**
      * Fetch the list of custom completion rules that this module defines.
      * @return array
      */
     public static function get_defined_custom_rules(): array {
-        return ['completioncourse'];
+        return ['completioncourse', 'completionpassgradesubcourse'];
     }
 
     /**
@@ -70,7 +117,10 @@ class custom_completion extends \core_completion\activity_custom_completion {
      * @return array
      */
     public function get_custom_rule_descriptions(): array {
-        return ['completioncourse' => get_string('completioncourse', 'subcourse')];
+        return [
+            'completioncourse' => get_string('completioncourse', 'subcourse'),
+            'completionpassgradesubcourse' => get_string('completionpassgradesubcourse_text', 'subcourse'),
+        ];
     }
 
     /**
@@ -81,6 +131,7 @@ class custom_completion extends \core_completion\activity_custom_completion {
         return [
             'completionview',
             'completionusegrade',
+            'completionpassgradesubcourse',
             'completioncourse',
         ];
     }

@@ -58,11 +58,11 @@ Feature: Progress and grade in referenced course can be displayed on the course 
     And I log out
     When I log in as "student1"
     And I am on "MainCourse" course homepage
-    Then I should see "Progress:" in the "[data-activityname='Unit course 1']" "css_element"
-    And I should see "Current grade:" in the "[data-activityname='Unit course 1']" "css_element"
+    Then I should see "Referenced course progress:" in the "[data-activityname='Unit course 1']" "css_element"
+    And I should see "Referenced course grade:" in the "[data-activityname='Unit course 1']" "css_element"
     And I am on the "Unit course 1" "subcourse activity" page logged in as student1
-    And I should see "Progress:" in the ".subcourseinfo-progress" "css_element"
-    And I should see "Current grade:" in the ".subcourseinfo-grade" "css_element"
+    And I should see "Referenced course progress:" in the ".subcourseinfo-progress" "css_element"
+    And I should see "Referenced course grade:" in the ".subcourseinfo-grade" "css_element"
 
   @javascript
   Scenario: Progress and grade displayed on subcourse view page only.
@@ -79,8 +79,8 @@ Feature: Progress and grade in referenced course can be displayed on the course 
     And I log out
     When I log in as "student1"
     And I am on "MainCourse" course homepage
-    Then I should not see "Progress:" in the "[data-activityname='Unit course 1']" "css_element"
-    And I should not see "Current grade:" in the "[data-activityname='Unit course 1']" "css_element"
+    Then I should not see "Referenced course progress:" in the "[data-activityname='Unit course 1']" "css_element"
+    And I should not see "Referenced course grade:" in the "[data-activityname='Unit course 1']" "css_element"
     And I am on the "Unit course 1" "subcourse activity" page logged in as student1
-    And I should see "Progress:" in the ".subcourseinfo-progress" "css_element"
-    And I should see "Current grade:" in the ".subcourseinfo-grade" "css_element"
+    And I should see "Referenced course progress:" in the ".subcourseinfo-progress" "css_element"
+    And I should see "Referenced course grade:" in the ".subcourseinfo-grade" "css_element"

@@ -44,9 +44,7 @@
     <div class="col-md">
         <div class="subcourseinfo subcourseinfo-progress mb-3">
             <div class="infotext">{{#str}} currentprogress, mod_subcourse, {{percentage}} {{/str}}</div>
-            <div class="subcourse-progress-bar">
-                <div style="width: {{percentage}}%"></div>
-            </div>
+            <progress class="subcourse-progress-bar" max="100" value="{{percentage}}">{{percentage}}%</progress>
         </div>
     </div>
     {{/haspercentage}}
@@ -54,7 +52,7 @@
     {{#hasstrgrade}}
     <div class="col-md">
         <div class="subcourseinfo subcourseinfo-grade mb-3">
-            <div  class="infotext">{{#str}} currentgrade, mod_subcourse, {{strgrade}} {{/str}}</div>
+            <div class="infotext">{{#str}} currentgrade, mod_subcourse, {{strgrade}} {{/str}}</div>
         </div>
     </div>
     {{/hasstrgrade}}

@@ -76,6 +76,7 @@ class view_subcourse extends external_api {
         $context = \context_module::instance($cm->id);
 
         self::validate_context($context);
+        require_capability('mod/subcourse:view', $context);
 
         subcourse_set_module_viewed($subcourse, $context, $course, $cm);
 
