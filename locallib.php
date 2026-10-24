@@ -239,29 +239,14 @@ function subcourse_grades_update(
 
     $result = grade_update('mod/subcourse', $courseid, 'mod', 'subcourse', $subcourseid, 0, $grades, $params);
 
-    // The {@see grade_update()} does not change the grade hidden state so we need to perform it manually now.
-    if (!$gradeitemonly && $result == GRADE_UPDATE_OK) {
-        $gi = grade_item::fetch([
-            'source' => 'mod/subcourse',
-            'courseid' => $courseid,
-            'itemtype' => 'mod',
-            'itemmodule' => 'subcourse',
-            'iteminstance' => $subcourseid,
-            'itemnumber' => 0,
-        ]);
-
-        $gs = grade_grade::fetch_all(['itemid' => $gi->id]);
-
-        if (!empty($gs)) {
-            foreach ($gs as $g) {
-                if (isset($refgrades->grades[$g->userid])) {
-                    if ($refgrades->grades[$g->userid]->hidden != $g->hidden) {
-                        $g->grade_item = $gi;
-                        $g->set_hidden($refgrades->grades[$g->userid]->hidden);
-                    }
-                }
-            }
-        }
+    if ($result == GRADE_UPDATE_OK) {
+        \mod_subcourse\grades\grade_item_sync::after_grade_update(
+            $courseid,
+            $subcourseid,
+            $refgrades,
+            $gradeitemonly,
+            $grades
+        );
     }
 
     return $result;
@@ -330,7 +315,7 @@ function subcourse_update_timefetched($subcourseids, $time = null) {
  * @return array
  */
 function subcourse_get_fetched_item_fields() {
-    return ['gradetype', 'grademax', 'grademin', 'scaleid', 'hidden'];
+    return ['gradetype', 'grademax', 'grademin', 'scaleid', 'hidden', 'gradepass'];
 }
 
 /**

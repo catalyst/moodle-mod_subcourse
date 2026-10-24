@@ -79,5 +79,7 @@ final class output_mobile_test extends \advanced_testcase {
 
         $this->assertEquals('main', $mainview3950['templates'][0]['id']);
         $this->assertStringContainsString('plugin.mod_subcourse.currentgrade', $mainview3950['templates'][0]['html']);
+        $this->assertStringContainsString('mod_subcourse_view_subcourse', $mainview3950['templates'][0]['html']);
+        $this->assertStringContainsString('plugin.mod_subcourse.gotorefcourse', $mainview3950['templates'][0]['html']);
     }
 }

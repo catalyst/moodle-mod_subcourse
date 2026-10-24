@@ -9,6 +9,7 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | username      | firstname | lastname  | email                |
       | teacher1      | Teacher   | 1         | teacher1@example.com |
       | student1      | Student   | 1         | student1@example.com |
+      | student2      | Student   | 2         | student2@example.com |
     And the following "courses" exist:
       | fullname      | shortname | category  | enablecompletion |
       | MainCourse    | M         | 0         | 1                |
@@ -17,8 +18,10 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | user          | course    | role              |
       | teacher1      | M         | editingteacher    |
       | student1      | M         | student           |
+      | student2      | M         | student           |
       | teacher1      | R         | editingteacher    |
       | student1      | R         | student           |
+      | student2      | R         | student           |
     And I enable "selfcompletion" "block" plugin
     # Create the subcourse instance.
     When I am on the "MainCourse" course page logged in as "teacher1"
@@ -28,7 +31,7 @@ Feature: Completing the referenced course can lead to completing the subcourse a
       | Redirect to the referenced course | 0                                                 |
       | Add requirements                  | 1                                                 |
       | View the activity                 | 0                                                 |
-      | Require course completed          | 1                                                 |
+      | Also require Moodle course completion | 1                                             |
       | id_completionexpected_enabled     | 1                                                 |
     # Add the block to a the referenced course to allow students to manually complete it
     And I am on "RefCourse" course homepage with editing mode on
@@ -55,8 +58,9 @@ Feature: Completing the referenced course can lead to completing the subcourse a
     And I wait "1" seconds
     When I run the scheduled task "core\task\completion_regular_task"
     And I am on "MainCourse" course homepage
-    Then the "Require course completed" completion condition of "Unit course 1" is displayed as "done"
+    Then the "Also require Moodle course completion" completion condition of "Unit course 1" is displayed as "done"
     And I log out
     And I log in as "teacher1"
     And I am on "MainCourse" course homepage
     And "Student 1" user has completed "Unit course 1" activity
+    And "Student 2" user has not completed "Unit course 1" activity

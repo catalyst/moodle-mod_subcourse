@@ -48,8 +48,6 @@ function subcourse_supports($feature) {
             return true;
         case FEATURE_GROUPINGS:
             return true;
-        case FEATURE_GROUPMEMBERSONLY:
-            return true;
         case FEATURE_BACKUP_MOODLE2:
             return true;
         case FEATURE_COMPLETION_TRACKS_VIEWS:
@@ -89,6 +87,14 @@ function subcourse_add_instance(stdClass $subcourse) {
 
     if (empty($subcourse->coursepageprintgrade)) {
         $subcourse->coursepageprintgrade = 0;
+    }
+
+    if (empty($subcourse->completioncoursereversible)) {
+        $subcourse->completioncoursereversible = 0;
+    }
+
+    if (empty($subcourse->completionpassgradesubcourse)) {
+        $subcourse->completionpassgradesubcourse = 0;
     }
 
     $newid = $DB->insert_record("subcourse", $subcourse);
@@ -145,6 +151,14 @@ function subcourse_update_instance(stdClass $subcourse) {
 
     if (empty($subcourse->coursepageprintgrade)) {
         $subcourse->coursepageprintgrade = 0;
+    }
+
+    if (empty($subcourse->completioncoursereversible)) {
+        $subcourse->completioncoursereversible = 0;
+    }
+
+    if (empty($subcourse->completionpassgradesubcourse)) {
+        $subcourse->completionpassgradesubcourse = 0;
     }
 
     $DB->update_record('subcourse', $subcourse);
@@ -301,7 +315,7 @@ function mod_subcourse_cm_info_view(cm_info $cm) {
         $displayoptions = $DB->get_record('subcourse', ['id' => $cm->instance], 'coursepageprintgrade, coursepageprintprogress');
     }
 
-    $html = '';
+    $inforows = [];
 
     if ($displayoptions->coursepageprintprogress) {
         $sql = "SELECT r.*
@@ -317,10 +331,10 @@ function mod_subcourse_cm_info_view(cm_info $cm) {
 
         if ($percentage !== null) {
             $percentage = floor($percentage);
-            $html .= html_writer::tag(
+            $inforows[] = html_writer::tag(
                 'div',
                 get_string('currentprogress', 'subcourse', $percentage),
-                ['class' => 'contentafterlink']
+                ['class' => 'subcourse-coursepage-info-row']
             );
         }
     }
@@ -333,15 +347,20 @@ function mod_subcourse_cm_info_view(cm_info $cm) {
 
         if (($currentgrade !== null) && isset($currentgrade->grade) && !($currentgrade->hidden)) {
             $strgrade = $currentgrade->str_grade;
-            $html .= html_writer::tag(
+            $inforows[] = html_writer::tag(
                 'div',
                 get_string('currentgrade', 'subcourse', $strgrade),
-                ['class' => 'contentafterlink']
+                ['class' => 'subcourse-coursepage-info-row']
             );
         }
     }
 
-    if ($html !== '') {
+    if (!empty($inforows)) {
+        $html = html_writer::tag(
+            'div',
+            implode('', $inforows),
+            ['class' => 'contentafterlink subcourse-coursepage-info']
+        );
         $cm->set_after_link($html);
     }
 }
@@ -369,6 +388,51 @@ function mod_subcourse_core_calendar_provide_event_action(calendar_event $event,
 }
 
 /**
+ * Return active completion rule descriptions for legacy completion consumers.
+ *
+ * @param cm_info|stdClass $cm The course module info object or record.
+ * @return array List of active completion rule descriptions.
+ */
+function subcourse_get_completion_active_rule_descriptions($cm) {
+
+    if (empty($cm->completion) || $cm->completion != COMPLETION_TRACKING_AUTOMATIC) {
+        return [];
+    }
+
+    $customdata = $cm->customdata ?? null;
+    $customcompletionrules = null;
+
+    if (is_object($customdata) && isset($customdata->customcompletionrules)) {
+        $customcompletionrules = $customdata->customcompletionrules;
+    } else if (is_array($customdata) && isset($customdata['customcompletionrules'])) {
+        $customcompletionrules = $customdata['customcompletionrules'];
+    }
+
+    if (is_object($customcompletionrules)) {
+        $completioncourse = $customcompletionrules->completioncourse ?? 0;
+        $completionpassgrade = $customcompletionrules->completionpassgradesubcourse ?? 0;
+    } else if (is_array($customcompletionrules)) {
+        $completioncourse = $customcompletionrules['completioncourse'] ?? 0;
+        $completionpassgrade = $customcompletionrules['completionpassgradesubcourse'] ?? 0;
+    } else {
+        $completioncourse = 0;
+        $completionpassgrade = 0;
+    }
+
+    $descriptions = [];
+
+    if (!empty($completioncourse)) {
+        $descriptions[] = get_string('completioncourse_text', 'subcourse');
+    }
+
+    if (!empty($completionpassgrade)) {
+        $descriptions[] = get_string('completionpassgradesubcourse_text', 'subcourse');
+    }
+
+    return $descriptions;
+}
+
+/**
  * Given a course_module object, this function returns any
  * "extra" information that may be needed when printing
  * this activity in a course listing.
@@ -385,7 +449,7 @@ function subcourse_get_coursemodule_info($coursemodule) {
         'subcourse',
         ['id' => $coursemodule->instance],
         'id, name, intro, introformat, instantredirect, blankwindow, coursepageprintgrade, coursepageprintprogress,' .
-        ' completioncourse'
+        ' completioncourse, completioncoursereversible, completionpassgradesubcourse'
     );
 
     if (!$subcourse) {
@@ -411,6 +475,7 @@ function subcourse_get_coursemodule_info($coursemodule) {
 
     if ($coursemodule->completion == COMPLETION_TRACKING_AUTOMATIC) {
         $info->customdata->customcompletionrules['completioncourse'] = $subcourse->completioncourse;
+        $info->customdata->customcompletionrules['completionpassgradesubcourse'] = $subcourse->completionpassgradesubcourse;
     }
 
     return $info;

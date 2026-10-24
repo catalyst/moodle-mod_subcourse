@@ -24,8 +24,6 @@
 
 namespace mod_subcourse;
 
-use completion_info;
-
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/mod/subcourse/locallib.php');
@@ -107,8 +105,7 @@ class observers {
      * @return void
      */
     public static function course_completed(\core\event\course_completed $event) {
-        global $CFG, $DB;
-        require_once($CFG->dirroot . '/lib/completionlib.php');
+        global $DB;
 
         $courseid = $event->courseid;
         $userid = $event->relateduserid;
@@ -121,24 +118,8 @@ class observers {
             return;
         }
 
-        // Load the courses where the subcourses are located in.
-        $courseids = [];
-
         foreach ($subcourses as $subcourse) {
-            $courseids[$subcourse->course] = true;
-        }
-
-        $courses = $DB->get_records_list('course', 'id', array_keys($courseids), '', '*');
-
-        foreach ($subcourses as $subcourse) {
-            $course = $courses[$subcourse->course];
-            $cm = get_coursemodule_from_instance('subcourse', $subcourse->id, $course->id);
-            $completion = new completion_info($course);
-
-            if ($completion->is_enabled($cm)) {
-                // Notify the subcourse to check the completion status.
-                $completion->update_state($cm, COMPLETION_COMPLETE, $userid);
-            }
+            \mod_subcourse\completion\refcourse_completion_sync::sync_user($subcourse, $userid);
         }
     }
 }

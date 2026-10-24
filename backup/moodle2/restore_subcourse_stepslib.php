@@ -56,6 +56,12 @@ class restore_subcourse_activity_structure_step extends restore_activity_structu
         $data->course = $this->get_courseid();
 
         $data->timefetched = 0;
+        if (!isset($data->completioncoursereversible)) {
+            $data->completioncoursereversible = 0;
+        }
+        if (!isset($data->completionpassgradesubcourse)) {
+            $data->completionpassgradesubcourse = 0;
+        }
 
         if (!$this->task->is_samesite() || !$DB->record_exists('course', ['id' => $data->refcourse])) {
             $data->refcourse = 0;

@@ -30,11 +30,16 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['blankwindow'] = 'Open in a new window';
 $string['blankwindow_help'] = 'When selected, the link will open the referenced course in a new browser window.';
-$string['completioncourse'] = 'Require course completed';
-$string['completioncourse_help'] = 'If enabled, the activity is considered complete when a student completes the referenced course.';
-$string['completioncourse_text'] = 'Student must complete the referenced course to complete this activity.';
-$string['currentgrade'] = 'Current grade: {$a}';
-$string['currentprogress'] = 'Progress: {$a}%';
+$string['completioncourse'] = 'Also require Moodle course completion';
+$string['completioncourse_help'] = 'This is separate from the referenced course gradebook. Enable it only when the referenced course uses Moodle Course completion settings and this Subcourse should wait until Moodle marks that whole course complete for the student. For gradebook-based unit pass/fail workflows, leave this unticked and use Passing grade.';
+$string['completioncourse_text'] = 'Referenced course must be marked complete in Moodle.';
+$string['completioncoursereversible'] = 'Undo this if Moodle course completion is removed';
+$string['completioncoursereversible_help'] = 'Use only with the Moodle course-completion rule above. By default, once this Subcourse activity is complete it stays complete. Enable this only if the activity should also change back to incomplete when the same student no longer has completed status in the referenced course.';
+$string['completioncoursereversible_text'] = 'Change this activity back to incomplete if Moodle later removes that student\'s referenced-course completion.';
+$string['completionpassgradesubcourse'] = 'Referenced course passing grade';
+$string['completionpassgradesubcourse_text'] = 'Student must receive a passing grade from the referenced course.';
+$string['currentgrade'] = 'Referenced course grade: {$a}';
+$string['currentprogress'] = 'Referenced course progress: {$a}%';
 $string['displayoption:coursepageprintgrade'] = 'Display grade from referenced course on course page';
 $string['displayoption:coursepageprintprogress'] = 'Display progress from referenced course on course page';
 $string['errfetch'] = 'Unable to fetch grades: error code {$a}';
@@ -86,6 +91,3 @@ $string['subcourse:view'] = 'View subcourse activity';
 $string['subcoursename'] = 'Subcourse name';
 $string['taskcheckcompletedrefcourses'] = 'Check referenced courses completion';
 $string['taskfetchgrades'] = 'Fetch subcourse grades';
-
-// Deprecated and no longer used.
-$string['gotocoursename'] = 'Go to the course <a href="{$a->href}">{$a->name}</a>';

@@ -36,6 +36,56 @@ require_once($CFG->dirroot . '/course/moodleform_mod.php');
  */
 class mod_subcourse_mod_form extends moodleform_mod {
     /**
+     * Get the grade to pass from the referenced course total.
+     *
+     * @param int|null $refcourseid Referenced course id.
+     * @return float|null Grade to pass, or null when the referenced course has no usable pass grade.
+     */
+    protected function get_referenced_course_gradepass(?int $refcourseid): ?float {
+        if (empty($refcourseid)) {
+            return null;
+        }
+
+        $coursegradeitem = grade_item::fetch_course_item($refcourseid);
+        if (!$coursegradeitem || empty($coursegradeitem->gradepass)) {
+            return null;
+        }
+
+        return (float) $coursegradeitem->gradepass;
+    }
+
+    /**
+     * Default the activity grade to pass from the referenced course total.
+     *
+     * @param array $data Form data.
+     */
+    protected function set_referenced_course_gradepass(array &$data): void {
+        if (!empty($data['gradepass'])) {
+            return;
+        }
+
+        $gradepass = $this->get_referenced_course_gradepass($data['refcourse'] ?? null);
+        if ($gradepass === null) {
+            return;
+        }
+
+        $data['gradepass'] = $gradepass;
+    }
+
+    /**
+     * Remove Moodle-wide optional fields that are not part of the Subcourse setup workflow.
+     */
+    protected function remove_unrelated_standard_elements(): void {
+        $mform = $this->_form;
+
+        foreach (['tagshdr', 'tags', 'competenciessection', 'competencies', 'competency_rule', 'override_grade'] as $elementname) {
+            if ($mform->elementExists($elementname)) {
+                $mform->removeElement($elementname);
+            }
+        }
+    }
+
+    /**
      * Form fields definition
      */
     public function definition() {
@@ -146,6 +196,8 @@ class mod_subcourse_mod_form extends moodleform_mod {
         ]);
         $mform->addHelpButton('fetchpercentage', 'fetchgradesmode', 'subcourse');
 
+        $this->standard_grading_coursemodule_elements();
+
         $mform->addElement('header', 'section-subcourselink', get_string('linkcontrol', 'subcourse'));
 
         $mform->addElement('checkbox', 'instantredirect', get_string('instantredirect', 'subcourse'));
@@ -161,6 +213,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
         $mform->setDefault('coursepageprintgrade', $config->coursepageprintgrade);
 
         $this->standard_coursemodule_elements();
+        $this->remove_unrelated_standard_elements();
         $this->add_action_buttons();
     }
 
@@ -173,6 +226,7 @@ class mod_subcourse_mod_form extends moodleform_mod {
     public function add_completion_rules() {
         $mform = $this->_form;
         $completionfieldname = 'completioncourse' . $this->get_suffix();
+        $passgradefieldname = 'completionpassgradesubcourse' . $this->get_suffix();
 
         $mform->addElement(
             'advcheckbox',
@@ -182,7 +236,21 @@ class mod_subcourse_mod_form extends moodleform_mod {
         );
         $mform->addHelpButton($completionfieldname, 'completioncourse', 'mod_subcourse');
 
-        return [$completionfieldname];
+        $reversiblefieldname = 'completioncoursereversible' . $this->get_suffix();
+
+        $mform->addElement(
+            'advcheckbox',
+            $reversiblefieldname,
+            get_string('completioncoursereversible', 'mod_subcourse'),
+            get_string('completioncoursereversible_text', 'mod_subcourse')
+        );
+        $mform->addHelpButton($reversiblefieldname, 'completioncoursereversible', 'mod_subcourse');
+        $mform->hideIf($reversiblefieldname, $completionfieldname, 'notchecked');
+
+        $mform->addElement('hidden', $passgradefieldname, 0);
+        $mform->setType($passgradefieldname, PARAM_BOOL);
+
+        return [$completionfieldname, $passgradefieldname];
     }
 
     /**
@@ -193,6 +261,63 @@ class mod_subcourse_mod_form extends moodleform_mod {
      */
     public function completion_rule_enabled($data) {
         $completionfieldname = 'completioncourse' . $this->get_suffix();
-        return (!empty($data[$completionfieldname]));
+        $passgradefieldname = 'completionpassgradesubcourse' . $this->get_suffix();
+
+        return (!empty($data[$completionfieldname]) || !empty($data[$passgradefieldname]) ||
+            !empty($data['completionpassgrade']));
+    }
+
+    /**
+     * Prepare form defaults before they are displayed.
+     *
+     * @param array $defaultvalues Form defaults.
+     */
+    public function data_preprocessing(&$defaultvalues) {
+        parent::data_preprocessing($defaultvalues);
+        $this->set_referenced_course_gradepass($defaultvalues);
+
+        if (!empty($defaultvalues['completionpassgradesubcourse'])) {
+            $defaultvalues['completionusegrade'] = 1;
+            $defaultvalues['completionpassgrade'] = 1;
+        }
+    }
+
+    /**
+     * Validate the form submission.
+     *
+     * @param array $data Submitted form data.
+     * @param array $files Submitted files.
+     * @return array Validation errors.
+     */
+    public function validation($data, $files) {
+        $this->set_referenced_course_gradepass($data);
+        return parent::validation($data, $files);
+    }
+
+    /**
+     * Prepare form data before the module is saved.
+     *
+     * @param stdClass $data Submitted form data.
+     */
+    public function data_postprocessing($data) {
+        $formdata = (array) $data;
+        $this->set_referenced_course_gradepass($formdata);
+
+        if (!empty($formdata['gradepass'])) {
+            $data->gradepass = $formdata['gradepass'];
+        }
+
+        $usesubcoursepassgrade = !empty($data->completionpassgrade);
+        $data->completionpassgradesubcourse = $usesubcoursepassgrade ? 1 : 0;
+
+        if ($usesubcoursepassgrade) {
+            // Moodle's core pass-grade completion stores failing grades as COMPLETE_FAIL.
+            // Subcourse needs a stricter custom rule so a failing grade remains incomplete.
+            $data->completionusegrade = 0;
+            $data->completionpassgrade = 0;
+            $data->completiongradeitemnumber = null;
+        }
+
+        parent::data_postprocessing($data);
     }
 }

@@ -45,6 +45,8 @@ class backup_subcourse_activity_structure_step extends backup_activity_structure
             'refcourse',
             'instantredirect',
             'completioncourse',
+            'completioncoursereversible',
+            'completionpassgradesubcourse',
             'blankwindow',
             'fetchpercentage',
             'coursepageprintgrade',

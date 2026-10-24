@@ -15,12 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Provides {@see mod_subcourse_external_testcase} class.
+ * Provides {@see \mod_subcourse\externallib_test} class.
  *
  * @package     mod_subcourse
  * @copyright   2020 David Mudrák <david@moodle.com>
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+namespace mod_subcourse;
+
+use core_external\external_api;
+use externallib_advanced_testcase;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -34,14 +39,15 @@ require_once($CFG->dirroot . '/webservice/tests/helpers.php');
  * @category  test
  * @copyright 2020 David Mudrák <david@moodle.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @runTestsInSeparateProcesses
  */
-class mod_subcourse_external_testcase extends externallib_advanced_testcase {
+final class externallib_test extends externallib_advanced_testcase {
     /**
      * Test the external function mod_subcourse_view_subcourse.
+     *
+     * @covers \mod_subcourse\external\view_subcourse::execute
      */
-    public function test_view_subcourse() {
-        global $USER;
-
+    public function test_view_subcourse(): void {
         $this->resetAfterTest();
         $this->setAdminUser();
 
@@ -53,9 +59,6 @@ class mod_subcourse_external_testcase extends externallib_advanced_testcase {
             'course' => $metacourse->id,
         ]);
         $generator->enrol_user($student->id, $metacourse->id, 'student');
-
-        [$course, $cm] = get_course_and_cm_from_instance($subcourse->id, 'subcourse');
-        $context = context_module::instance($cm->id);
 
         $returnvalue = \mod_subcourse\external\view_subcourse::execute($subcourse->id);
 

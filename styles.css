@@ -13,13 +13,22 @@
 #page-mod-subcourse-view .subcourseinfo .subcourse-progress-bar {
     display: block;
     background-color: white;
+    border: 0;
     height: 1rem;
     margin-bottom: 10px;
+    width: 100%;
 }
 
-#page-mod-subcourse-view .subcourseinfo .subcourse-progress-bar > div {
+#page-mod-subcourse-view .subcourseinfo .subcourse-progress-bar::-webkit-progress-bar {
+    background-color: white;
+}
+
+#page-mod-subcourse-view .subcourseinfo .subcourse-progress-bar::-webkit-progress-value {
     background-color: green;
-    height: 100%;
+}
+
+#page-mod-subcourse-view .subcourseinfo .subcourse-progress-bar::-moz-progress-bar {
+    background-color: green;
 }
 
 #page-mod-subcourse-view .actionbuttons {

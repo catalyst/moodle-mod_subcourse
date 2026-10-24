@@ -30,7 +30,9 @@
  * @return bool true
  */
 function xmldb_subcourse_upgrade($oldversion = 0) {
-    global $DB;
+    global $CFG, $DB;
+
+    require_once($CFG->libdir . '/completionlib.php');
 
     $dbman = $DB->get_manager();
 
@@ -131,5 +133,143 @@ function xmldb_subcourse_upgrade($oldversion = 0) {
         upgrade_mod_savepoint(true, 2021021400, 'subcourse');
     }
 
+    if ($oldversion < 2026090200) {
+        // Add field 'completioncoursereversible' to the table 'subcourse'.
+        $table = new xmldb_table('subcourse');
+        $field = new xmldb_field(
+            'completioncoursereversible',
+            XMLDB_TYPE_INTEGER,
+            '1',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '0',
+            'completioncourse'
+        );
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        upgrade_mod_savepoint(true, 2026090200, 'subcourse');
+    }
+
+    if ($oldversion < 2026090300) {
+        // Add field 'completionpassgradesubcourse' to the table 'subcourse'.
+        $table = new xmldb_table('subcourse');
+        $field = new xmldb_field(
+            'completionpassgradesubcourse',
+            XMLDB_TYPE_INTEGER,
+            '1',
+            null,
+            XMLDB_NOTNULL,
+            null,
+            '0',
+            'completioncoursereversible'
+        );
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $subcoursemoduleid = $DB->get_field('modules', 'id', ['name' => 'subcourse'], IGNORE_MISSING);
+        if ($subcoursemoduleid) {
+            $sql = "SELECT cm.id AS cmid, cm.course, s.id AS subcourseid
+                      FROM {course_modules} cm
+                      JOIN {subcourse} s ON s.id = cm.instance
+                     WHERE cm.module = :moduleid
+                       AND cm.completionpassgrade = 1";
+            $records = $DB->get_recordset_sql($sql, ['moduleid' => $subcoursemoduleid]);
+            $courseids = [];
+
+            foreach ($records as $record) {
+                xmldb_subcourse_move_core_passgrade_rule($record);
+                $courseids[(int)$record->course] = true;
+            }
+            $records->close();
+
+            foreach (array_keys($courseids) as $courseid) {
+                rebuild_course_cache($courseid, true);
+            }
+        }
+
+        upgrade_mod_savepoint(true, 2026090300, 'subcourse');
+    }
+
+    if ($oldversion < 2026090301) {
+        // Recalculate existing pass-grade subcourse completions after migrating away from Moodle core pass-grade state.
+
+        $subcoursemoduleid = $DB->get_field('modules', 'id', ['name' => 'subcourse'], IGNORE_MISSING);
+        if ($subcoursemoduleid) {
+            $sql = "SELECT cm.id AS cmid, cm.course, s.id AS subcourseid
+                      FROM {course_modules} cm
+                      JOIN {subcourse} s ON s.id = cm.instance
+                     WHERE cm.module = :moduleid
+                       AND (s.completionpassgradesubcourse = 1 OR cm.completionpassgrade = 1)";
+            $records = $DB->get_recordset_sql($sql, ['moduleid' => $subcoursemoduleid]);
+
+            foreach ($records as $record) {
+                xmldb_subcourse_move_core_passgrade_rule($record);
+
+                $gradeitem = $DB->get_record('grade_items', [
+                    'courseid' => $record->course,
+                    'itemtype' => 'mod',
+                    'itemmodule' => 'subcourse',
+                    'iteminstance' => $record->subcourseid,
+                    'itemnumber' => 0,
+                ], 'id,gradepass', IGNORE_MISSING);
+
+                if (!$gradeitem || empty($gradeitem->gradepass)) {
+                    continue;
+                }
+
+                $gradesql = "SELECT cmc.id, cmc.userid, cmc.completionstate, gg.finalgrade, gg.rawgrade
+                               FROM {course_modules_completion} cmc
+                          LEFT JOIN {grade_grades} gg
+                                 ON gg.userid = cmc.userid
+                                AND gg.itemid = :itemid
+                              WHERE cmc.coursemoduleid = :cmid
+                                AND cmc.overrideby IS NULL";
+                $completionrecords = $DB->get_recordset_sql(
+                    $gradesql,
+                    [
+                        'itemid' => $gradeitem->id,
+                        'cmid' => $record->cmid,
+                    ]
+                );
+
+                foreach ($completionrecords as $completionrecord) {
+                    $score = $completionrecord->finalgrade ?? $completionrecord->rawgrade;
+                    $newstate = ($score !== null && $score >= $gradeitem->gradepass) ?
+                        COMPLETION_COMPLETE : COMPLETION_INCOMPLETE;
+
+                    if ((int)$completionrecord->completionstate !== $newstate) {
+                        $completionrecord->completionstate = $newstate;
+                        $completionrecord->timemodified = time();
+                        $DB->update_record('course_modules_completion', $completionrecord);
+                    }
+                }
+                $completionrecords->close();
+            }
+            $records->close();
+        }
+
+        upgrade_mod_savepoint(true, 2026090301, 'subcourse');
+    }
+
     return true;
+}
+
+/**
+ * Move core pass-grade completion settings to the Subcourse strict pass-grade rule.
+ *
+ * @param stdClass $record Record with cmid and subcourseid fields.
+ * @return void
+ */
+function xmldb_subcourse_move_core_passgrade_rule(stdClass $record): void {
+    global $DB;
+
+    $DB->set_field('subcourse', 'completionpassgradesubcourse', 1, ['id' => $record->subcourseid]);
+    $DB->set_field('course_modules', 'completionpassgrade', 0, ['id' => $record->cmid]);
+    $DB->set_field('course_modules', 'completiongradeitemnumber', null, ['id' => $record->cmid]);
 }
